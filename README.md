@@ -1,5 +1,7 @@
 # Dossier
 
+[![CI](https://github.com/markmcgrath/Dossier/actions/workflows/ci.yml/badge.svg)](https://github.com/markmcgrath/Dossier/actions/workflows/ci.yml)
+
 Dossier is a structured job search system built on top of Claude Projects.
 
 It combines:

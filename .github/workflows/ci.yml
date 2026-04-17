@@ -6,19 +6,51 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        env:
+          DOSSIER_VAULT: ${{ github.workspace }}
+        run: pytest tests/ -v --tb=short
+
+  pii-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
-      - name: Install dependencies
-        run: pip install pytest pyyaml
-
-      - name: Run tests
-        run: pytest tests/ -v
+      - name: Scan for PII and secret patterns
+        run: python .github/scripts/pii_scan.py
