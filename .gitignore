@@ -37,5 +37,6 @@ Thumbs.db
 __pycache__/
 *.pyc
 
-# Local-only PII patterns for the pre-commit hook (maintainer's machine only)
-.github/scripts/pii_patterns.local.txt
+# Local-only PII patterns for the pre-commit hook (maintainer's machine only).
+# Copy .github/scripts/pii_patterns.template.txt to this path to get started.
+.github/scripts/pii_patterns.txt
