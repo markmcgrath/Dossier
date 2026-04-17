@@ -10,14 +10,17 @@
 
 When the user asks you to walk them through setup, follow these steps in order. Do not skip steps. Confirm with the user after each file you create. If the user interrupts to ask something off-script, answer briefly, then return to this playbook.
 
-### Step 1 — Verify the Project is set up
+### Step 1 — Verify the Cowork Project is set up
 
 Before asking for anything, confirm:
 
-- You can see the Dossier repo files as **Project knowledge**. A quick sanity check: look for `cv.template.md`, `profile.template.md`, and `skill/SKILL.md` in the knowledge base.
-- `dossier.skill` is **attached as a skill** to this Project.
+- The user is running in a **Cowork Project** in Claude Desktop (not Chat or plain Code mode). Cowork is required because Dossier needs file-write access to the vault folder.
+- The Dossier folder is **granted as the Project's file access**. Sanity check: look for `cv.template.md`, `profile.template.md`, and `skill/SKILL.md` inside the project folder.
+- `dossier.skill` is **installed via Customize → Skills**.
 
-If either is missing, pause and walk the user through fixing it before continuing. Do not try to proceed with setup if the skill isn't attached — the later steps depend on skill behavior.
+If any of these is missing, pause and walk the user through fixing it before continuing. Do not try to proceed with setup if the skill isn't attached or if file access isn't granted — the later steps depend on writing files to the vault.
+
+If the user is running on Claude Code mode / CLI instead of Cowork, flag this once: *"Dossier is written for Cowork; some connector-backed modes (Indeed, Dice, Gmail, Calendar, Apollo) may need manual MCP config here. Core evaluation (Mode 1) will work either way."* Then continue.
 
 ### Step 2 — Ask for the resume
 
