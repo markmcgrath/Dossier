@@ -1,0 +1,38 @@
+# Personal pipeline data
+cv.md
+profile.md
+config.md
+stories.md
+
+# Publication plan (contains PII examples for sanitization reference)
+PUBLISH-PLAN.md
+
+# Artifact folders (contain personal/company-specific content)
+evals/*
+outreach/*
+cover-letters/*
+interview-prep/*
+research/*
+daily/*
+weekly/*
+archive/*
+!**/.gitkeep
+
+# Working state
+.lead-pulse-state.json
+skill-update/
+
+# Obsidian internals
+.obsidian/
+
+# Claude Code internals
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python / test artifacts
+.pytest_cache/
+__pycache__/
+*.pyc
