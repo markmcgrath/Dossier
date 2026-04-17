@@ -1,0 +1,18 @@
+# Dossier PII patterns — owner-specific regex list for the pre-commit hook.
+#
+# Setup:
+#   cp .github/scripts/pii_patterns.template.txt .github/scripts/pii_patterns.txt
+#   (edit the copy — it is gitignored, so it never leaves your machine)
+#
+# Format: one Python regex per line. Lines starting with # are comments.
+#
+# Uncomment and replace these examples with your own identifiers:
+#
+# YourSurname
+# your-email-local-part
+# 11111111-1111-1111-1111-111111111111
+#
+# Tips:
+# - Use word boundaries (\b) to reduce false positives.
+# - For case-insensitive matching, prefix with (?i), e.g. (?i)YourSurname
+# - Validate by running: python .github/scripts/pii_scan.py
