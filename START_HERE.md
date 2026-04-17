@@ -1,153 +1,144 @@
-# START HERE
+# Start Here
 
-This file is the onboarding guide for both:
-- You (the user)
-- Claude (acting as your setup assistant)
+Extended setup walkthrough for Dossier. For the 4-step version, see the [Quick start in README.md](README.md#quick-start). This doc goes deeper with troubleshooting.
 
 ---
 
-## If you are a user
+## Before you begin
 
-After opening this repository in Claude, say:
+You'll need:
 
-> Please read START_HERE.md and guide me through setting up Dossier for my job search.
-
-Claude should then walk you through everything step by step.
-
----
-
-## If you are Claude
-
-When a user asks for help setting up this project, follow this process:
-
-### 1. Understand the project
-
-- Read `README.md`
-- Read this file (`START_HERE.md`)
-- Summarize the system briefly:
-  - what it is
-  - how it works
-  - what the user will get out of it
-
-Keep it concise.
+- A **Claude** account with access to **Claude Projects** (the skill runs inside a Claude Project)
+- **Git** to clone the repository
+- A text editor — any will do; [Obsidian](https://obsidian.md) is optimized for this vault but optional
+- (Optional) **Python 3.11+** if you want to run the test suite locally
 
 ---
 
-### 2. Check required inputs
+## Step 1 — Clone the repo
 
-Confirm whether the user has:
-
-- `cv.md` (their resume in markdown form)
-- `profile.md` (their role targeting and positioning)
-
-If missing:
-- Ask for them
-- Help generate them from user input
+```bash
+git clone https://github.com/markmcgrath/Dossier.git
+cd Dossier
+```
 
 ---
 
-### 3. Set up the vault
+## Step 2 — Create your personal files from the templates
 
-Explain the vault structure (see `README.md` for full layout).
+The repo ships with `.template.md` versions of every file that contains personal data. Your real versions are gitignored — they never leave your machine unless you explicitly copy them somewhere.
 
-The repository IS the vault — there is no separate template to copy. The user should:
+```bash
+cp cv.template.md cv.md           # your work history
+cp profile.template.md profile.md # your targeting preferences
+cp stories.template.md stories.md # (optional) STAR+R behavioral stories
+cp config.template.md config.md   # (optional) Notion / MCP integration IDs
+```
 
-1. Clone this repository
-2. Rename `cv.template.md` → `cv.md` and fill in their work history
-3. Rename `profile.template.md` → `profile.md` and fill in their targeting preferences
-4. Rename `stories.template.md` → `stories.md` (optional, for behavioral interview prep)
-5. Rename `config.template.md` → `config.md` and add their Notion tracker IDs (optional)
-6. Open the folder in Obsidian as a vault, or work with it via Claude directly
+Then open each file in your editor and fill it in.
 
-The subfolder structure (`evals/`, `outreach/`, `cover-letters/`, etc.) is already in place.
+**Minimum viable setup:** you need `cv.md` and `profile.md` to get useful output. Everything else is optional.
 
----
-
-### 4. Explain workflow modes
-
-Briefly explain the available modes:
-
-- evaluate: assess job fit
-- search: find relevant roles
-- research: analyze companies and roles
-- outreach: generate tailored messages
-- prep: create interview materials
-- negotiate: analyze offers
-
-Do not over-explain. Keep it practical.
+**If you don't have a resume in markdown yet:** paste your existing resume (PDF, LinkedIn export, Google Doc) into Claude and say *"Convert this to the format in cv.template.md."* You'll get a clean `cv.md` draft.
 
 ---
 
-### 5. Run first workflow (required)
+## Step 3 — Load Dossier into Claude Projects
 
-Ask the user for a job description.
+1. Create a new Claude Project (or pick an existing one).
+2. Add this folder as **Project knowledge**. Claude will index the markdown files so it can reference `cv.md`, `profile.md`, your existing evals, etc.
+3. Upload `dossier.skill` as a **skill** in the same Project.
 
-Then:
-- Run an evaluation
-- Produce a structured artifact
-- Show how it would be stored in the vault
-
-This is the first success moment.
+The skill is a ZIP bundle containing `SKILL.md` + `references/*.md`. Claude loads these automatically once the skill is attached.
 
 ---
 
-### 6. Reinforce usage pattern
+## Step 4 — Run your first evaluation
 
-Explain how the system should be used going forward:
+Paste any job description into Claude and ask for an evaluation. Example prompt:
 
-- Each interaction produces artifacts
-- Artifacts are saved, not discarded
-- Decisions should be based on accumulated outputs
-- The system improves over time with better inputs
+> Please evaluate this role against my profile.
+>
+> [paste JD here]
+
+What Claude will do:
+
+1. Run Mode 0 (health check) to confirm your `cv.md` and `profile.md` are loaded.
+2. Run Mode 1 (evaluation) — reads the JD, scores it against your profile across 10 dimensions, assigns a letter grade (A / B+ / B / C / D / F), flags legitimacy risk (Verified / Plausible / Suspect / Likely Ghost), and writes a structured artifact to `evals/eval-<company>-<date>.md`.
+3. Show you the grade, the key strengths/concerns, and a one-sentence recommendation.
+
+**What "first success" looks like:**
+
+- `cv.md` and `profile.md` exist and are populated
+- `evals/eval-<your-first-company>-<today>.md` exists with a grade and frontmatter
+- You can open the eval file in any text editor and read the structured report
+
+If all three are true, onboarding is complete.
 
 ---
 
-### 7. Boundaries and safety
+## Available workflow modes
 
-Make it clear:
+Once setup is done, these are the main things to ask Claude for:
 
-- No automated applications
-- No scraping or bypassing platform rules
-- All outreach and decisions are user-reviewed
-- This is an assistive system, not an autonomous one
+| Mode | What to ask for |
+|---|---|
+| **Evaluate** | *"Evaluate this role."* — grades fit against your profile |
+| **Search** | *"Search Indeed / Dice for [role]."* — finds roles, evaluates them in bulk |
+| **Research** | *"Research [company]."* — company background, interviewers, competitors |
+| **Outreach** | *"Draft LinkedIn outreach to [recruiter / hiring manager]."* — personalized messages |
+| **Cover letter** | *"Draft a cover letter for the [role] eval."* — reuses the eval as context |
+| **Prep** | *"Prep me for the [company] interview."* — role-specific prep doc with likely questions |
+| **Negotiate** | *"Analyze this offer vs. my profile."* — salary / equity / leverage analysis |
+
+All modes write artifacts to the corresponding folder (`outreach/`, `cover-letters/`, `interview-prep/`, etc.) with consistent frontmatter so Dataview can query them.
+
+---
+
+## (Optional) Verify the skill is installed correctly
+
+Run the test suite to confirm everything is wired up:
+
+```bash
+DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v
+```
+
+You should see 43 passed, 4 skipped. If anything fails, the error message will name the file and line that's wrong — see [tests/README.md](tests/README.md) for how to interpret common failures.
+
+---
+
+## Troubleshooting
+
+**Claude doesn't seem to know about `cv.md` or `profile.md`.**
+Check that the folder is added as Project knowledge (Step 3). Upload-as-attachment doesn't give the skill access; the folder must be Project-level knowledge.
+
+**Mode 1 produces the wrong grade.**
+The grade is advisory, not authoritative — see the bias caveat in every eval. If it's systematically off, your `profile.md` may be vague. Try running *"Review my profile.md and suggest improvements based on the last 5 evals."*
+
+**Claude asks to edit a file but doesn't have permission.**
+Claude Projects controls file write access. You may need to grant permission per-session, or accept the proposed change and paste it into the file yourself.
+
+**Nothing writes to `evals/` / `outreach/` / etc.**
+Check that the folder exists (it should, with a `.gitkeep` in it). Claude may be giving you the draft in chat instead of creating a file; ask explicitly *"write this to evals/ as a proper artifact."*
+
+**Test suite fails with `SKILL.md not found in ZIP`.**
+The skill ZIP is out of sync with `skill/`. Re-download the repo or repack `dossier.skill` from the `skill/` folder.
 
 ---
 
 ## Design principles
 
-- File-first, not chat-first
-- Persistent state via markdown artifacts
-- Structured outputs using frontmatter
-- Explicit workflows over implicit behavior
-- User owns all data and decisions
+- **File-first, not chat-first** — every interaction produces a persistent artifact
+- **Structured outputs** — YAML frontmatter makes everything queryable
+- **Explicit workflows over implicit behavior** — named modes instead of guessed intent
+- **Human-in-the-loop** — the skill never sends or applies for you
+- **Your data, your vault** — no cloud sync required
 
 ---
 
-## First success looks like
+## Getting help
 
-The user should have:
-
-- A working `cv.md`
-- A working `profile.md`
-- A vault folder structure
-- One completed job evaluation artifact
-
-If those exist, onboarding is complete.
-
----
-
-## If something fails
-
-- Identify the missing piece (files, structure, or understanding)
-- Fix that piece directly
-- Do not continue until the system is usable
-
----
-
-## End state
-
-The user should leave setup with:
-
-- A clear understanding of the system
-- A working workflow
-- Confidence using Dossier for real job search activity
+- Detailed docs and the threat model: [PRIVACY.md](PRIVACY.md), [DATA_CONTRACT.md](DATA_CONTRACT.md)
+- Bugs or feature requests: [open an issue](https://github.com/markmcgrath/Dossier/issues/new/choose)
+- Questions or discussion: [GitHub Discussions](https://github.com/markmcgrath/Dossier/discussions)
+- Security issues: [SECURITY.md](SECURITY.md)

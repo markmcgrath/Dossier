@@ -160,21 +160,27 @@ def test_license_is_mit(vault_path):
     assert "MIT" in license_text, "LICENSE doesn't mention MIT"
 
 
-def test_readme_has_governance_section(vault_path):
-    """Verify README.md has Governance section with links."""
+def test_readme_references_governance_docs(vault_path):
+    """Verify README.md links to the core governance documents.
+
+    Guards against accidental removal of references to PRIVACY, DATA_CONTRACT,
+    and SECURITY. Checks for content, not a specific section title.
+    """
     readme_text = (vault_path / "README.md").read_text(encoding="utf-8")
-    assert "Governance" in readme_text, "README.md missing Governance section"
-    # Check for links to privacy and contract
-    assert "PRIVACY" in readme_text or "privacy" in readme_text.lower(), (
-        "README.md Governance section missing PRIVACY reference"
-    )
+    for doc in ("PRIVACY.md", "DATA_CONTRACT.md", "SECURITY.md"):
+        assert doc in readme_text, f"README.md missing reference to {doc}"
 
 
-def test_readme_has_retention_section(vault_path):
-    """Verify README.md has Data Retention section."""
-    readme_text = (vault_path / "README.md").read_text(encoding="utf-8")
-    assert "Retention" in readme_text or "retention" in readme_text.lower(), (
-        "README.md missing Data Retention section"
+def test_readme_covers_archival(vault_path):
+    """Verify README.md explains the archival / retention model.
+
+    The word 'archive' or 'archival' must appear; specific section titles
+    may evolve (e.g., "Vault discipline" vs "Data retention"), but losing
+    the concept entirely would be a regression.
+    """
+    readme_text = (vault_path / "README.md").read_text(encoding="utf-8").lower()
+    assert "archive" in readme_text or "archival" in readme_text, (
+        "README.md missing archive/archival content"
     )
 
 
