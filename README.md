@@ -47,22 +47,25 @@ flowchart LR
 
 ## Quick start
 
-```bash
-# 1. Clone the repo
-git clone https://github.com/markmcgrath/Dossier.git
-cd Dossier
+Three actions. Everything else — parsing your resume into `cv.md`, building `profile.md` from a short Q&A, running the first eval — is handled by Claude.
 
-# 2. Create your personal files from the templates
-cp cv.template.md cv.md           # fill in your work history
-cp profile.template.md profile.md # fill in your targeting preferences
-cp stories.template.md stories.md # optional: behavioral interview stories
-cp config.template.md config.md   # optional: Notion/MCP integration IDs
-```
+1. **Get the files.** Clone the repo, or download the ZIP from GitHub and extract it.
 
-3. **Load into Claude Projects.** Create a new Claude Project, add this folder as knowledge, and upload `dossier.skill` as a skill.
-4. **Run your first evaluation.** Paste any job description into Claude and say: *"Evaluate this role against my profile."* You'll get a graded eval written to `evals/eval-<company>-<date>.md` with a frontmatter grade (A / B+ / B / C / D / F), a structured report, and — if Claude is connected to a Notion workspace — an optional row in your pipeline tracker.
+   ```bash
+   git clone https://github.com/markmcgrath/Dossier.git
+   ```
 
-For the full walkthrough including troubleshooting, see [START_HERE.md](START_HERE.md).
+2. **Create a Claude Project.**
+   - Add the Dossier folder as **Project knowledge**
+   - Upload `dossier.skill` as the project's skill
+
+3. **Tell Claude to walk you through setup.**
+
+   > Read START_HERE.md and walk me through setup.
+
+   Claude will ask for your resume (paste it, link a Google Doc, or attach a PDF), then a handful of targeting questions. About 5–10 minutes. At the end you'll have a populated vault and a first evaluation saved to `evals/`.
+
+For what happens during that walkthrough and how to recover if it gets stuck, see [START_HERE.md](START_HERE.md).
 
 ## What this is NOT
 
