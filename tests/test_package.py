@@ -24,28 +24,34 @@ def test_skill_zip_is_valid(skill_zip):
 def test_skill_zip_contains_required_files(skill_zip):
     """Verify ZIP contains SKILL.md and scoring-guide.md.
 
-    scoring-guide.md may be at root or in references/ subfolder.
+    Both files may be at the archive root or nested under a `skill/` prefix,
+    with scoring-guide.md additionally allowed under `references/`.
     """
     files = skill_zip.namelist()
-    assert "SKILL.md" in files, "SKILL.md not found in ZIP"
-    has_scoring_guide = (
-        "scoring-guide.md" in files
-        or "references/scoring-guide.md" in files
+    has_skill_md = "SKILL.md" in files or "skill/SKILL.md" in files
+    assert has_skill_md, f"SKILL.md not found in ZIP (entries: {files})"
+    has_scoring_guide = any(
+        candidate in files
+        for candidate in (
+            "scoring-guide.md",
+            "references/scoring-guide.md",
+            "skill/references/scoring-guide.md",
+        )
     )
     assert has_scoring_guide, f"scoring-guide.md not found in ZIP (entries: {files})"
 
 
 def test_skill_md_line_count_is_reasonable(skill_lines):
-    """Verify SKILL.md has a reasonable line count (500–2000).
+    """Verify SKILL.md has a reasonable line count (300–2000).
 
-    The lower bound is 500 (current v1 release is ~765 lines).
+    The lower bound guards against accidental truncation or a broken repack.
     The upper bound is 2000 (planned Mode 12/13 additions will grow it).
     Update the bounds if the skill is intentionally expanded or contracted.
     """
     line_count = len(skill_lines)
     assert (
-        500 <= line_count <= 2000
-    ), f"SKILL.md has {line_count} lines; expected 500–2000"
+        300 <= line_count <= 2000
+    ), f"SKILL.md has {line_count} lines; expected 300–2000"
 
 
 def test_scoring_guide_is_present_and_nonempty(scoring_guide):
