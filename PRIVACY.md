@@ -364,7 +364,7 @@ Full-disk encryption is the single most effective protection against data exfilt
 
 This vault maintains all job-search artifacts indefinitely (evals, outreach, prep, notes). When a company reaches a terminal state (Rejected, Passed, Offer Declined, or inactive for 90+ days), files are moved to `archive/[company-slug]/` but not deleted.
 
-For the full retention policy, including active data rules, terminal data archival, optional compensation redaction, and the quarterly cleanup checklist, see [[README#Data Retention|README.md § Data Retention]].
+For the full retention policy, including active data rules, terminal data archival, optional compensation redaction, and the quarterly cleanup checklist, see [README.md § Vault discipline](README.md#vault-discipline).
 
 **Summary:**
 - **Active pipeline:** All files kept in `evals/`, `outreach/`, etc. for ongoing reference.

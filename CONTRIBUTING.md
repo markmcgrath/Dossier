@@ -22,19 +22,23 @@ Thanks for your interest in contributing. Dossier is a Claude skill for job sear
 
 ## What We're Looking For
 
-- Bug fixes in the skill logic or scoring rubric
-- Improvements to the evaluation framework (new dimensions, better calibration)
-- Better templates (cv, profile, config)
-- Documentation improvements
-- Test coverage for untested modes
-- Integrations with additional job boards or tools
+Concrete examples of welcome contributions:
+
+- **Bug fixes in the skill** — e.g., Mode 1 returns an invalid grade value, Mode 2 mis-formats search queries, a frontmatter field is missing from files created by a specific mode.
+- **Scoring rubric refinements** — new dimensions, better weighting, calibration against real JDs, clearer anti-patterns. Include the reasoning and, ideally, example JDs showing the old vs. new behavior.
+- **Documentation improvements** — clarifications, typo fixes, better examples, new troubleshooting entries, more precise language in `PRIVACY.md` / `DATA_CONTRACT.md`.
+- **New example artifacts** — the `examples/` folder is meant to show "what good looks like." Additional fictional-company examples (different industries, role levels, edge cases like ghost jobs or prompt injection) are welcome.
+- **Test coverage** — regression tests for fixed bugs, new fixtures showing edge cases, structural tests for new skill sections.
+- **Integrations** — additional job boards or tools via MCP, as long as they work within the human-in-the-loop model.
+- **Template improvements** — better defaults in `cv.template.md`, `profile.template.md`, `stories.template.md`, `config.template.md`.
 
 ## What We're Not Looking For
 
-- Changes that weaken grading honesty (the whole point is accurate evaluation)
-- Auto-send functionality (all outreach must remain draft-only)
-- Features that require paid services beyond Claude Pro/Team
-- Large refactors without prior discussion
+- **Changes that weaken grading honesty.** If a change suppresses negatives or inflates grades, it's a regression — see the "Grade honestly" rule in `CLAUDE.md`.
+- **Auto-send functionality.** All outreach, applications, and external actions must remain draft-only. The skill drafts; the user sends.
+- **Scraping, TOS-bypass, or CAPTCHA-defeat features.** Out of scope regardless of convenience.
+- **Features that require paid services beyond a Claude subscription.** Dossier must remain usable with no additional vendor costs.
+- **Large refactors without a prior issue.** Open an issue to discuss scope before sinking time into a big change.
 
 ## Style
 

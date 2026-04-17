@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Planned
+
+- End-to-end outcome tracking — auto-populate `outcome` field on evals as pipeline state transitions (phone screen → interview → offer/rejection).
+- Automatic terminal archival — move company artifacts into `archive/[company-slug]/` when status reaches a terminal state, with no prompt required.
+- Interview story tagging — link `stories.md` entries to `interview-prep/` artifacts so prep surfaces the right stories per role.
+
 ## [1.0.0] — 2026-04-16
 
 ### Added
@@ -19,4 +27,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Governance documentation: PRIVACY.md, DATA_CONTRACT.md, SECURITY.md
 - Example artifacts: eval, outreach, and interview prep templates
 - Test suite with pytest (vault schema, skill structure, antipattern detection)
-- GitHub Actions CI pipeline
+- GitHub Actions CI pipeline with Python 3.11/3.12 matrix and automated PII scan gate
+
+### Known Limitations
+
+- **Model output is advisory, not authoritative.** Grades, scores, and recommendations reflect pattern matching between the JD and your profile — they're not expert assessments. Every eval ships with a bias caveat for this reason.
+- **Notion sync is one-way and optional.** When enabled, the vault is the source of truth and Notion mirrors it; conflicts always resolve in favor of the vault. There's no reverse sync from Notion edits back to the vault.
+- **End-to-end mode execution isn't automatically tested.** The test suite verifies structure (ZIP integrity, frontmatter schemas, SKILL.md sections, anti-patterns) but doesn't call Claude or exercise the modes against live JDs. LLM output quality is verified manually.
+- **LinkedIn, Gmail, Calendar, and Apollo integrations require separate MCP connectors** and are out of scope for the core skill.
+- **Ghost-job detection relies on heuristics** (posting age, specificity, comp transparency, recruiter patterns) and will both miss some real ghost jobs and false-flag some real roles. Treat the `legitimacy` field as directional, not definitive.
