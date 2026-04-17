@@ -122,7 +122,7 @@ If you configure Notion as your pipeline tracker, Notion data is separate from t
 - **Notion database** (pipeline state, grades, statuses) is synchronized when you use the skill.
 - If you're not using Notion, this doesn't apply.
 
-For more details, see [[PRIVACY|PRIVACY.md]].
+For more details, see [PRIVACY.md](PRIVACY.md).
 
 ---
 
@@ -140,7 +140,7 @@ For more details, see [[PRIVACY|PRIVACY.md]].
 
 - **"Will my CV.md be overwritten?"** No, never. cv.md is user layer.
 - **"What if I customize README.md?"** It's in the system layer, so it may be overwritten on updates. Keep your customizations in a separate `README-custom.md` or make a note of them.
-- **"Can I trust the skill with my personal data?"** Your vault is local-first. The skill only sees what you explicitly share with it in a conversation. [[PRIVACY|PRIVACY.md]] has the full threat model.
+- **"Can I trust the skill with my personal data?"** Your vault is local-first. The skill only sees what you explicitly share with it in a conversation. [PRIVACY.md](PRIVACY.md) has the full threat model.
 - **"What happens if I update the skill?"** Your `.md` files stay. System files may be replaced. Derived files are safe unless you ask for a re-tailor.
 
 ---
@@ -149,7 +149,7 @@ For more details, see [[PRIVACY|PRIVACY.md]].
 
 1. Keep your vault (especially `cv.md` and `profile.md`) under version control.
 2. Back up your vault regularly.
-3. Read [[PRIVACY|PRIVACY.md]] to understand data flows.
-4. Review [[README|README.md]] for folder conventions.
+3. Read [PRIVACY.md](PRIVACY.md) to understand data flows.
+4. Review [README.md](README.md) for folder conventions.
 
 Your data is yours.
