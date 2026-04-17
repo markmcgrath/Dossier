@@ -49,15 +49,18 @@ flowchart LR
 
 Three actions. Everything else — parsing your resume into `cv.md`, building `profile.md` from a short Q&A, running the first eval — is handled by Claude.
 
+> **Runtime:** Dossier is written for **Claude Cowork** (the agentic mode in Claude Desktop, Mac or Windows, Pro plan or higher). Claude Code mode or the Claude Code CLI may work if you manually configure the same connectors, but that path isn't tested.
+
 1. **Get the files.** Clone the repo, or download the ZIP from GitHub and extract it.
 
    ```bash
    git clone https://github.com/markmcgrath/Dossier.git
    ```
 
-2. **Create a Claude Project.**
-   - Add the Dossier folder as **Project knowledge**
-   - Upload `dossier.skill` as the project's skill
+2. **Open Claude Desktop in Cowork mode.**
+   - Create a new Cowork Project
+   - Grant the Project access to the Dossier folder
+   - Install `dossier.skill` via **Customize → Skills**
 
 3. **Tell Claude to walk you through setup.**
 
@@ -169,22 +172,39 @@ For the full threat model, data-flow diagram, and per-service risk analysis, see
 
 **Supported**
 
+- Claude Desktop in **Cowork** mode (macOS or Windows) with a Pro / Max / Team / Enterprise plan — this is the primary target runtime
 - Vault-first workflow with local markdown files
 - Claude-assisted artifact generation via the Dossier skill
 - Obsidian v1.11.7+ with Dataview plugin for dashboard queries
 - Python 3.11 and 3.12 for running the test suite
 
-**Optional**
+**Best-effort (not tested)**
 
-- Notion tracker mirroring (vault remains source of truth)
-- Gmail, Google Calendar, and Apollo integrations (require MCP connectors)
-- LinkedIn browser automation via Claude in Chrome
+- Claude Code mode in Desktop, or the Claude Code CLI — same MCP protocol, different setup; requires manual connector configuration
+- Other runtimes that can host Claude with file-write access and MCP connectors
 
 **Not supported**
 
 - Autonomous job applications or unsupervised outbound messaging
 - Scraping or automation against platform TOS
 - Use without human review of generated artifacts
+
+## Connectors
+
+Each workflow mode uses a different set of connectors. Install these via **Customize → Connectors** in Cowork when you want to use the corresponding mode.
+
+| Connector | Needed for | Required / Optional |
+|---|---|---|
+| **Indeed** | Mode 2 (Search) — broad job search | Required for Mode 2 (or Dice) |
+| **Dice** | Mode 2 (Search) — tech-focused search | Required for Mode 2 (or Indeed) |
+| **Gmail** | Mode 9 (Inbox triage, follow-up engine) | Required for Mode 9 |
+| **Google Calendar** | Mode 10 (Calendar ops, follow-up reminders, interview roster) | Required for Mode 10 |
+| **Apollo** | Mode 4 (Company research), Mode 5 (Outreach contacts) | Optional — improves firmographic and contact data; WebSearch is the fallback |
+| **Notion** | Pipeline mirror (optional secondary store) | Optional — the vault is always the source of truth |
+| **Claude in Chrome** | Mode 8 (LinkedIn browser) and non-Greenhouse ATS portal scans | Required for those specific flows |
+| **Google Drive** | Reading a resume stored in Drive during onboarding | Optional — pasting or uploading also works |
+
+Connector catalog availability in Cowork continues to expand. If a connector you want isn't in **Customize → Connectors**, you can usually add it via custom MCP config. No connectors are required just to run core Mode 1 (evaluation) — if all you want is to grade pasted job descriptions, the skill + vault are enough.
 
 ## Documentation
 
