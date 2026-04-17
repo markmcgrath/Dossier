@@ -50,17 +50,13 @@ If you work from a clone that may contain personal context (real evals, names, N
 # Point git at the tracked hooks directory
 git config core.hooksPath .githooks
 
-# Create a local, gitignored patterns file with your owner-specific regexes
-cat > .github/scripts/pii_patterns.local.txt <<'EOF'
-# One regex per line. Comments start with #.
-# Replace the examples below with your own identifiers.
-# YourSurname
-# your-email-local-part
-# 11111111-1111-1111-1111-111111111111
-EOF
+# Copy the gitignored patterns file from the template, then edit it
+cp .github/scripts/pii_patterns.template.txt .github/scripts/pii_patterns.txt
+# Open .github/scripts/pii_patterns.txt in your editor and uncomment /
+# replace the example regexes with your own identifiers.
 ```
 
-The hook runs `.github/scripts/pii_scan.py --staged` on every commit and blocks anything that matches either the generic patterns (committed) or the local patterns (your machine only). External contributors don't need this — the CI `pii-scan` job enforces the generic patterns on every PR.
+The hook runs `.github/scripts/pii_scan.py --staged` on every commit and blocks anything that matches either the generic patterns (committed) or the local patterns (your machine only — `pii_patterns.txt` is gitignored). External contributors don't need this — the CI `pii-scan` job enforces the generic patterns on every PR.
 
 ## Code of Conduct
 

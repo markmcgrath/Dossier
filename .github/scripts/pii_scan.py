@@ -52,7 +52,7 @@ BINARY_EXTENSIONS: set[str] = {
 }
 
 SCRIPT_REL_PATH = ".github/scripts/pii_scan.py"
-LOCAL_PATTERNS_REL_PATH = ".github/scripts/pii_patterns.local.txt"
+LOCAL_PATTERNS_REL_PATH = ".github/scripts/pii_patterns.txt"
 
 
 def repo_root() -> Path:
