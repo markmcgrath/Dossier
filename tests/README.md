@@ -98,15 +98,12 @@ Fixtures are **reference inputs for manual testing** with Claude. They're not au
 
 ## CI/CD Integration
 
-To run tests in CI/CD:
-```bash
-#!/bin/bash
-set -e
-cd Dossier
-DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v --tb=short
-```
+Tests run on every push and pull request to `main` via `.github/workflows/ci.yml`. The workflow has two required checks:
 
-If any test fails, the script exits with non-zero status.
+- **`test (3.11)` / `test (3.12)`** — runs `pytest tests/ -v --tb=short` on a Python matrix, with `DOSSIER_VAULT` set to the workspace root.
+- **`pii-scan`** — runs `.github/scripts/pii_scan.py` to block commits containing high-confidence PII or secret patterns.
+
+See `.github/workflows/ci.yml` for the full definition. All three checks are required to pass before a PR can merge to `main` (see branch protection settings in the repo).
 
 ## Interpreting Test Failures
 

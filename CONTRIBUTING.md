@@ -42,6 +42,26 @@ Thanks for your interest in contributing. Dossier is a Claude skill for job sear
 - Frontmatter schemas must stay compatible with Obsidian Dataview queries.
 - Follow the naming conventions in README.md.
 
+## Maintainer setup (one-time)
+
+If you work from a clone that may contain personal context (real evals, names, Notion IDs, etc.), activate the shared pre-commit hook so commits are scanned for PII before they leave your machine:
+
+```bash
+# Point git at the tracked hooks directory
+git config core.hooksPath .githooks
+
+# Create a local, gitignored patterns file with your owner-specific regexes
+cat > .github/scripts/pii_patterns.local.txt <<'EOF'
+# One regex per line. Comments start with #.
+# Replace the examples below with your own identifiers.
+# YourSurname
+# your-email-local-part
+# 11111111-1111-1111-1111-111111111111
+EOF
+```
+
+The hook runs `.github/scripts/pii_scan.py --staged` on every commit and blocks anything that matches either the generic patterns (committed) or the local patterns (your machine only). External contributors don't need this — the CI `pii-scan` job enforces the generic patterns on every PR.
+
 ## Code of Conduct
 
 This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). Be kind, be constructive.

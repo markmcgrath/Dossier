@@ -36,3 +36,6 @@ Thumbs.db
 .pytest_cache/
 __pycache__/
 *.pyc
+
+# Local-only PII patterns for the pre-commit hook (maintainer's machine only)
+.github/scripts/pii_patterns.local.txt

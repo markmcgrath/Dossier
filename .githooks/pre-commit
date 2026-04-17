@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Dossier pre-commit hook: run the PII scanner over staged changes.
+#
+# Activate once per clone:
+#   git config core.hooksPath .githooks
+#
+# Skip in an emergency with `git commit --no-verify` (discouraged).
+
+set -e
+cd "$(git rev-parse --show-toplevel)"
+python .github/scripts/pii_scan.py --staged

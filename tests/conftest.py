@@ -28,8 +28,12 @@ def skill_zip(vault_path):
 
 @pytest.fixture(scope="session")
 def skill_md(skill_zip):
-    """Full text of SKILL.md as a string."""
-    return skill_zip.read("SKILL.md").decode("utf-8")
+    """Full text of SKILL.md as a string (root or skill/ subfolder)."""
+    names = skill_zip.namelist()
+    for candidate in ("SKILL.md", "skill/SKILL.md"):
+        if candidate in names:
+            return skill_zip.read(candidate).decode("utf-8")
+    raise FileNotFoundError("SKILL.md not found in dossier.skill ZIP")
 
 
 @pytest.fixture(scope="session")
@@ -40,12 +44,15 @@ def skill_lines(skill_md):
 
 @pytest.fixture(scope="session")
 def scoring_guide(skill_zip):
-    """Full text of scoring-guide.md (may be at root or in references/ subfolder)."""
+    """Full text of scoring-guide.md (root, references/, or skill/references/ subfolder)."""
     names = skill_zip.namelist()
-    if "scoring-guide.md" in names:
-        return skill_zip.read("scoring-guide.md").decode("utf-8")
-    elif "references/scoring-guide.md" in names:
-        return skill_zip.read("references/scoring-guide.md").decode("utf-8")
+    for candidate in (
+        "scoring-guide.md",
+        "references/scoring-guide.md",
+        "skill/references/scoring-guide.md",
+    ):
+        if candidate in names:
+            return skill_zip.read(candidate).decode("utf-8")
     raise FileNotFoundError("scoring-guide.md not found in dossier.skill ZIP")
 
 
