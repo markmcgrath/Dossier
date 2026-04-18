@@ -52,7 +52,7 @@ BINARY_EXTENSIONS: set[str] = {
 }
 
 SCRIPT_REL_PATH = ".github/scripts/pii_scan.py"
-LOCAL_PATTERNS_REL_PATH = ".github/scripts/pii_patterns.txt"
+LOCAL_PATTERNS_REL_PATH = ".github/scripts/pii_patterns.local.txt"
 
 
 def repo_root() -> Path:
@@ -155,7 +155,7 @@ def main() -> int:
     has_local = (root / LOCAL_PATTERNS_REL_PATH).exists()
     mode = "staged" if staged_mode else "all tracked"
     suffix = " (with local patterns)" if has_local else " (generic patterns only)"
-    print(f"pii_scan: clean ({mode} files{suffix}).")
+    print(f"pii_scan: {mode} files clean{suffix}")
     return 0
 
 
