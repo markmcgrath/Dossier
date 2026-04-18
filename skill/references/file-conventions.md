@@ -90,6 +90,8 @@ The Gmail draft is the delivery mechanism. The markdown file is the record.
 
 When a pipeline row reaches a terminal state (Rejected, Passed, Offer-Declined, or >90 days cold), move that company's entire bundle — eval, outreach, cover, prep — into `archive/[company-slug]/`. Update the eval's `status:` frontmatter first. Nothing is deleted; everything stays searchable but out of the active pipeline.
 
+Mode 9 auto-proposes this move in its Application Status Sync batch when it detects a terminal-status transition on an `Applied` or `Interviewing` eval. Repeat archivals of the same company are versioned (`archive/[slug]-v2/`, `-v3/`, …) rather than merged. The `>90 days cold` case is currently manual — it needs date arithmetic not yet implemented. Full procedure, including slug extraction and cross-reference rewriting, lives in `references/terminal-archival.md`.
+
 ### Time-decay archival for `daily/` and `weekly/`
 
 Daily scans, lead pulses, recruiter triage, pipeline digests, and week-aheads are date-bound artifacts. Apply this trigger to keep those folders scannable:

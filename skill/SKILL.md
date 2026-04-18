@@ -367,7 +367,7 @@ This mode is specifically for actions that *require* being signed in as the user
 
 Scan Gmail for job-search signals, triage recruiter outreach, sync application statuses to vault frontmatter, draft follow-ups and thank-you notes, and surface upcoming interviews. All Gmail writes go to drafts — never sends.
 
-Read `references/mode9-inbox-followup.md` for domain filtering rules, the 5 core workflows (recruiter triage, status sync, follow-up engine, post-interview thank-you, scheduling assist), and operating principles.
+Read `references/mode9-inbox-followup.md` for domain filtering rules, the 5 core workflows (recruiter triage, status sync, follow-up engine, post-interview thank-you, scheduling assist), and operating principles. Terminal-status transitions (`Rejected`, `Passed`, `Offer-Declined`) auto-fold a move-to-archive step into the status sync batch per `references/terminal-archival.md`.
 
 ---
 
