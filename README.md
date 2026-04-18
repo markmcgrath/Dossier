@@ -3,31 +3,41 @@
 [![CI](https://github.com/markmcgrath/Dossier/actions/workflows/ci.yml/badge.svg)](https://github.com/markmcgrath/Dossier/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> Dossier is a Claude-powered job-search operations system. Paste a job description; it grades the role against **your** profile, drafts outreach in **your** voice, and stores everything as markdown in a local vault you own — not a SaaS dashboard.
+> Dossier turns your job search into a structured, repeatable system — grounded in your actual work history, not generic AI output. Give it a job posting, a URL, or just a target role and location; it grades fit against **your** profile, drafts outreach in **your** voice, and stores everything as markdown in a local vault you own.
 
-Built for people running 10–30 active applications at a time who want to apply strategically rather than mass-blast resumes. Generic ATS scoring and one-size-fits-all tracker apps don't know your career; Dossier does, because it reads `cv.md` and `profile.md` as the source of truth for fit. Evals, outreach drafts, interview prep, and company research all land in versionable markdown with YAML frontmatter, queryable by Obsidian Dataview or any text tool. Nothing is sent automatically — every outreach message is a draft you decide to send.
+Generic ATS scoring and one-size-fits-all tracker apps don't know your career. Dossier does, because it reads `cv.md` and `profile.md` as the source of truth for fit. Whether you're juggling a handful of carefully targeted applications or dozens at a time, every eval, outreach draft, interview prep sheet, and company research note lands in versionable markdown with YAML frontmatter — queryable by Obsidian Dataview or any text tool. Nothing is sent automatically; every outreach message is a draft you decide to send.
+
+**What you get out of the box:**
+
+- **Profile-grounded evaluation** — roles are graded against your real experience, not keyword matching.
+- **Outreach in your voice** — recruiter and hiring-manager messages that sound like you, not a template.
+- **Persistent, searchable artifacts** — everything lives in markdown files you own. No vendor lock-in, no cloud dependency.
+- **A live pipeline dashboard** — Obsidian Dataview queries show your active applications, unsent outreach, and follow-ups due at a glance.
+- **Five-minute setup** — Claude walks you through it. Bring your resume; leave with a working vault and your first evaluation.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    A[User Input<br/>cv.md, profile.md,<br/>job description] --> B[Claude + Dossier Skill]
-    B --> C[Artifact Generation<br/>eval, outreach, prep]
-    C --> D[Markdown Files<br/>with Frontmatter]
-    D --> E[Vault<br/>Obsidian or Filesystem]
-    E --> F[Dashboard<br/>Dataview Queries]
-    F --> G[User Decisions<br/>apply, outreach, prep, archive]
+    P[Your Profile<br/>cv.md · profile.md] --> S[Claude + Dossier Skill]
+    J[Job Input<br/>JD · URL · search criteria] --> S
+    S --> A[Artifacts<br/>eval · outreach · prep · research]
+    A --> V[Vault<br/>Markdown + Frontmatter]
+    V --> D[Dashboard<br/>Dataview Queries]
+    D --> U[Your Decisions<br/>apply · send · prep · archive]
+    U -.->|updates status| V
+    V -.->|optional mirror| I[Integrations<br/>Notion · Gmail · Calendar]
 ```
 
 ## Who is this for?
 
 **Use Dossier if you…**
 
-- Are working on 10+ applications a week and can't keep track of them
+- Are managing multiple active applications and want to stay organized
 - Want grading tied to your actual work history, not generic ATS keywords
 - Own your outreach and don't want an agent emailing on your behalf
 - Already keep notes in markdown (bonus if you use Obsidian + Dataview)
-- Have access to Claude Projects and are comfortable installing a skill
+- Have access to Claude Desktop (Cowork mode) and are comfortable installing a skill
 
 **Dossier isn't for you if you…**
 
@@ -86,6 +96,7 @@ All external actions remain user-controlled.
 - **Explicit workflow modes.** 14 named modes (Evaluate, Search, Outreach, Prep, …) instead of implicit chat behavior.
 - **Human-in-the-loop.** The skill drafts; you decide to send.
 - **Your data, your vault.** No cloud sync required. Notion, Gmail, and Calendar integrations are optional mirrors.
+- **Schedulable.** Set up recurring daily scans, follow-up reminders, and pipeline reviews via Cowork scheduled tasks. See [START_HERE.md](START_HERE.md) for details.
 
 ## Project structure
 
