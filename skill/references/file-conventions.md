@@ -57,7 +57,7 @@ related_eval: "[[eval-[slug]-[date]]]"   # wikilink syntax, not a path
 ```
 
 **Cover letter files** (`type: cover`): same shape as outreach.
-**Prep files** (`type: prep`): add `interview_date:` and `interviewers:` (list of names).
+**Prep files** (`type: prep`): add `interview_date:`, `interviewers:` (list of names), and `related_stories:` (list of Obsidian heading wikilinks into `stories.md`, e.g. `"[[stories#Story Title]]"`). Story matching and back-reference discipline live in `references/story-tagging.md`.
 
 ### Cross-linking rule (for Obsidian graph view)
 

@@ -5,6 +5,8 @@ role: "Senior Data Platform Engineer"
 date: 2026-04-15
 interview_type: "Technical + Behavioral"
 status: scheduled
+related_stories:
+  - "[[stories#Multi-Tenant Governance at Scale]]"
 ---
 
 # Cipher Analytics — Senior Data Platform Engineer Interview Prep
