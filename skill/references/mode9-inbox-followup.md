@@ -35,7 +35,7 @@
    - Rejection ("not moving forward") → `status: Rejected`, `outcome: Rejected` (last-event wins — apply even if the current outcome is `Interview`)
    - Offer email → `status: Offer`, `outcome: Offer`
    - Silence → no change proposed
-4. Propose frontmatter updates in a batch for user approval (show both the new `status` and `outcome` before writing). Every proposed status change must include the paired outcome per the state machine — never propose one without the other. Update the eval files with confirmed changes. Optionally: if `notion.enabled: true`, offer to mirror these updates to Notion after vault updates are confirmed.
+4. Propose frontmatter updates in a batch for user approval (show both the new `status` and `outcome` before writing). Every proposed status change must include the paired outcome per the state machine — never propose one without the other. If the new `status` is terminal (`Rejected`, `Passed`, `Offer-Declined`), the batch must also include the archival plan per `references/terminal-archival.md` — destination folder (versioned if the slug already has an archive), every bundle file that will move, and any path-style cross-references that will be rewritten to wikilink form. One approval covers the status/outcome write, the file moves, and the rewrites. Update the eval files with confirmed changes. Optionally: if `notion.enabled: true`, offer to mirror these updates to Notion after vault updates are confirmed.
 
 **Follow-up Engine.** When asked to "check follow-ups" or periodically:
 1. Scan `evals/` for files where `status: Applied`, `date:` > 7 days ago, and `outcome: Pending`. Search Gmail for each. Draft follow-ups for those with no response.
