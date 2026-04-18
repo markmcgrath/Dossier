@@ -38,7 +38,7 @@ Every status-write on an eval must also write the outcome per this table. The `o
 
 ## Terminal states
 
-`Rejected`, `Passed`, `Offer-Declined` are terminal statuses (see `file-conventions.md` for archival discipline). When status transitions to any terminal value, the outcome per the table applies, and the eval becomes eligible for `archive/[company-slug]/` move per existing archive rules.
+`Rejected`, `Passed`, `Offer-Declined` are terminal statuses. When status transitions to any terminal value, Mode 9's Application Status Sync folds the archival move into the same batch approval per `references/terminal-archival.md` — the entire company bundle moves to `archive/[slug]/` (or `archive/[slug]-v{N}/` on repeat archivals).
 
 Cold-detection (`status: Passed` with `outcome: No Response` after 90+ days of silence) is **not currently automated** — it requires date arithmetic that no mode implements today. Handle manually for now.
 

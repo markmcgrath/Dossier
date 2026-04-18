@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Status/outcome state machine — `skill/references/status-outcome-state-machine.md` defines a transition table binding every `status` value to an `outcome` value. Mode 1 sets the initial `(Evaluating, Pending)` pair; Mode 9's Application Status Sync proposes `(status, outcome)` updates together from email signals; Mode 0 health check flags any eval whose pair is not a row in the table. Last-event-wins — a rejection email applied to an `outcome: Interview` eval moves it to `(Rejected, Rejected)` without preserving the prior outcome. 90+ days cold detection is deferred (requires date arithmetic not yet implemented).
+- Automatic terminal archival — `skill/references/terminal-archival.md` defines the archival procedure. When Mode 9's Application Status Sync proposes a terminal status (`Rejected`, `Passed`, `Offer-Declined`), the same batch approval also moves the company bundle (eval + outreach + cover-letter + interview-prep) into `archive/[slug]/`, preserving original folder nesting. Repeat archivals of the same company are versioned (`archive/[slug]-v2/`, `-v3/`, …) rather than merged. Path-style cross-references to artifacts being moved are silently rewritten to wikilink form so they survive the relocation. 90+ days cold detection remains manual.
 
 ### Changed
 
