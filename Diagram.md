@@ -17,3 +17,4 @@ flowchart LR
     E --> F[Dashboard (Dataview Queries)]
 
     F --> G[User Decisions\n(apply, outreach, prep, archive)]
+```

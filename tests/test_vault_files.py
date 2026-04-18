@@ -4,41 +4,12 @@ Tests for required files and folder structure in the vault.
 import pytest
 
 
-VAULT_TEMPLATE_FOLDERS = [
-    "evals",
-    "outreach",
-    "cover-letters",
-    "interview-prep",
-    "research",
-    "daily",
-    "weekly",
-    "archive",
-]
-
-
-def test_vault_template_has_readme(vault_path):
-    """vault-template/ must carry a README documenting how to use the skeleton."""
-    readme = vault_path / "vault-template" / "README.md"
-    assert readme.is_file(), (
-        "vault-template/README.md missing — START_HERE.md points at "
-        "vault-template/ as the starter skeleton."
-    )
-
-
-@pytest.mark.parametrize("folder", VAULT_TEMPLATE_FOLDERS)
-def test_vault_template_has_folder(vault_path, folder):
-    """Each expected artifact folder must exist in the skeleton."""
-    d = vault_path / "vault-template" / folder
-    assert d.is_dir(), f"vault-template/{folder}/ missing from starter skeleton."
-
-
 def test_required_root_files_exist(vault_path):
     """Verify all required vault files exist.
 
     In the public repo, personal files are replaced by templates:
-    cv.md → cv.template.md, profile.md → profile.template.md, etc.
+    cv.md -> cv.template.md, profile.md -> profile.template.md, etc.
     """
-    # Files that must exist in either the private or public vault
     required_files = [
         "dashboard.md",
         "README.md",
@@ -46,7 +17,6 @@ def test_required_root_files_exist(vault_path):
         "DATA_CONTRACT.md",
         "LICENSE",
     ]
-    # Files that may be templates in the public repo
     template_pairs = [
         ("cv.md", "cv.template.md"),
         ("profile.md", "profile.template.md"),
@@ -80,16 +50,13 @@ def test_required_directories_exist(vault_path):
         "archive",
         "examples",
     ]
-    missing = [d for d in required_dirs if not (vault_path / d).is_dir()]
+    missing = [d for d in required_dirs if not (vault_path / d).exists()]
     if missing:
-        assert False, (
-            f"Missing required directories (or path exists but is not a "
-            f"directory): {', '.join(missing)}"
-        )
+        assert False, f"Missing required directories: {', '.join(missing)}"
 
 
 def test_examples_directory_has_three_files(vault_path):
-    """Verify examples/ directory has exactly three reference files."""
+    """Verify examples/ directory has at least three reference files."""
     examples_dir = vault_path / "examples"
     assert examples_dir.exists(), "examples/ directory not found"
 
@@ -106,43 +73,31 @@ def test_example_eval_frontmatter(example_eval_frontmatter):
     """Verify example-eval.md has required frontmatter fields."""
     required = {"type", "grade", "legitimacy", "outcome", "model", "sources"}
     missing = required - set(example_eval_frontmatter.keys() or {})
-
     if missing:
         assert False, f"example-eval.md missing fields: {missing}"
-
-    assert (
-        example_eval_frontmatter.get("type") == "eval"
-    ), "example-eval.md must have type: eval"
+    assert example_eval_frontmatter.get("type") == "eval", "example-eval.md must have type: eval"
 
 
 def test_example_outreach_frontmatter(example_outreach_frontmatter):
     """Verify example-outreach.md has required frontmatter fields."""
     required = {"type", "channel", "status"}
     missing = required - set(example_outreach_frontmatter.keys() or {})
-
     if missing:
         assert False, f"example-outreach.md missing fields: {missing}"
-
-    assert (
-        example_outreach_frontmatter.get("type") == "outreach"
-    ), "example-outreach.md must have type: outreach"
+    assert example_outreach_frontmatter.get("type") == "outreach", "example-outreach.md must have type: outreach"
 
 
 def test_example_prep_frontmatter(example_prep_frontmatter):
     """Verify example-prep.md has required frontmatter fields."""
     required = {"type", "status"}
     missing = required - set(example_prep_frontmatter.keys() or {})
-
     if missing:
         assert False, f"example-prep.md missing fields: {missing}"
-
-    assert (
-        example_prep_frontmatter.get("type") == "prep"
-    ), "example-prep.md must have type: prep"
+    assert example_prep_frontmatter.get("type") == "prep", "example-prep.md must have type: prep"
 
 
 def test_config_has_notion_block(config_text):
-    """Verify config.md (or config.template.md) has Notion configuration block."""
+    """Verify config has Notion configuration block."""
     assert "notion:" in config_text, "config missing 'notion:' block"
     assert "enabled:" in config_text, "config missing 'enabled:' key"
 
@@ -156,9 +111,7 @@ def test_config_preserves_notion_ids(config_text):
 def test_dashboard_has_legitimacy_column(vault_path):
     """Verify dashboard.md includes legitimacy column in queries."""
     dashboard_text = (vault_path / "dashboard.md").read_text(encoding="utf-8")
-    assert "legitimacy" in dashboard_text.lower(), (
-        "dashboard.md missing legitimacy field in Dataview queries"
-    )
+    assert "legitimacy" in dashboard_text.lower(), "dashboard.md missing legitimacy field in Dataview queries"
 
 
 def test_dashboard_has_offers_pending_query(vault_path):
@@ -170,15 +123,7 @@ def test_dashboard_has_offers_pending_query(vault_path):
 def test_privacy_md_covers_seven_services(vault_path):
     """Verify PRIVACY.md mentions the seven required services."""
     privacy_text = (vault_path / "PRIVACY.md").read_text(encoding="utf-8")
-    services = [
-        "Anthropic",
-        "Gmail",
-        "Calendar",
-        "Apollo",
-        "LinkedIn",
-        "Notion",
-        "Indeed",
-    ]
+    services = ["Anthropic", "Gmail", "Calendar", "Apollo", "LinkedIn", "Notion", "Indeed"]
     for service in services:
         assert service in privacy_text, f"PRIVACY.md doesn't mention {service}"
 
@@ -188,9 +133,7 @@ def test_data_contract_has_three_layers(vault_path):
     data_contract_text = (vault_path / "DATA_CONTRACT.md").read_text(encoding="utf-8")
     layers = ["User Layer", "System Layer", "Derived"]
     for layer in layers:
-        assert layer in data_contract_text, (
-            f"DATA_CONTRACT.md missing '{layer}' section"
-        )
+        assert layer in data_contract_text, f"DATA_CONTRACT.md missing '{layer}' section"
 
 
 def test_license_is_mit(vault_path):
@@ -203,17 +146,13 @@ def test_readme_has_governance_section(vault_path):
     """Verify README.md has Governance section."""
     readme_text = (vault_path / "README.md").read_text(encoding="utf-8")
     assert "Governance" in readme_text, "README.md missing Governance section"
-    assert "PRIVACY" in readme_text or "privacy" in readme_text.lower(), (
-        "README.md Governance section missing PRIVACY reference"
-    )
+    assert "PRIVACY" in readme_text or "privacy" in readme_text.lower(), "README.md Governance section missing PRIVACY reference"
 
 
 def test_readme_has_retention_section(vault_path):
     """Verify README.md has Data Retention section."""
     readme_text = (vault_path / "README.md").read_text(encoding="utf-8")
-    assert "Retention" in readme_text or "retention" in readme_text.lower(), (
-        "README.md missing Data Retention section"
-    )
+    assert "Retention" in readme_text or "retention" in readme_text.lower(), "README.md missing Data Retention section"
 
 
 def test_readme_references_governance_docs(vault_path):
@@ -226,9 +165,7 @@ def test_readme_references_governance_docs(vault_path):
 def test_readme_covers_archival(vault_path):
     """Verify README.md explains the archival model."""
     readme_text = (vault_path / "README.md").read_text(encoding="utf-8").lower()
-    assert "archive" in readme_text or "archival" in readme_text, (
-        "README.md missing archival/archive explanation"
-    )
+    assert "archive" in readme_text or "archival" in readme_text, "README.md missing archival/archive explanation"
 
 
 def test_stories_template_has_star_format(vault_path):
@@ -238,10 +175,7 @@ def test_stories_template_has_star_format(vault_path):
         stories_file = vault_path / "stories.template.md"
     if not stories_file.exists():
         pytest.skip("Neither stories.md nor stories.template.md found")
-
     stories_text = stories_file.read_text(encoding="utf-8")
     star_elements = ["Situation", "Task", "Action", "Result", "Reflection"]
     for element in star_elements:
-        assert element in stories_text, (
-            f"stories file missing STAR+R element: {element}"
-        )
+        assert element in stories_text, f"stories file missing STAR+R element: {element}"

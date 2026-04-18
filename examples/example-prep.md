@@ -272,6 +272,4 @@ Before your interview, confirm:
 - [ ] You understand their product (watch a demo video or read their docs)
 - [ ] You can explain your technical gaps (Databricks) without sounding defensive
 - [ ] You have 3 smart questions ready
-- [ ] You've researched the interviewer(s) on LinkedIn (what's their background?)
-
-If you check all these, you're ready.
+- [ ] You've researched the interviewer(s) on LinkedIn
