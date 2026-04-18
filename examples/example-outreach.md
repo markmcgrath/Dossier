@@ -5,13 +5,13 @@ role: "Senior Data Platform Engineer"
 channel: "LinkedIn + Email"
 date: 2026-04-15
 status: drafted
-related_eval: "examples/example-eval.md"
+related_eval: "[[example-eval]]"
 ---
 
 # Cipher Analytics — Senior Data Platform Engineer Outreach
 
 **Status:** Drafted (not yet sent)  
-**Related eval:** `examples/example-eval.md`
+**Related eval:** [[example-eval]]
 
 ---
 
