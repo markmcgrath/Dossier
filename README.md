@@ -167,6 +167,22 @@ When Claude detects these thresholds, it moves older files into dated subfolders
 
 Obsidian isn't required — the vault works fine as plain markdown in any editor — but Dataview gives you live pipeline views for free.
 
+## Governance
+
+Dossier separates user-owned files from system-owned files so that skill updates never overwrite your work.
+
+**User layer (never overwritten by updates):** `cv.md`, `profile.md`, `stories.md`, `config.md`, `dashboard.md`, and all working folders (`evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `daily/`, `weekly/`, `archive/`).
+
+**System layer (may be updated with new skill versions):** `dossier.skill`, `PRIVACY.md`, `DATA_CONTRACT.md`, `README.md`, `LICENSE`.
+
+See [DATA_CONTRACT.md](DATA_CONTRACT.md) for the full ownership model, update expectations, and Notion sync rules.
+
+## Data retention
+
+Everything stays. Terminal pipeline rows (Rejected, Passed, Offer-Declined, 90+ days cold) are moved to `archive/[company-slug]/` — not deleted. Daily and weekly logs roll into dated subfolders when their counts exceed thresholds (~60 daily, ~26 weekly). Archived files remain searchable by Dataview and plain-text tools.
+
+If you want to purge old data, you can delete archive folders manually. Dossier will never delete files on its own.
+
 ## Security & privacy
 
 Dossier is an assistive system, not an autonomous one. Key principles:

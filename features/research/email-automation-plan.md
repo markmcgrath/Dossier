@@ -263,11 +263,11 @@ Every email action is logged to `Dossier/email-audit-log.md` (append-only).
 
 | Timestamp | Action | Category | Recipient | Company | Trust Level | Status | Notes |
 |-----------|--------|----------|-----------|---------|-------------|--------|-------|
-| 2026-04-15 09:12 | draft_created | follow_up_application | recruiter@acme.com | Acme Corp | 1 | pending_review | Touch 2 of 3 |
-| 2026-04-15 09:15 | user_sent | follow_up_application | recruiter@acme.com | Acme Corp | 1 | sent | User clicked send |
-| 2026-04-15 14:30 | auto_sent | follow_up_application | hr@initech.com | Initech | 3 | sent | Touch 1 of 3, auto-send |
-| 2026-04-15 14:35 | sequence_paused | follow_up_application | hr@initech.com | Initech | 3 | paused | Reply detected |
-| 2026-04-15 16:00 | draft_created | thank_you_post_interview | jane.doe@bigco.com | BigCo | 1 | pending_review | Interviewer 1 of 3 |
+| 2026-04-15 09:12 | draft_created | follow_up_application | recruiter@acme.example.com | Acme Corp | 1 | pending_review | Touch 2 of 3 |
+| 2026-04-15 09:15 | user_sent | follow_up_application | recruiter@acme.example.com | Acme Corp | 1 | sent | User clicked send |
+| 2026-04-15 14:30 | auto_sent | follow_up_application | hr@initech.example.com | Initech | 3 | sent | Touch 1 of 3, auto-send |
+| 2026-04-15 14:35 | sequence_paused | follow_up_application | hr@initech.example.com | Initech | 3 | paused | Reply detected |
+| 2026-04-15 16:00 | draft_created | thank_you_post_interview | jane.doe@bigco.example.com | BigCo | 1 | pending_review | Interviewer 1 of 3 |
 ```
 
 The audit log serves three purposes:
@@ -322,7 +322,7 @@ sequences:
   - company: Acme Corp
     role: Senior Data Engineer
     category: follow_up_application
-    recipient: recruiter@acme.com
+    recipient: recruiter@acme.example.com
     started: 2026-04-08
     touches_sent: 1
     last_sent: 2026-04-08
@@ -366,22 +366,22 @@ When trust_level ≥ 2, produce a daily summary of pending drafts for batch revi
 ## Pending Drafts (3)
 
 1. **Acme Corp** — Follow-up Touch 2
-   To: recruiter@acme.com
+   To: recruiter@acme.example.com
    Preview: "Hi [Name], I wanted to follow up on my application for..."
    → [Review draft in Gmail] | [Approve] | [Skip] | [Cancel sequence]
 
 2. **BigCo** — Thank-you (Interviewer: Jane Doe)
-   To: jane.doe@bigco.com
+   To: jane.doe@bigco.example.com
    Preview: "Thank you for taking the time to discuss..."
    → [Review draft in Gmail] | [Skip]
 
 3. **Initech** — Follow-up Touch 1
-   To: hr@initech.com
+   To: hr@initech.example.com
    Preview: "Hi, I applied for the Analytics Lead role on..."
    → [Review draft in Gmail] | [Approve] | [Skip] | [Cancel sequence]
 
 ## Sequences Paused (1)
-- **MegaCorp** — Reply detected from hr@megacorp.com.
+- **MegaCorp** — Reply detected from hr@megacorp.example.com.
   Run Mode 9 to triage.
 
 ## Auto-Sends Today (Level 3): 0/5
