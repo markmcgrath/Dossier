@@ -175,68 +175,63 @@ For the full threat model, data-flow diagram, and per-service risk analysis, see
 - Claude Desktop in **Cowork** mode (macOS or Windows) with a Pro / Max / Team / Enterprise plan — this is the primary target runtime
 - Vault-first workflow with local markdown files
 - Claude-assisted artifact generation via the Dossier skill
-- Obsidian v1.11.7+ with Dataview plugin for dashboard queries
-- Python 3.11 and 3.12 for running the test suite
-
-**Best-effort (not tested)**
-
-- Claude Code mode in Desktop, or the Claude Code CLI — same MCP protocol, different setup; requires manual connector configuration
-- Other runtimes that can host Claude with file-write access and MCP connectors
+- Obsidian v1.11.7+ with Dataview plugin for live dashboard queries
 
 **Not supported**
 
-- Autonomous job applications or unsupervised outbound messaging
-- Scraping or automation against platform TOS
-- Use without human review of generated artifacts
+- Claude.ai chat interface (no persistent file system access)
+- Claude Code CLI without Cowork connectors configured
+- Anthropic API direct calls
 
-## Connectors
+## Plugin installation (new in v0.1.0)
 
-Each workflow mode uses a different set of connectors. Install these via **Customize → Connectors** in Cowork when you want to use the corresponding mode.
+Dossier is also available as a Claude Code plugin for users running Claude Code or Cowork in plugin mode.
 
-| Connector | Needed for | Required / Optional |
-|---|---|---|
-| **Indeed** | Mode 2 (Search) — broad job search | Required for Mode 2 (or Dice) |
-| **Dice** | Mode 2 (Search) — tech-focused search | Required for Mode 2 (or Indeed) |
-| **Gmail** | Mode 9 (Inbox triage, follow-up engine) | Required for Mode 9 |
-| **Google Calendar** | Mode 10 (Calendar ops, follow-up reminders, interview roster) | Required for Mode 10 |
-| **Apollo** | Mode 4 (Company research), Mode 5 (Outreach contacts) | Optional — improves firmographic and contact data; WebSearch is the fallback |
-| **Notion** | Pipeline mirror (optional secondary store) | Optional — the vault is always the source of truth |
-| **Claude in Chrome** | Mode 8 (LinkedIn browser) and non-Greenhouse ATS portal scans | Required for those specific flows |
-| **Google Drive** | Reading a resume stored in Drive during onboarding | Optional — pasting or uploading also works |
+### Install from GitHub
 
-Connector catalog availability in Cowork continues to expand. If a connector you want isn't in **Customize → Connectors**, you can usually add it via custom MCP config. No connectors are required just to run core Mode 1 (evaluation) — if all you want is to grade pasted job descriptions, the skill + vault are enough.
+```bash
+claude plugin install github:mrmarkpmcgrath/dossier --path dossier-plugin
+```
 
-## Documentation
+### Install from local clone
 
-- [START_HERE.md](START_HERE.md) — extended setup walkthrough
-- [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute, maintainer hook setup
-- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — contributor conduct
-- [PRIVACY.md](PRIVACY.md) — threat model and data-flow analysis
-- [DATA_CONTRACT.md](DATA_CONTRACT.md) — what's yours, what's generated, what updates
-- [SECURITY.md](SECURITY.md) — vulnerability disclosure policy
-- [CHANGELOG.md](CHANGELOG.md) — release history and known limitations
-- [Diagram.md](Diagram.md) — standalone architecture diagram
-- [tests/README.md](tests/README.md) — how the test suite works
+```bash
+git clone https://github.com/mrmarkpmcgrath/dossier.git
+cd dossier
+claude plugin install ./dossier-plugin
+```
 
-## Contributing
+### What the plugin adds over the standalone skill
 
-Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Open an issue before investing time in anything non-trivial so we can discuss the approach. All contributors are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+The plugin packages the same `dossier` skill (Mode 0–13 + all reference files) plus:
 
-## Support
+- **Deterministic hooks** — `PreToolUse` hook blocks all MCP writes to external services (Notion, Gmail, Calendar, Apollo) until you explicitly confirm. `PostToolUse` hook scans vault artifact writes for PII patterns.
+- **`bin/dossier-lint`** — standalone PII scanner you can run manually: `dossier-lint --check-pii evals/eval-company-2026-01-01.md`
+- **`dossier-researcher` agent** — read-only company research subagent (web search, no file writes)
+- **`dossier-qa` agent** — vault artifact quality checker (validates frontmatter, naming, cross-references, PII)
+- **`settings.json`** — default permission policy (denies write access to `cv.md`, `profile.md`, and secret files)
 
-- **Bugs / feature requests:** [open an issue](https://github.com/markmcgrath/Dossier/issues/new/choose)
-- **Questions / discussion:** [GitHub Discussions](https://github.com/markmcgrath/Dossier/discussions)
-- **Security issues:** see [SECURITY.md](SECURITY.md) — please do not file public issues for vulnerabilities
+For architecture details and design rationale, see [`features/plan/Claude Code Skills Architecture for Dossier.md`](features/plan/Claude%20Code%20Skills%20Architecture%20for%20Dossier.md).
 
-## Acknowledgments
+## Running tests
 
-Dossier is built on top of work that made it possible:
+The test suite validates structural integrity and schema correctness. It does not run live Claude sessions.
 
-- [Claude](https://claude.com/) — the underlying LLM and skill runtime
-- [Obsidian](https://obsidian.md/) — the optional markdown editor the vault is optimized for
-- [Dataview](https://blacksmithgu.github.io/obsidian-dataview/) — the Obsidian plugin powering the dashboard queries
-- The [Keep a Changelog](https://keepachangelog.com/) and [Contributor Covenant](https://www.contributor-covenant.org/) projects for the governance formats
+```bash
+# Install dependencies
+pip install pytest pyyaml
+
+# Run all tests
+DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v
+
+# Run a specific test file
+DOSSIER_VAULT="$(pwd)" python -m pytest tests/test_skill_structure.py -v
+```
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines, test instructions, and what kinds of contributions are most welcome.

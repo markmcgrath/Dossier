@@ -28,12 +28,14 @@ def skill_zip(vault_path):
 
 @pytest.fixture(scope="session")
 def skill_md(skill_zip):
-    """Full text of SKILL.md as a string (root or skill/ subfolder)."""
+    """Full text of SKILL.md as a string (root, skill/, or skill-update/ subfolder)."""
     names = skill_zip.namelist()
-    for candidate in ("SKILL.md", "skill/SKILL.md"):
+    for candidate in ("SKILL.md", "skill/SKILL.md", "skill-update/SKILL.md"):
         if candidate in names:
             return skill_zip.read(candidate).decode("utf-8")
-    raise FileNotFoundError("SKILL.md not found in dossier.skill ZIP")
+    raise FileNotFoundError(
+        f"SKILL.md not found in dossier.skill ZIP. Contents: {names}"
+    )
 
 
 @pytest.fixture(scope="session")
@@ -50,10 +52,13 @@ def scoring_guide(skill_zip):
         "scoring-guide.md",
         "references/scoring-guide.md",
         "skill/references/scoring-guide.md",
+        "skill-update/references/scoring-guide.md",
     ):
         if candidate in names:
             return skill_zip.read(candidate).decode("utf-8")
-    raise FileNotFoundError("scoring-guide.md not found in dossier.skill ZIP")
+    raise FileNotFoundError(
+        f"scoring-guide.md not found in dossier.skill ZIP. Contents: {names}"
+    )
 
 
 def parse_frontmatter(text):
@@ -142,11 +147,4 @@ def example_prep_text(vault_path):
     """Raw text of examples/example-prep.md."""
     example_file = vault_path / "examples" / "example-prep.md"
     assert example_file.exists(), f"example-prep.md not found"
-    return example_file.read_text(encoding="utf-8")
-
-
-@pytest.fixture(scope="session")
-def example_prep_frontmatter(example_prep_text):
-    """Parsed frontmatter of example-prep.md."""
-    fm, _ = parse_frontmatter(example_prep_text)
-    return fm
+    return ex
