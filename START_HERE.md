@@ -61,8 +61,8 @@ Explain the vault structure:
 - dashboard.md
 
 Then:
-- Ask the user where they want to store their vault (local folder or Obsidian)
-- Help them copy or recreate the structure from `/vault-template/`
+- Ask the user where they want to store their vault (local folder or Obsidian).
+- The repo root already mirrors the vault structure — the eight folders above and `dashboard.md` are present. Tell the user they can either (a) use the cloned repo in place as their vault, or (b) copy those folders and `dashboard.md` to a separate vault location along with `cv.template.md`, `profile.template.md`, `stories.template.md`, and `config.template.md` (renamed to drop `.template`).
 
 ---
 
