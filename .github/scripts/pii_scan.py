@@ -12,6 +12,10 @@ The committed regex list contains only generic patterns (safe to publish).
 Maintainers can add owner-specific regexes in
 `.github/scripts/pii_patterns.local.txt` (gitignored). That file is read
 if present; it never needs to be committed.
+
+The legacy path `.github/scripts/pii_patterns.txt` is still loaded (with
+a deprecation warning) so existing local setups don't silently lose
+coverage after the rename. Both paths are gitignored.
 """
 
 from __future__ import annotations
@@ -53,6 +57,7 @@ BINARY_EXTENSIONS: set[str] = {
 
 SCRIPT_REL_PATH = ".github/scripts/pii_scan.py"
 LOCAL_PATTERNS_REL_PATH = ".github/scripts/pii_patterns.local.txt"
+LEGACY_LOCAL_PATTERNS_PATH = ".github/scripts/pii_patterns.txt"
 
 
 def repo_root() -> Path:
@@ -90,19 +95,36 @@ def disk_content(path: Path) -> str | None:
 
 
 def load_local_patterns(root: Path) -> list[tuple[str, re.Pattern[str]]]:
-    local = root / LOCAL_PATTERNS_REL_PATH
-    if not local.exists():
-        return []
+    """Load owner-specific regexes from the local patterns file(s).
+
+    Patterns load from both the canonical path and the legacy path (if
+    present) so existing setups don't silently lose coverage after the
+    rename. A deprecation warning is emitted when the legacy path is used.
+    """
     patterns: list[tuple[str, re.Pattern[str]]] = []
-    for i, raw in enumerate(local.read_text(encoding="utf-8").splitlines(), start=1):
-        line = raw.strip()
-        if not line or line.startswith("#"):
+    for rel_path in (LOCAL_PATTERNS_REL_PATH, LEGACY_LOCAL_PATTERNS_PATH):
+        local = root / rel_path
+        if not local.exists():
             continue
-        try:
-            patterns.append((f"local:{i}", re.compile(line)))
-        except re.error as e:
-            print(f"pii_scan: invalid regex in {LOCAL_PATTERNS_REL_PATH}:{i}: {e}", file=sys.stderr)
-            sys.exit(2)
+        if rel_path == LEGACY_LOCAL_PATTERNS_PATH:
+            print(
+                f"pii_scan: warning — loading patterns from deprecated path "
+                f"{LEGACY_LOCAL_PATTERNS_PATH}. Rename to "
+                f"{LOCAL_PATTERNS_REL_PATH} to silence this warning.",
+                file=sys.stderr,
+            )
+        for i, raw in enumerate(local.read_text(encoding="utf-8").splitlines(), start=1):
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            try:
+                patterns.append((f"local:{i}", re.compile(line)))
+            except re.error as e:
+                print(
+                    f"pii_scan: invalid regex in {rel_path}:{i}: {e}",
+                    file=sys.stderr,
+                )
+                sys.exit(2)
     return patterns
 
 

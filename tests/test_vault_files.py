@@ -50,9 +50,12 @@ def test_required_directories_exist(vault_path):
         "archive",
         "examples",
     ]
-    missing = [d for d in required_dirs if not (vault_path / d).exists()]
+    missing = [d for d in required_dirs if not (vault_path / d).is_dir()]
     if missing:
-        assert False, f"Missing required directories: {', '.join(missing)}"
+        assert False, (
+            f"Missing required directories (or path exists but is not a "
+            f"directory): {', '.join(missing)}"
+        )
 
 
 def test_examples_directory_has_three_files(vault_path):
