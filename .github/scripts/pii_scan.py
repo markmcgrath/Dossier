@@ -109,6 +109,9 @@ def load_local_patterns(root: Path) -> list[tuple[str, re.Pattern[str]]]:
 def should_skip(path: str) -> bool:
     if path == SCRIPT_REL_PATH:
         return True
+    # Test fixtures contain synthetic look-alike data by design.
+    if path.startswith("tests/fixtures/"):
+        return True
     suffix = Path(path).suffix.lower()
     if suffix in BINARY_EXTENSIONS:
         return True

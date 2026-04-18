@@ -147,4 +147,11 @@ def example_prep_text(vault_path):
     """Raw text of examples/example-prep.md."""
     example_file = vault_path / "examples" / "example-prep.md"
     assert example_file.exists(), f"example-prep.md not found"
-    return ex
+    return example_file.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def example_prep_frontmatter(example_prep_text):
+    """Parsed frontmatter of example-prep.md."""
+    fm, _ = parse_frontmatter(example_prep_text)
+    return fm
