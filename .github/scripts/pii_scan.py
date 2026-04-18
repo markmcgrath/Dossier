@@ -174,7 +174,10 @@ def main() -> int:
         print("\npii_scan: matches found. Fix or add to the allowlist before committing.", file=sys.stderr)
         return 1
 
-    has_local = (root / LOCAL_PATTERNS_REL_PATH).exists()
+    has_local = (
+        (root / LOCAL_PATTERNS_REL_PATH).exists()
+        or (root / LEGACY_LOCAL_PATTERNS_PATH).exists()
+    )
     mode = "staged" if staged_mode else "all tracked"
     suffix = " (with local patterns)" if has_local else " (generic patterns only)"
     print(f"pii_scan: {mode} files clean{suffix}")
