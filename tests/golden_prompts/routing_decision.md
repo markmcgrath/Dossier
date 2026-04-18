@@ -138,4 +138,4 @@ The split should be reconsidered when one or more of the following is true:
 
 ## Next Step
 
-Apply the description improvements to `dossier-plugin/skills/dossier/SKILL.md` and sync to open-source. Then update the plan 11 Phase 2 execution log and mark Phase 2 complete.
+Apply the description improvements to `skill/SKILL.md` and sync to open-source. Then update the plan 11 Phase 2 execution log and mark Phase 2 complete.
