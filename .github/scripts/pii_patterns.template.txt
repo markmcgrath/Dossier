@@ -1,8 +1,12 @@
 # Dossier PII patterns — owner-specific regex list for the pre-commit hook.
 #
 # Setup:
-#   cp .github/scripts/pii_patterns.template.txt .github/scripts/pii_patterns.txt
+#   cp .github/scripts/pii_patterns.template.txt .github/scripts/pii_patterns.local.txt
 #   (edit the copy — it is gitignored, so it never leaves your machine)
+#
+# The legacy destination .github/scripts/pii_patterns.txt is still
+# loaded (with a deprecation warning) and is also gitignored, so
+# existing local setups keep working while you migrate.
 #
 # Format: one Python regex per line. Lines starting with # are comments.
 #

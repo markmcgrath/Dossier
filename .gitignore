@@ -38,7 +38,10 @@ __pycache__/
 *.pyc
 
 # Local PII patterns (maintainer-specific, not committed)
+# Both paths are ignored so legacy local setups don't accidentally
+# commit sensitive regexes while migrating to the .local.txt naming.
 .github/scripts/pii_patterns.local.txt
+.github/scripts/pii_patterns.txt
 
 # Filesystem artifacts
 .fuse_hidden*
