@@ -1,6 +1,5 @@
 ---
 name: dossier
-allowed-tools: Read Glob Grep Edit Write WebSearch WebFetch
 description: >
   ALWAYS use this skill for anything job-search related. This includes: evaluating a job
   description or offer (A–F grade + structured report saved to your vault), searching for jobs

@@ -39,25 +39,24 @@ Concrete examples of welcome contributions:
 
 ## Skill Development Workflow
 
-The Dossier skill lives in `skill/` (legacy `.skill` bundle format) and `dossier-plugin/skills/dossier/` (plugin format, current). Both are kept in sync.
+The Dossier skill lives in `skill/` and is packaged as a `.skill` ZIP bundle (`dossier.skill`) for distribution.
 
 **To edit the skill:**
 
-1. Edit files in `dossier-plugin/skills/dossier/` — this is the canonical location.
-2. Keep `SKILL.md` under 500 lines. Mode details go in `references/`.
+1. Edit files in `skill/` — `SKILL.md` is the entry point; mode details live under `skill/references/`.
+2. Keep `SKILL.md` under 500 lines.
 3. Verify all `references/` pointers in `SKILL.md` resolve to actual files.
-4. Sync changes to `skill/SKILL.md` and `skill/references/` to keep both locations current.
+4. Repack `dossier.skill` from the updated `skill/` folder.
 5. Run the test suite: `DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v`
-6. Test manually: load the plugin in Claude Code or Cowork and run at least one Mode 1 evaluation.
 
-**PR checklist (also in `.github/pull_request_template.md`):**
+**PR checklist:**
 
 - [ ] `SKILL.md` is under 500 lines
 - [ ] Every `references/` pointer resolves to a real file
 - [ ] No skill references files outside its own directory
 - [ ] `CHANGELOG.md` updated
 - [ ] `open-source/` copy is current (no PII)
-- [ ] PII check passed: `bin/dossier-lint --check-pii <changed files>`
+- [ ] PII scan clean: `python .github/scripts/pii_scan.py`
 
 ## Conduct
 

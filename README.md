@@ -183,36 +183,6 @@ For the full threat model, data-flow diagram, and per-service risk analysis, see
 - Claude Code CLI without Cowork connectors configured
 - Anthropic API direct calls
 
-## Plugin installation (new in v0.1.0)
-
-Dossier is also available as a Claude Code plugin for users running Claude Code or Cowork in plugin mode.
-
-### Install from GitHub
-
-```bash
-claude plugin install github:mrmarkpmcgrath/dossier --path dossier-plugin
-```
-
-### Install from local clone
-
-```bash
-git clone https://github.com/mrmarkpmcgrath/dossier.git
-cd dossier
-claude plugin install ./dossier-plugin
-```
-
-### What the plugin adds over the standalone skill
-
-The plugin packages the same `dossier` skill (Mode 0–13 + all reference files) plus:
-
-- **Deterministic hooks** — `PreToolUse` hook blocks all MCP writes to external services (Notion, Gmail, Calendar, Apollo) until you explicitly confirm. `PostToolUse` hook scans vault artifact writes for PII patterns.
-- **`bin/dossier-lint`** — standalone PII scanner you can run manually: `dossier-lint --check-pii evals/eval-company-2026-01-01.md`
-- **`dossier-researcher` agent** — read-only company research subagent (web search, no file writes)
-- **`dossier-qa` agent** — vault artifact quality checker (validates frontmatter, naming, cross-references, PII)
-- **`settings.json`** — default permission policy (denies write access to `cv.md`, `profile.md`, and secret files)
-
-For architecture details and design rationale, see [`features/plan/Claude Code Skills Architecture for Dossier.md`](features/plan/Claude%20Code%20Skills%20Architecture%20for%20Dossier.md).
-
 ## Running tests
 
 The test suite validates structural integrity and schema correctness. It does not run live Claude sessions.
