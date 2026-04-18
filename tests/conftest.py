@@ -155,3 +155,11 @@ def example_prep_frontmatter(example_prep_text):
     """Parsed frontmatter of example-prep.md."""
     fm, _ = parse_frontmatter(example_prep_text)
     return fm
+
+
+@pytest.fixture(scope="session")
+def skill_md_source(vault_path):
+    """On-disk skill/SKILL.md — canonical source before ZIP packaging."""
+    src = vault_path / "skill" / "SKILL.md"
+    assert src.is_file(), f"skill/SKILL.md not found at {src}"
+    return src.read_text(encoding="utf-8")

@@ -44,14 +44,6 @@ def golden_dir(vault_path: Path) -> Path:
 
 
 @pytest.fixture(scope="session")
-def skill_md_source(vault_path: Path) -> str:
-    """On-disk skill/SKILL.md — canonical source before ZIP packaging."""
-    src = vault_path / "skill" / "SKILL.md"
-    assert src.is_file(), f"skill/SKILL.md not found at {src}"
-    return src.read_text(encoding="utf-8")
-
-
-@pytest.fixture(scope="session")
 def routing_test_set(golden_dir: Path) -> str:
     return (golden_dir / "routing_test_set.md").read_text(encoding="utf-8")
 

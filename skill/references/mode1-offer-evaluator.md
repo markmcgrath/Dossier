@@ -4,6 +4,8 @@
 
 **Trigger:** User pastes a job description, shares a JD link, or asks whether to apply / whether a role is a good fit.
 
+**Starting state for new evals:** set `status: Evaluating` and `outcome: Pending`. Subsequent transitions follow `references/status-outcome-state-machine.md` — the two fields are always written together.
+
 **What to do:**
 
 Extract the following from the JD (use "not specified" if absent):

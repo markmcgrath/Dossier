@@ -28,8 +28,14 @@
 **Application Status Sync.** When asked to "update my tracker" or "see if there are any updates":
 1. Scan `evals/` for files where `status: Applied` or `status: Interviewing` in the frontmatter.
 2. For each, search Gmail for the company domain or recruiter name in the last 30 days.
-3. Classify any new messages: acknowledgment ("we received your application"), advancement ("we'd like to schedule"), rejection ("not moving forward"), offer, or silence.
-4. Propose frontmatter status updates in a batch for user approval (show the new frontmatter values before writing). Update the eval files with confirmed changes. Optionally: if `notion.enabled: true`, offer to mirror these updates to Notion after vault updates are confirmed.
+3. Classify any new messages and map to a `(status, outcome)` pair per `references/status-outcome-state-machine.md`:
+   - Acknowledgment ("we received your application") → `status: Applied`, `outcome: Pending`
+   - Phone screen / recruiter scheduling invite → `status: Interviewing`, `outcome: Phone Screen`
+   - Panel / onsite / loop invite (post-phone-screen, typically a Teams/Zoom call with hiring manager + panel) → `status: Interviewing`, `outcome: Interview`
+   - Rejection ("not moving forward") → `status: Rejected`, `outcome: Rejected` (last-event wins — apply even if the current outcome is `Interview`)
+   - Offer email → `status: Offer`, `outcome: Offer`
+   - Silence → no change proposed
+4. Propose frontmatter updates in a batch for user approval (show both the new `status` and `outcome` before writing). Every proposed status change must include the paired outcome per the state machine — never propose one without the other. Update the eval files with confirmed changes. Optionally: if `notion.enabled: true`, offer to mirror these updates to Notion after vault updates are confirmed.
 
 **Follow-up Engine.** When asked to "check follow-ups" or periodically:
 1. Scan `evals/` for files where `status: Applied`, `date:` > 7 days ago, and `outcome: Pending`. Search Gmail for each. Draft follow-ups for those with no response.
