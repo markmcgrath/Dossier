@@ -84,6 +84,31 @@ def parse_frontmatter(text):
 
 
 @pytest.fixture(scope="session")
+def skill_md_source(vault_path):
+    """Raw text of SKILL.md from the filesystem (not the ZIP).
+
+    Some tests (routing golden, outcome state machine) need the on-disk
+    version rather than the ZIP-packed copy so they can verify the
+    description block and filesystem references independently.
+    """
+    skill_file = vault_path / "skill" / "SKILL.md"
+    if not skill_file.exists():
+        # Fall back to skill-update/ (private vault layout)
+        skill_file = vault_path / "skill-update" / "SKILL.md"
+    assert skill_file.exists(), (
+        f"SKILL.md not found at {vault_path / 'skill' / 'SKILL.md'}"
+    )
+    return skill_file.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def example_prep_frontmatter(example_prep_text):
+    """Parsed frontmatter of example-prep.md."""
+    fm, _ = parse_frontmatter(example_prep_text)
+    return fm
+
+
+@pytest.fixture(scope="session")
 def eval_files(vault_path):
     """List of parsed frontmatter dicts for all .md files in evals/."""
     evals_dir = vault_path / "evals"
@@ -148,18 +173,3 @@ def example_prep_text(vault_path):
     example_file = vault_path / "examples" / "example-prep.md"
     assert example_file.exists(), f"example-prep.md not found"
     return example_file.read_text(encoding="utf-8")
-
-
-@pytest.fixture(scope="session")
-def example_prep_frontmatter(example_prep_text):
-    """Parsed frontmatter of example-prep.md."""
-    fm, _ = parse_frontmatter(example_prep_text)
-    return fm
-
-
-@pytest.fixture(scope="session")
-def skill_md_source(vault_path):
-    """On-disk skill/SKILL.md — canonical source before ZIP packaging."""
-    src = vault_path / "skill" / "SKILL.md"
-    assert src.is_file(), f"skill/SKILL.md not found at {src}"
-    return src.read_text(encoding="utf-8")

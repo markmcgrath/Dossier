@@ -45,7 +45,7 @@ def test_skill_md_line_count_is_reasonable(skill_lines):
     """Verify SKILL.md has a reasonable line count (300–2000).
 
     The lower bound guards against accidental truncation or a broken repack.
-    The upper bound is 2000 (planned Mode 12/13 additions will grow it).
+    The upper bound is 2000 (reference files absorb most mode detail).
     Update the bounds if the skill is intentionally expanded or contracted.
     """
     line_count = len(skill_lines)

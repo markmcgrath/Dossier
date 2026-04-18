@@ -168,7 +168,7 @@ After delivering the report:
    offer, or silence.
 4. Propose frontmatter updates in a batch for user approval:
    - Show: "[Company] — [Role]: status Applied → Interviewing
-     (based on scheduling email from recruiter@company.com)"
+     (based on scheduling email from recruiter@company.example.com)"
    - Never write without confirmation.
 5. For each approved change, update the eval file's frontmatter
    (`status:` and `outcome:` fields).

@@ -102,7 +102,7 @@ Daily scans, lead pulses, recruiter triage, pipeline digests, and week-aheads ar
 
 ### Naming
 
-- Company slug: lowercase, hyphen-separated, no punctuation. `acme-corp`, `wayne-enterprises`, `globex-industries`.
+- Company slug: lowercase, hyphen-separated, no punctuation. `acme-corp`, `cipher-analytics`, `nova-systems`.
 - Dates: ISO-8601 (`YYYY-MM-DD`).
 - One file per artifact per company per day. If you re-evaluate the same company and role on the same day, version the files using a `-v#` suffix rather than overwriting — see Dedup Check section for details. Cross-day re-evaluations get different date stamps naturally.
 

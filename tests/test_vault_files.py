@@ -1,7 +1,6 @@
 """
 Tests for required files and folder structure in the vault.
 """
-
 import pytest
 
 
@@ -33,14 +32,13 @@ def test_vault_template_has_folder(vault_path, folder):
     assert d.is_dir(), f"vault-template/{folder}/ missing from starter skeleton."
 
 
-def test_required_files_exist(vault_path):
+def test_required_root_files_exist(vault_path):
     """Verify all required vault files exist.
 
-    In the public repo, personal files (cv.md, profile.md, stories.md) are not
-    shipped — only templates are. config.md is also excluded; config.template.md
-    ships instead. These are checked separately below.
+    In the public repo, personal files are replaced by templates:
+    cv.md → cv.template.md, profile.md → profile.template.md, etc.
     """
-    # Files that must be present in both private vault and public repo
+    # Files that must exist in either the private or public vault
     required_files = [
         "dashboard.md",
         "README.md",
@@ -48,29 +46,43 @@ def test_required_files_exist(vault_path):
         "DATA_CONTRACT.md",
         "LICENSE",
     ]
-    missing = []
-    for fname in required_files:
-        fpath = vault_path / fname
-        if not fpath.exists():
-            missing.append(fname)
-
-    if missing:
-        msg = f"Missing required files: {', '.join(missing)}"
-        assert False, msg
-
-    # In the public repo, personal files ship as templates
+    # Files that may be templates in the public repo
     template_pairs = [
         ("cv.md", "cv.template.md"),
         ("profile.md", "profile.template.md"),
         ("config.md", "config.template.md"),
         ("stories.md", "stories.template.md"),
     ]
-    for real_file, template_file in template_pairs:
-        real_exists = (vault_path / real_file).exists()
-        template_exists = (vault_path / template_file).exists()
-        assert real_exists or template_exists, (
-            f"Neither {real_file} nor {template_file} found — at least one must exist"
-        )
+
+    missing = []
+    for fname in required_files:
+        if not (vault_path / fname).exists():
+            missing.append(fname)
+
+    for primary, template in template_pairs:
+        if not (vault_path / primary).exists() and not (vault_path / template).exists():
+            missing.append(f"{primary} (or {template})")
+
+    if missing:
+        assert False, f"Missing required files: {', '.join(missing)}"
+
+
+def test_required_directories_exist(vault_path):
+    """Verify all required vault directories exist."""
+    required_dirs = [
+        "evals",
+        "outreach",
+        "cover-letters",
+        "interview-prep",
+        "research",
+        "daily",
+        "weekly",
+        "archive",
+        "examples",
+    ]
+    missing = [d for d in required_dirs if not (vault_path / d).exists()]
+    if missing:
+        assert False, f"Missing required directories: {', '.join(missing)}"
 
 
 def test_examples_directory_has_three_files(vault_path):
@@ -93,10 +105,8 @@ def test_example_eval_frontmatter(example_eval_frontmatter):
     missing = required - set(example_eval_frontmatter.keys() or {})
 
     if missing:
-        msg = f"example-eval.md missing fields: {missing}"
-        assert False, msg
+        assert False, f"example-eval.md missing fields: {missing}"
 
-    # Verify type is "eval"
     assert (
         example_eval_frontmatter.get("type") == "eval"
     ), "example-eval.md must have type: eval"
@@ -108,10 +118,8 @@ def test_example_outreach_frontmatter(example_outreach_frontmatter):
     missing = required - set(example_outreach_frontmatter.keys() or {})
 
     if missing:
-        msg = f"example-outreach.md missing fields: {missing}"
-        assert False, msg
+        assert False, f"example-outreach.md missing fields: {missing}"
 
-    # Verify type is "outreach"
     assert (
         example_outreach_frontmatter.get("type") == "outreach"
     ), "example-outreach.md must have type: outreach"
@@ -123,25 +131,23 @@ def test_example_prep_frontmatter(example_prep_frontmatter):
     missing = required - set(example_prep_frontmatter.keys() or {})
 
     if missing:
-        msg = f"example-prep.md missing fields: {missing}"
-        assert False, msg
+        assert False, f"example-prep.md missing fields: {missing}"
 
-    # Verify type is "prep"
     assert (
         example_prep_frontmatter.get("type") == "prep"
     ), "example-prep.md must have type: prep"
 
 
 def test_config_has_notion_block(config_text):
-    """Verify config.md has Notion configuration block."""
-    assert "notion:" in config_text, "config.md missing 'notion:' block"
-    assert "enabled:" in config_text, "config.md missing 'enabled:' key"
+    """Verify config.md (or config.template.md) has Notion configuration block."""
+    assert "notion:" in config_text, "config missing 'notion:' block"
+    assert "enabled:" in config_text, "config missing 'enabled:' key"
 
 
 def test_config_preserves_notion_ids(config_text):
-    """Verify config.md contains Notion data source ID and tracker URL."""
-    assert "data_source_id:" in config_text, "config.md missing 'data_source_id:'"
-    assert "tracker_url:" in config_text, "config.md missing 'tracker_url:'"
+    """Verify config contains Notion data source ID and tracker URL placeholders."""
+    assert "data_source_id:" in config_text, "config missing 'data_source_id:'"
+    assert "tracker_url:" in config_text, "config missing 'tracker_url:'"
 
 
 def test_dashboard_has_legitimacy_column(vault_path):
@@ -190,40 +196,49 @@ def test_license_is_mit(vault_path):
     assert "MIT" in license_text, "LICENSE doesn't mention MIT"
 
 
-def test_readme_references_governance_docs(vault_path):
-    """Verify README.md links to the core governance documents.
+def test_readme_has_governance_section(vault_path):
+    """Verify README.md has Governance section."""
+    readme_text = (vault_path / "README.md").read_text(encoding="utf-8")
+    assert "Governance" in readme_text, "README.md missing Governance section"
+    assert "PRIVACY" in readme_text or "privacy" in readme_text.lower(), (
+        "README.md Governance section missing PRIVACY reference"
+    )
 
-    Guards against accidental removal of references to PRIVACY, DATA_CONTRACT,
-    and SECURITY. Checks for content, not a specific section title.
-    """
+
+def test_readme_has_retention_section(vault_path):
+    """Verify README.md has Data Retention section."""
+    readme_text = (vault_path / "README.md").read_text(encoding="utf-8")
+    assert "Retention" in readme_text or "retention" in readme_text.lower(), (
+        "README.md missing Data Retention section"
+    )
+
+
+def test_readme_references_governance_docs(vault_path):
+    """Verify README.md links to the core governance documents."""
     readme_text = (vault_path / "README.md").read_text(encoding="utf-8")
     for doc in ("PRIVACY.md", "DATA_CONTRACT.md", "SECURITY.md"):
         assert doc in readme_text, f"README.md missing reference to {doc}"
 
 
 def test_readme_covers_archival(vault_path):
-    """Verify README.md explains the archival / retention model.
-
-    The word 'archive' or 'archival' must appear; specific section titles
-    may evolve (e.g., "Vault discipline" vs "Data retention"), but losing
-    the concept entirely would be a regression.
-    """
+    """Verify README.md explains the archival model."""
     readme_text = (vault_path / "README.md").read_text(encoding="utf-8").lower()
     assert "archive" in readme_text or "archival" in readme_text, (
-        "README.md missing archive/archival content"
+        "README.md missing archival/archive explanation"
     )
 
 
-def test_stories_md_has_star_template(vault_path):
-    """Verify stories.md (or stories.template.md) includes STAR+R format guidance."""
+def test_stories_template_has_star_format(vault_path):
+    """Verify stories template includes STAR+R format guidance."""
     stories_file = vault_path / "stories.md"
     if not stories_file.exists():
-        # Public repo ships stories.template.md instead of a real stories.md
         stories_file = vault_path / "stories.template.md"
-    assert stories_file.exists(), "Neither stories.md nor stories.template.md found"
+    if not stories_file.exists():
+        pytest.skip("Neither stories.md nor stories.template.md found")
+
     stories_text = stories_file.read_text(encoding="utf-8")
     star_elements = ["Situation", "Task", "Action", "Result", "Reflection"]
     for element in star_elements:
         assert element in stories_text, (
-            f"{stories_file.name} missing STAR+R element: {element}"
+            f"stories file missing STAR+R element: {element}"
         )
