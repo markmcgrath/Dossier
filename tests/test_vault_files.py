@@ -2,6 +2,36 @@
 Tests for required files and folder structure in the vault.
 """
 
+import pytest
+
+
+VAULT_TEMPLATE_FOLDERS = [
+    "evals",
+    "outreach",
+    "cover-letters",
+    "interview-prep",
+    "research",
+    "daily",
+    "weekly",
+    "archive",
+]
+
+
+def test_vault_template_has_readme(vault_path):
+    """vault-template/ must carry a README documenting how to use the skeleton."""
+    readme = vault_path / "vault-template" / "README.md"
+    assert readme.is_file(), (
+        "vault-template/README.md missing — START_HERE.md points at "
+        "vault-template/ as the starter skeleton."
+    )
+
+
+@pytest.mark.parametrize("folder", VAULT_TEMPLATE_FOLDERS)
+def test_vault_template_has_folder(vault_path, folder):
+    """Each expected artifact folder must exist in the skeleton."""
+    d = vault_path / "vault-template" / folder
+    assert d.is_dir(), f"vault-template/{folder}/ missing from starter skeleton."
+
 
 def test_required_files_exist(vault_path):
     """Verify all required vault files exist.
