@@ -28,40 +28,41 @@ Concrete examples of welcome contributions:
 - **Scoring rubric refinements** — new dimensions, better weighting, calibration against real JDs, clearer anti-patterns. Include the reasoning and, ideally, example JDs showing the old vs. new behavior.
 - **Documentation improvements** — clarifications, typo fixes, better examples, new troubleshooting entries, more precise language in `PRIVACY.md` / `DATA_CONTRACT.md`.
 - **New example artifacts** — the `examples/` folder is meant to show "what good looks like." Additional fictional-company examples (different industries, role levels, edge cases like ghost jobs or prompt injection) are welcome.
-- **Test coverage** — regression tests for fixed bugs, new fixtures showing edge cases, structural tests for new skill sections.
-- **Integrations** — additional job boards or tools via MCP, as long as they work within the human-in-the-loop model.
-- **Template improvements** — better defaults in `cv.template.md`, `profile.template.md`, `stories.template.md`, `config.template.md`.
+- **Test coverage** — regression tests for fixed bugs, new fixtures that exercise edge cases, or structural checks for new modes or reference files.
 
-## What We're Not Looking For
+## What We're NOT Looking For
 
-- **Changes that weaken grading honesty.** If a change suppresses negatives or inflates grades, it's a regression — see the "Grade honestly" rule in `CLAUDE.md`.
-- **Auto-send functionality.** All outreach, applications, and external actions must remain draft-only. The skill drafts; the user sends.
-- **Scraping, TOS-bypass, or CAPTCHA-defeat features.** Out of scope regardless of convenience.
-- **Features that require paid services beyond a Claude subscription.** Dossier must remain usable with no additional vendor costs.
-- **Large refactors without a prior issue.** Open an issue to discuss scope before sinking time into a big change.
+- Autonomous application features (auto-submit, auto-send)
+- Changes that remove the human-in-the-loop requirement
+- Features that store or transmit personal vault data to external services
+- Rewriting modes that are working correctly — refinements are welcome, rewrites need a strong case
 
-## Style
+## Skill Development Workflow
 
-- Keep SKILL.md readable. It's a prompt, not code — clarity matters more than brevity.
-- Frontmatter schemas must stay compatible with Obsidian Dataview queries.
-- Follow the naming conventions in README.md.
+The Dossier skill lives in `skill/` (legacy `.skill` bundle format) and `dossier-plugin/skills/dossier/` (plugin format, current). Both are kept in sync.
 
-## Maintainer setup (one-time)
+**To edit the skill:**
 
-If you work from a clone that may contain personal context (real evals, names, Notion IDs, etc.), activate the shared pre-commit hook so commits are scanned for PII before they leave your machine:
+1. Edit files in `dossier-plugin/skills/dossier/` — this is the canonical location.
+2. Keep `SKILL.md` under 500 lines. Mode details go in `references/`.
+3. Verify all `references/` pointers in `SKILL.md` resolve to actual files.
+4. Sync changes to `skill/SKILL.md` and `skill/references/` to keep both locations current.
+5. Run the test suite: `DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v`
+6. Test manually: load the plugin in Claude Code or Cowork and run at least one Mode 1 evaluation.
 
-```bash
-# Point git at the tracked hooks directory
-git config core.hooksPath .githooks
+**PR checklist (also in `.github/pull_request_template.md`):**
 
-# Copy the gitignored patterns file from the template, then edit it
-cp .github/scripts/pii_patterns.template.txt .github/scripts/pii_patterns.txt
-# Open .github/scripts/pii_patterns.txt in your editor and uncomment /
-# replace the example regexes with your own identifiers.
-```
+- [ ] `SKILL.md` is under 500 lines
+- [ ] Every `references/` pointer resolves to a real file
+- [ ] No skill references files outside its own directory
+- [ ] `CHANGELOG.md` updated
+- [ ] `open-source/` copy is current (no PII)
+- [ ] PII check passed: `bin/dossier-lint --check-pii <changed files>`
 
-The hook runs `.github/scripts/pii_scan.py --staged` on every commit and blocks anything that matches either the generic patterns (committed) or the local patterns (your machine only — `pii_patterns.txt` is gitignored). External contributors don't need this — the CI `pii-scan` job enforces the generic patterns on every PR.
+## Conduct
 
-## Code of Conduct
+Be direct and constructive. If something is wrong, say what's wrong and propose a fix. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
-This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). Be kind, be constructive.
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License.

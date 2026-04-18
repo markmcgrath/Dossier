@@ -6,7 +6,9 @@ Automated test suite for the Dossier v2 job search skill. Tests verify structura
 
 - **Package integrity** (`test_package.py`): ZIP file validity, required files, line counts
 - **SKILL.md structure** (`test_skill_structure.py`): Required sections, modes, documentation
-- **Anti-patterns** (`test_antipatterns.py`): Regression tests for fixed issues (Notion-as-primary-source, etc.)
+- **Notion optionality contracts** (`test_antipatterns.py`): Enforces vault-first architecture — no mandatory-Notion phrases, all references conditional, vault-as-source-of-truth affirmed, disabled path documented, Mode 1 saves to vault
+- **Config permutations** (`test_config_contract.py`): Validates SKILL.md and config.template.md behavior across four config states: missing, Notion disabled, Notion enabled with missing IDs, Notion enabled with valid IDs
+- **Doc consistency** (`test_docs_consistency.py`): Checks that README.md, CLAUDE.md, config.template.md, DATA_CONTRACT.md, and skill/SKILL.md agree on four Notion optionality rules; also flags contradictions
 - **Vault schema** (`test_vault_schema.py`): Frontmatter validation, grade/status/outcome values, field formats
 - **Vault files** (`test_vault_files.py`): Required files, examples, governance documentation
 - **Scoring guide** (`test_scoring_guide.py`): Dimension definitions, grade levels, gate-pass rule
@@ -37,7 +39,7 @@ DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v -s
 
 ### Run tests in a specific module:
 ```bash
-DOSSIER_VAULT="$(pwd)" python -m pytest tests/test_antipatterns.py::test_no_notion_as_primary_source -v
+DOSSIER_VAULT="$(pwd)" python -m pytest tests/test_antipatterns.py::test_no_mandatory_notion_phrases -v
 ```
 
 ## Test Organization
@@ -47,7 +49,9 @@ tests/
 ├── conftest.py                    # Shared fixtures (vault_path, skill_md, eval_files, etc.)
 ├── test_package.py                # ZIP integrity
 ├── test_skill_structure.py         # SKILL.md sections and modes
-├── test_antipatterns.py            # Regression patterns
+├── test_antipatterns.py            # Notion optionality contract tests
+├── test_config_contract.py         # Config-state permutation tests
+├── test_docs_consistency.py        # Cross-doc Notion optionality consistency
 ├── test_vault_schema.py            # Eval frontmatter validation
 ├── test_vault_files.py             # Required vault files
 ├── test_scoring_guide.py           # Scoring guide completeness
@@ -55,7 +59,11 @@ tests/
 └── fixtures/
     ├── jd_ghost_job.md             # Ghost job (red flags)
     ├── jd_strong_fit.md            # Strong fit (verified)
-    └── jd_injection_attempt.md     # Prompt injection detection
+    ├── jd_injection_attempt.md     # Prompt injection detection
+    └── config/
+        ├── config_notion_disabled.md           # Notion explicitly off
+        ├── config_notion_enabled_missing_ids.md # Enabled but IDs empty
+        └── config_notion_enabled_valid_sample.md # Fully configured
 ```
 
 ## Adding a New Test
@@ -120,22 +128,24 @@ Expected 2 files, found 3: ['SKILL.md', 'scoring-guide.md', 'extra.md']
 ```
 **Fix:** Repack dossier.skill; ensure only SKILL.md and scoring-guide.md are at the root level of the ZIP.
 
-### Example: `test_no_notion_as_primary_source FAILED`
+### Example: `test_no_mandatory_notion_phrases FAILED`
 ```
-Found FORBIDDEN_PATTERNS outside conditional context:
-  Line 847: 'Pull from Notion' in: Pull from Notion for company names...
+Found phrases that imply Notion is mandatory (vault-first violation):
+  Line 847: found "pull from notion" in: Pull from Notion for company names...
 ```
-**Fix:** Edit SKILL.md line 847, add context like "if notion.enabled" or "optional Notion sync".
+**Fix:** Edit SKILL.md line 847 — either remove the phrase or rewrite as conditional (e.g., "If Notion is configured, pull from Notion for...").
 
 ## Test Statistics
 
 Current test suite:
-- **Total tests:** 47
-- **Fast execution:** < 5 seconds (no external calls)
-- **Coverage areas:** 6
+- **Total tests:** 76
+- **Fast execution:** < 1 second (no external calls)
+- **Coverage areas:** 8
   - Package integrity: 5 tests
   - Skill structure: 12 tests
-  - Anti-patterns: 2 tests
+  - Notion optionality contracts: 5 tests
+  - Config permutations: 17 tests
+  - Doc consistency: 10 tests
   - Vault schema: 8 tests
   - Vault files: 14 tests
   - Scoring guide: 4 tests
@@ -143,11 +153,4 @@ Current test suite:
 ## Maintenance
 
 Tests should be reviewed when:
-1. **SKILL.md changes** — May need to adjust test_skill_structure.py or test_antipatterns.py
-2. **Frontmatter schema changes** — Update test_vault_schema.py with new/removed fields
-3. **New required files added** — Update test_vault_files.py
-4. **Known regressions fixed** — Add anti-pattern test to prevent re-emergence
-
-## Questions?
-
-See `CLAUDE.md` for operating contract and principles.
+1. **SKILL.md changes**
