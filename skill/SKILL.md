@@ -58,6 +58,8 @@ model: claude-sonnet-4-6        # (optional) Which model produced this evaluatio
 sources: []                     # (optional) Data sources consulted: jd_url, apollo, web_search, etc.
 ```
 
+`status` and `outcome` are updated together per the transition table in `references/status-outcome-state-machine.md` — every status-write must also set the outcome per that table. The two fields are not aliases: `status` is the pipeline state from your side; `outcome` is the most recent employer-side signal.
+
 **Notion Mirror (optional):** If the user has configured a Notion tracker (see `config.md` for the `notion:` block), that Notion tracker can act as a read-only or write-optional mirror of vault state. The vault is the primary store; Notion is secondary.
 
 If `notion.enabled: true` in `config.md`:
@@ -115,7 +117,8 @@ Runs once per session before any other mode. Validates vault integrity and catch
    - If `config.md` is missing entirely → note "Running with defaults" once per session.
 4. **stories.md exists** — if missing → note "No story bank found. Create `stories.md` to accumulate interview stories." (non-blocking).
 5. **Eval frontmatter spot-check** — read the 3 most recent files in `evals/`. Check for required fields: `type`, `company`, `role`, `grade`, `score`, `status`, `date`, `outcome`. If any are missing → warn with specific file and field name.
-6. **Gmail domain filtering** — if neither `gmail_allow_domains` nor `gmail_deny_domains` is configured → note "Gmail domain filtering not configured. Mode 9 will process all matching emails." (non-blocking).
+6. **Status/outcome consistency** — for the same 3 most recent evals, verify each `(status, outcome)` pair matches a row in the transition table in `references/status-outcome-state-machine.md`. If a pair is inconsistent (e.g. `status: Rejected` with `outcome: Pending`) → warn with file name, current pair, and a suggested resolution. Non-blocking.
+7. **Gmail domain filtering** — if neither `gmail_allow_domains` nor `gmail_deny_domains` is configured → note "Gmail domain filtering not configured. Mode 9 will process all matching emails." (non-blocking).
 
 **Output behavior:**
 - If all checks pass → proceed silently. No output.
@@ -137,7 +140,7 @@ Determine which mode the user needs from context. If it's ambiguous, ask one sho
 
 Run a 10-dimension weighted evaluation (scored 1–5 each), convert to a letter grade A–F, assess posting legitimacy, and save to `evals/` with full frontmatter.
 
-Read `references/mode1-offer-evaluator.md` for the scoring dimensions, weights, output template, legitimacy assessment, dedup rules, and post-eval actions. Scoring calibration is in `references/scoring-guide.md`.
+Read `references/mode1-offer-evaluator.md` for the scoring dimensions, weights, output template, legitimacy assessment, dedup rules, and post-eval actions. Scoring calibration is in `references/scoring-guide.md`. New evals are created with `status: Evaluating`, `outcome: Pending` per `references/status-outcome-state-machine.md`.
 
 **Save to:** `evals/eval-[company-slug]-[date].md`
 
