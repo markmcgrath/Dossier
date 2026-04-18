@@ -14,9 +14,14 @@ import re
 from pathlib import Path
 
 import pytest
+import yaml
 
 
 GOLDEN_DIR_REL = "tests/golden_prompts"
+
+# Claude Skills descriptions have a 1024-char cap on the rendered
+# (post-YAML-fold) string. Going over makes the skill unloadable.
+DESCRIPTION_MAX_CHARS = 1024
 
 # Trigger phrases added to SKILL.md description per routing_decision.md.
 # Each must appear verbatim in the description block of skill/SKILL.md.
@@ -94,6 +99,19 @@ def _description_block(skill_md: str) -> str:
 # ---------------------------------------------------------------------------
 # SKILL.md regression — description must retain Phase 2 improvements
 # ---------------------------------------------------------------------------
+
+
+def test_description_under_length_limit(skill_md_source: str) -> None:
+    """Rendered description must stay under the 1024-char Skills cap."""
+    lines = skill_md_source.splitlines()
+    end = next(i for i in range(1, len(lines)) if lines[i].strip() == "---")
+    fm = yaml.safe_load("\n".join(lines[1:end]))
+    desc = fm["description"]
+    assert len(desc) <= DESCRIPTION_MAX_CHARS, (
+        f"SKILL.md description is {len(desc)} chars; Skills cap is "
+        f"{DESCRIPTION_MAX_CHARS}. Compress the description without dropping "
+        f"required trigger phrases or the negative-scope sentence."
+    )
 
 
 @pytest.mark.parametrize("phrase", REQUIRED_TRIGGER_PHRASES)

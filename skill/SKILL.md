@@ -1,19 +1,17 @@
 ---
 name: dossier
 description: >
-  ALWAYS use this skill for anything job-search related. This includes: evaluating a job
-  description or offer (A–F grade + structured report saved to your vault), searching for jobs
-  on Indeed or Dice, preparing for a specific interview, researching a company before applying
-  or interviewing, and drafting LinkedIn outreach messages. Trigger immediately when the user
-  pastes or describes a job description, mentions an upcoming interview, asks "should I apply",
-  "is this a good fit", "find me jobs", "search for roles", "research [company]",
-  "tailor my CV", "health check", "calibration report", or wants to message a recruiter or
-  hiring manager. Also trigger for offer comparisons, phone screen prep, cover letters, salary
-  negotiation, triaging recruiter emails, drafting follow-ups or thank-you notes, syncing
-  application statuses from inbox to tracker, scheduling prep blocks or follow-up reminders,
-  and any request to act on LinkedIn directly (search jobs or people, send InMail, scan
-  recruiter inbox, check a profile). Only trigger when there is a clear job application,
-  offer, interview, or outreach context. Do not attempt these tasks without this skill.
+  ALWAYS use this skill for anything job-search related: evaluating a JD or offer, searching
+  for jobs on Indeed or Dice, prepping for an interview, researching a company, and drafting
+  LinkedIn outreach. Trigger when the user pastes or describes a JD, mentions an upcoming
+  interview, asks "should I apply", "is this a good fit", "find me jobs", "search for roles",
+  "research [company]", "tailor my CV", "health check", "calibration report", or wants to
+  message a recruiter or hiring manager. Also trigger for offer comparisons, phone screen
+  prep, cover letters, salary negotiation, triaging recruiter emails, drafting follow-ups or
+  thank-yous, syncing application statuses from inbox to tracker, scheduling prep blocks or
+  reminders, and acting on LinkedIn directly (search jobs/people, send InMail, scan recruiter
+  inbox, check a profile). Only trigger when there is a clear job application, offer,
+  interview, or outreach context. Do not attempt these tasks without this skill.
 ---
 
 ## Content Trust Boundary
