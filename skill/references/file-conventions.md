@@ -63,16 +63,16 @@ related_eval: "[[eval-[slug]-[date]]]"   # wikilink syntax, not a path
 
 Obsidian's graph view only follows `[[wikilink]]` syntax — plain file paths in frontmatter are not treated as links. Two rules keep the graph populated:
 
-1. **All `related_*` frontmatter fields use wikilink syntax, in quotes.** Example: `related_eval: "[[eval-ukg-2026-04-14]]"`. Not `related_eval: evals/eval-ukg-2026-04-14.md`.
+1. **All `related_*` frontmatter fields use wikilink syntax, in quotes.** Example: `related_eval: "[[eval-acme-corp-2026-04-14]]"`. Not `related_eval: evals/eval-acme-corp-2026-04-14.md`.
 2. **Every eval file that has a related outreach, cover letter, or prep doc gets a `## Related` section appended at the bottom**, containing wikilinks to those docs. This creates the return edge so the graph is bidirectional. Example:
    ```
    ---
 
    ## Related
 
-   - Outreach: [[outreach-ukg-2026-04-14]]
-   - Cover letter: [[cover-ukg-2026-04-14]]
-   - Prep: [[prep-ukg-2026-04-14]]
+   - Outreach: [[outreach-acme-corp-2026-04-14]]
+   - Cover letter: [[cover-acme-corp-2026-04-14]]
+   - Prep: [[prep-acme-corp-2026-04-14]]
    ```
    Update this section whenever a new related artifact is produced. Use file basenames only (no `.md` extension, no folder path) — Obsidian resolves them vault-wide.
 
@@ -102,7 +102,7 @@ Daily scans, lead pulses, recruiter triage, pipeline digests, and week-aheads ar
 
 ### Naming
 
-- Company slug: lowercase, hyphen-separated, no punctuation. `marsh-mclennan`, `k-l-gates`, `guy-carpenter`.
+- Company slug: lowercase, hyphen-separated, no punctuation. `acme-corp`, `cipher-analytics`, `nova-systems`.
 - Dates: ISO-8601 (`YYYY-MM-DD`).
 - One file per artifact per company per day. If you re-evaluate the same company and role on the same day, version the files using a `-v#` suffix rather than overwriting — see Dedup Check section for details. Cross-day re-evaluations get different date stamps naturally.
 
