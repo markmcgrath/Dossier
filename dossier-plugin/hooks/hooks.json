@@ -1,0 +1,30 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__.*__(create|update|send|write|delete|move|draft).*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '{\"continue\": false, \"stopReason\": \"Dossier: This action writes to an external service (Notion, Gmail, Calendar, or Apollo). Please confirm in your message that you want to proceed.\"}'",
+            "statusMessage": "External write detected — awaiting confirmation",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/bin/dossier-lint-hook",
+            "statusMessage": "Scanning vault artifact for PII",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
