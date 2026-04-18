@@ -208,9 +208,9 @@ Gather context if not already clear:
 
 Then produce a focused prep document:
 
-**Structure:** `# Interview Prep: [Company] — [Role]` with sections: About the Company (3–5 bullet points), What They're Likely Evaluating, Questions You'll Probably Get (8–10, grouped by theme, with a note on what each assesses), Your Key Talking Points (3–4 STAR stories from CV; check `stories.md` first for matching competencies — offer to add strong new talking points there), Questions to Ask Them (5 smart questions), Watch-outs.
+**Structure:** `# Interview Prep: [Company] — [Role]` with sections: About the Company (3–5 bullet points), What They're Likely Evaluating, Questions You'll Probably Get (8–10, grouped by theme, with a note on what each assesses), Your Key Talking Points (3–4 STAR stories from CV; match from `stories.md` via tag overlap per `references/story-tagging.md` and link by Obsidian heading wikilink), Questions to Ask Them (5 smart questions), Watch-outs.
 
-Save the prep document as `interview-prep/prep-[company-slug]-[date].md` — **with `type: prep` frontmatter** (include `interview_date:` and `interviewers:` list). The prep body goes below the frontmatter block.
+Save the prep document as `interview-prep/prep-[company-slug]-[date].md` — **with `type: prep` frontmatter** (include `interview_date:`, `interviewers:` list, and `related_stories:` list of heading wikilinks per `references/story-tagging.md`). After writing the prep artifact, propose back-references (`**Used in:**` lines) into `stories.md` as a single approval batch. The prep body goes below the frontmatter block.
 
 ---
 
