@@ -1,6 +1,5 @@
 # Implementation Plan — Dossier v2
 
-**Date:** 2026-04-15
 **Status:** Ready for implementation
 **Supersedes:** `../research/dossier-implementation-plan.md` (pre-vault-first draft)
 

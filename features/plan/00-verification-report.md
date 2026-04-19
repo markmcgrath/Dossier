@@ -1,6 +1,5 @@
 # Pre-Implementation Verification Report
 
-**Date:** 2026-04-15
 **Purpose:** Verify the implementation plan against actual file contents before starting work.
 
 ---
@@ -79,7 +78,7 @@ The vault-first spec was written against a different line-numbering than the act
 
 ## 4. Dashboard.md — Three Issues Found
 
-The current `dashboard.md` (251 lines, last rebuilt 2026-04-14) is comprehensive with 14 Dataview queries. However:
+The current `dashboard.md` (251 lines) is comprehensive with 14 Dataview queries. However:
 
 ### Issue 1: Naming inconsistency
 - Line 4: `title: Career Ops Pipeline` → should be `Dossier Pipeline`
@@ -114,7 +113,7 @@ role: "..."
 grade: A | B+ | B | C
 score: 3.7–4.5
 status: Evaluating         # All 11 are "Evaluating" — none have progressed
-date: 2026-04-14           # All from the same day
+date: YYYY-MM-DD           # All from the same day
 location: "..."
 compensation: "..."
 notes: "..."

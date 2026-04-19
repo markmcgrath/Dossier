@@ -1,6 +1,5 @@
 # Dossier — Consolidated Assessment
 
-**Date:** 2026-04-15
 **Inputs:** Deep Research Report (external), Gap Analysis + Implementation Plan (ours), Email Automation Plan (ours)
 
 ---
