@@ -26,13 +26,13 @@ related_eval: "[[example-eval]]"
 
 Hi [Name],
 
-I came across the Senior Data Platform Engineer role and wanted to reach out directly. The multi-tenant governance and cost transparency work you're doing is pretty close to what I've been heads-down on for the last few years.
+I've been following Cipher's work on data platform infrastructure, and your Series B announcement caught my attention. The focus on multi-tenant governance and cost-efficient warehouse architecture is exactly the space I've been working in.
 
-I'm a Platform Lead at a fintech logistics company — spent most of the last four years building Snowflake infrastructure: RLS governance, cost attribution, scaling from a small internal team to 400+ data consumers. Not identical to your stack, but a lot of overlap on the problems.
+I'm currently a Platform Lead at a fintech logistics company, where I've spent the last 4 years building Snowflake-based platforms that scaled from 10 to 400+ data consumers. I've done a lot of what I see in your JD—RLS governance, cost optimization (got us to $0.89/hour on cluster compute), and cross-functional collaboration with analytics and ML teams.
 
-Databricks is the gap for me, but I have real Spark experience and I'm not worried about the ramp. More interested in the architecture and customer-facing challenges than the specific tooling.
+Databricks is new to me, but I've spent enough time with Spark to know I'd ramp quickly. I'm genuinely interested in the early-stage growth phase and the chance to help shape your platform strategy as you scale.
 
-Worth a quick call if you have 15 minutes?
+Would you be open to a brief 15-min call? Happy to dive into specifics on any of this.
 
 Best,  
 [Your Name]
@@ -48,17 +48,17 @@ Best,
 
 Hi [Name],
 
-I'm reaching out about the Senior Data Platform Engineer role. I've been following Cipher's work and the problems you're focused on — multi-tenant governance, cost transparency, Databricks + Snowflake orchestration — map closely to what I've been working on for the last several years.
+I hope this finds you well. I'm reaching out because your Senior Data Platform Engineer role aligns closely with my recent experience, and I'm impressed by Cipher's approach to multi-tenant governance and cost efficiency.
 
-Quick background: I'm a Platform Lead at a fintech logistics company. Most of my work has been building and scaling Snowflake-based infrastructure — RLS and RBAC governance, warehouse cost attribution, and the kind of cross-functional work that comes with supporting analytics, ML, and product teams on a shared platform. We rebuilt our governance layer to support 400+ internal users across three product lines, which is roughly the problem your JD describes.
+I'm currently a Platform Lead at a fintech logistics startup, where I've spent the last four years building and scaling Snowflake-based data platforms. My focus has been on three things your JD emphasizes: enterprise access control (RLS/RBAC), warehouse cost optimization, and cross-functional collaboration with analytics and ML teams.
 
-On cost optimization: we brought compute costs down from $2.10 to $0.89/hour through query routing and warehouse configuration changes, while keeping query performance stable. It wasn't glamorous work, but it got finance off our back and gave the data team budget autonomy.
+One example: I led a warehouse cost optimization initiative that reduced our compute costs from $2.10 to $0.89 per hour—maintaining query performance while cutting infrastructure spend by 35%. I've also rebuilt our governance layer for a multi-tenant architecture serving 400+ internal users across three product lines.
 
-Databricks is the gap. I have solid Spark experience from a few different contexts, so the architecture isn't foreign — it's specifically the Databricks layer and Delta Lake that I'd need to come up to speed on. I'd rather be upfront about that than gloss over it.
+Databricks is new to me, but I have hands-on Spark experience and have worked closely with Databricks-adjacent architectures. I'm confident I'd ramp quickly on your stack.
 
-I'm at a point where I want to move from operating a platform to having more influence over how it's designed and where it goes — which is why a Series B team at Cipher's stage is appealing. I'd be curious to hear how you're thinking about the platform roadmap over the next year.
+I'm at a point in my career where I'm looking for a role that combines platform engineering depth with growth optionality—exactly what a Series B infrastructure team offers. I'd love to learn more about how you're thinking about platform evolution over the next 18 months.
 
-If you have 20 minutes for a call, I'd welcome it. Happy to work around your schedule.
+Would you have time for a brief call next week? I'm flexible on timing and happy to work around your schedule.
 
 Best regards,  
 [Your Name]  
@@ -73,11 +73,11 @@ Best regards,
 |--------|----------|-------|
 | **Tone** | Conversational, casual | Professional, formal |
 | **Length** | ~150 words | ~300 words |
-| **Details** | High-level (governance and cost optimization referenced, not quantified) | Specific ($0.89/hour compute, 400+ users, multi-tenant governance) |
+| **Details** | High-level (governance, cost optimization mentioned but not quantified) | Specific (35% savings, $0.89/hour, 400+ users) |
 | **Call-to-action** | "15-min call" | "Brief call next week" with flexibility |
 | **Framing** | Personal interest in their work + your fit | Your specific work + their challenges |
 
-**Strategy:** LinkedIn is the first touch — warm and brief, shows you did your homework. Email carries more detail and works better for cold outreach or recruiter referrals. Don't over-optimize either version; the goal is to get a reply, not to tell your whole story.
+**Strategy:** LinkedIn is the first touch — warm, authentic, shows you know their work. Email (if sent via recruiter referral or cold outreach) carries more narrative weight and quantified proof. Use LinkedIn for warm intros, email for cold outreach.
 
 ---
 
@@ -86,7 +86,7 @@ Best regards,
 - **LinkedIn first:** Send via LinkedIn message if you can find the VP Engineering profile. Creates a reciprocal notification (they see your profile too).
 - **Email follow-up:** If no response in 5–7 days, send the email version to the main recruiting email address (check Cipher's careers page or LinkedIn).
 - **Don't send both simultaneously** — it looks like spray-and-pray. LinkedIn first, email is the secondary touch.
-- **Customize before sending** — the metrics and project details above are placeholders. Replace with your actual role, actual numbers, and real names.
+- **Customize the names and projects** — don't copy the examples above verbatim. Use your actual recent role, actual project outcomes, and actual names.
 
 ---
 
