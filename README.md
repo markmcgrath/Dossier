@@ -139,6 +139,9 @@ compensation: "$X–$Y" | "Not disclosed"
 outcome: Pending | No Response | Rejected | Phone Screen | Interview | Offer | Accepted | Withdrawn
 legitimacy: Verified | Plausible | Suspect | Likely Ghost
 notes: "One-sentence recommendation."
+source: "Indeed" | "Dice" | "LinkedIn" | "Company Careers" | "Referral" | "Recruiter Inbound" | "Other"
+referral_contact: ""
+application_method: ""
 ---
 ```
 

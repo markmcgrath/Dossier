@@ -74,6 +74,17 @@ No new roles matching your target criteria.
 
 ---
 
+## Source Yield
+
+| Source | Roles Logged | Avg Grade | Best Lead |
+|--------|-------------|-----------|-----------|
+| [Source 1] | X | [grade] | [Company — Role] |
+| [Source 2] | X | [grade] | [Company — Role] |
+
+*Populated from the current scan. Weekly trend report aggregates across scans.*
+
+---
+
 ## Next Steps
 
 [If new roles found:]
