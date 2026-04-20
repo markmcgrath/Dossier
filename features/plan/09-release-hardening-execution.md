@@ -1,6 +1,5 @@
 # Release Hardening — Execution Plan
 
-**Date:** 2026-04-16
 **Source:** `features/plan/Open Source Release Hardening Specification.md`
 **Scope:** All 13 tasks from the hardening spec, triaged and ordered for execution
 **Target:** The `open-source/` subfolder only — do not modify main vault files

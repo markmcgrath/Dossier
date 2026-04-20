@@ -1,6 +1,5 @@
 # Vault-First Architecture — Spec for Notion Decoupling
 
-**Date:** 2026-04-15
 **Status:** Proposed
 **Impact:** Touches SKILL.md (all Notion-dependent sections), config.md, README.md, dashboard.md, PRIVACY.md, DATA_CONTRACT.md, email automation plan.
 

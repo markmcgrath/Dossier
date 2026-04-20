@@ -15,6 +15,8 @@ model: Claude 3.5 Sonnet
 sources: ["LinkedIn job posting", "Company careers page", "Blind compensation data"]
 ---
 
+<!-- Fictional example. "Cipher Analytics" and every detail below are illustrative only. -->
+
 # Cipher Analytics — Senior Data Platform Engineer
 **Grade: B+  |  Score: 4.1/5  |  Legitimacy: Plausible**
 

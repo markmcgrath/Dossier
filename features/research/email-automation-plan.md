@@ -1,6 +1,5 @@
 # Email Automation Skill — Research, Architecture & Implementation Plan
 
-**Date:** 2026-04-15
 **Companion documents:** `dossier-gap-analysis.md`, `dossier-implementation-plan.md`
 **Relationship to Dossier:** This is a companion skill, not a replacement. Dossier Mode 9 (Inbox & Follow-up) handles reactive email tasks within a conversation. This skill handles proactive, cadence-driven email automation with stronger guardrails.
 

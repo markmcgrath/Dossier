@@ -1,6 +1,5 @@
 # Dossier v2 — Production Review Report
 
-**Date:** 2026-04-15  
 **Reviewer:** Code review agent  
 **Scope:** SKILL.md, config.md, dashboard.md, README.md, PRIVACY.md, DATA_CONTRACT.md, stories.md, examples, evals directory, and feature plan documents
 
@@ -440,5 +439,4 @@ The skill is ready to support real job search work.
 
 ---
 
-**Report prepared:** 2026-04-15 19:15 UTC  
 **Next review scheduled:** After 10 real evaluations are created (to validate Mode 0 and dashboard with actual data)

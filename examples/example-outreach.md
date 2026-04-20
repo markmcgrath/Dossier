@@ -8,6 +8,8 @@ status: drafted
 related_eval: "[[example-eval]]"
 ---
 
+<!-- Fictional example. "Cipher Analytics" and every detail below are illustrative only. -->
+
 # Cipher Analytics — Senior Data Platform Engineer Outreach
 
 **Status:** Drafted (not yet sent)  

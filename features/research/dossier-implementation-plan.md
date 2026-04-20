@@ -1,6 +1,5 @@
 # Dossier Skill — Implementation Plan
 
-**Date:** 2026-04-15
 **Companion document:** `dossier-gap-analysis.md`
 **Deployment model:** Claude.ai skill (primary), with notes on Claude Code extensions where applicable.
 
