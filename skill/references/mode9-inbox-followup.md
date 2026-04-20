@@ -65,3 +65,29 @@
 - **Respect the inbox.** Don't mark things read, don't label, don't archive. Read-only plus draft-only is the contract.
 - **Cross-reference before acting.** Always check the `evals/` folder before drafting a follow-up — confirm the application is still active and no response has been received.
 - **Stay out of personal email.** Filter aggressively to job-related threads. If a query surfaces personal messages, drop them silently rather than summarizing.
+
+---
+
+## Conditional: Zero Inbound for 2+ Weeks
+
+If recruiter triage finds zero inbound for two or more consecutive runs, replace the standard output with an outbound-activation format:
+
+### Outbound Activation Check
+
+- Scan `outreach/` for files with `status: drafted` (unsent). List each with company, role, and date drafted.
+- Scan `evals/` for files with `grade` of B or higher and `status: Evaluating` (not yet applied). List the top 3 by score as "highest-leverage outbound moves."
+- If unsent outreach drafts exist, surface them first — these are the lowest-friction actions available.
+
+### Profile Visibility Check
+
+- When was the LinkedIn profile last updated? (Ask the user if unknown.)
+- Are the headline and summary aligned with `profile.md` target roles?
+- Is the "Open to Work" signal active on LinkedIn?
+
+### Search Aperture Check
+
+- Are there job boards not yet being scanned? (Wellfound, Otta, Built In, company career pages)
+- Should the keyword set be expanded? (Review `profile.md` match signals vs. current search terms)
+- Has the geographic or remote filter changed since the search started?
+
+**When to trigger:** Check the dates of the two most recent `daily/recruiter-triage-*.md` files. If both report zero actionable inbound, switch to this format.

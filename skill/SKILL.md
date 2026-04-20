@@ -54,6 +54,9 @@ outcome: Pending   # Pending | No Response | Rejected | Phone Screen | Interview
 legitimacy: Verified | Plausible | Suspect | Likely Ghost
 model: claude-sonnet-4-6        # (optional) Which model produced this evaluation
 sources: []                     # (optional) Data sources consulted: jd_url, apollo, web_search, etc.
+source: "Indeed" | "Dice" | "LinkedIn" | "Company Careers" | "Referral" | "Recruiter Inbound" | "Other"
+referral_contact: ""            # Name of internal champion or referring person, if any
+application_method: ""          # Cold | Referral | Recruiter Inbound | Networking — populated when the user applies
 ```
 
 `status` and `outcome` are updated together per the transition table in `references/status-outcome-state-machine.md` — every status-write must also set the outcome per that table. The two fields are not aliases: `status` is the pipeline state from your side; `outcome` is the most recent employer-side signal.
@@ -208,6 +211,16 @@ Then produce a focused prep document:
 
 **Structure:** `# Interview Prep: [Company] — [Role]` with sections: About the Company (3–5 bullet points), What They're Likely Evaluating, Questions You'll Probably Get (8–10, grouped by theme, with a note on what each assesses), Your Key Talking Points (3–4 STAR stories from CV; match from `stories.md` via tag overlap per `references/story-tagging.md` and link by Obsidian heading wikilink), Questions to Ask Them (5 smart questions), Watch-outs.
 
+**Competency coverage matrix:** After drafting the prep doc, cross-reference `stories.md` against the target JD's key competencies:
+
+| Competency (from JD) | Story Available? | Story Title | Gap? |
+|-----------------------|-----------------|-------------|------|
+| [e.g., Cross-functional leadership] | ✓ / ✗ | [story name from stories.md] | [If ✗: "Suggest adding a story for this competency"] |
+
+If a critical JD competency has no matching story in `stories.md`, flag it explicitly and suggest the user draft one before the interview.
+
+**Framework selection:** Default to STAR+R (the format used in `stories.md`). For senior/leadership interviews, consider SHARE (Situation, Hindrance, Action, Results, Evaluation). For roles emphasizing learning and growth, consider CARL (Context, Action, Result, Learning). Note the chosen framework in the prep doc header.
+
 Save the prep document as `interview-prep/prep-[company-slug]-[date].md` — **with `type: prep` frontmatter** (include `interview_date:`, `interviewers:` list, and `related_stories:` list of heading wikilinks per `references/story-tagging.md`). After writing the prep artifact, propose back-references (`**Used in:**` lines) into `stories.md` as a single approval batch. The prep body goes below the frontmatter block.
 
 ---
@@ -232,6 +245,8 @@ Use web search and Apollo together to gather current, accurate information. Don'
 ---
 
 ### Mode 5: Outreach
+
+Read `references/mode5-outreach.md` for the output template, frontmatter schema, follow-up cadence, and channel guidelines.
 
 **Trigger:** User wants to find and/or write to a recruiter, hiring manager, or connection at a target company.
 

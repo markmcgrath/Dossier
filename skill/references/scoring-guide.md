@@ -81,14 +81,16 @@ Do the company's culture signals match what the user likely values?
 - **2:** Culture signals don't match the user's style, or Glassdoor / news signals are negative
 - **1:** Clear culture mismatch or widespread negative signals
 
-### 8. Remote / Location Fit (5%)
-Does the work location/remote policy match the user's situation?
+### 8. Remote / Location & Flexibility Fit (5%)
+Does the work location, remote policy, AND work-style flexibility match the user's situation?
 
-- **5:** Perfect match (fully remote when user is remote, or office-based in user's city)
-- **4:** Mostly compatible — hybrid that works, or relocation that makes sense
-- **3:** Requires some compromise (e.g., more in-office than ideal)
-- **2:** Significant friction — requires relocation or substantially changes working arrangement
+- **5:** Perfect match — fully remote when user is remote, plus strong flexibility signals (async culture, flexible hours, generous PTO)
+- **4:** Mostly compatible — hybrid that works, or good location fit with moderate flexibility
+- **3:** Requires some compromise (e.g., more in-office than ideal, or rigid schedule expectations)
+- **2:** Significant friction — requires relocation or substantially changes working arrangement; or role demands on-site presence that conflicts with user preferences
 - **1:** Non-starter — requires relocating to an unwanted location or fully in-office when remote is needed
+
+**Flexibility signals to assess:** schedule autonomy, async vs. sync culture, PTO/leave policy, timezone requirements, travel expectations. These are distinct from geographic location and should be weighted in the score even when the location itself is a match.
 
 ### 9. Hiring Signal Quality (4%)
 Does the job posting itself suggest a real, well-run hiring process?
