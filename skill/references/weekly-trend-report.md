@@ -24,6 +24,7 @@ Aggregate daily batch-eval data from the past 4+ weeks to identify market patter
    - Total unique JDs scanned per week (sum of all `count:` fields in batch-eval frontmatter)
    - Week-over-week growth or decline (% change)
    - Highest-volume week and lowest-volume week
+   - When reporting pipeline counts in any output, always include the delta: e.g., "Evaluating: 22 (+12 vs last week)"
 
 2. **Grade distribution per week:** Extract all grades from all batch-eval digests, grouped by week:
    - % of A grades per week
@@ -110,6 +111,28 @@ Then include sections:
 [Table with week, % Verified, % Plausible, % Suspect, % Likely Ghost]
 
 **Signal:** Market trustworthiness [improving/declining/stable]
+
+## Conversion Funnel
+
+| Stage | Count | Rate | Δ vs Last Week |
+|-------|-------|------|----------------|
+| Roles Scanned | X | — | +/- X |
+| Evaluating | X | X% of scanned | +/- X |
+| Applied | X | X% of evaluating | +/- X |
+| Interviewing | X | X% of applied | +/- X |
+| Offer | X | X% of interviewing | +/- X |
+
+*Funnel rates are cumulative. Early weeks will show zeros in later stages — that's expected.*
+
+## Compensation Summary
+
+| Metric | This Week | Last Week | Trend |
+|--------|-----------|-----------|-------|
+| Median (pipeline) | $X | $X | ↑/↓/→ |
+| Range | $X–$Y | $X–$Y | — |
+| % above comp floor | X% | X% | — |
+
+*If compensation has been trending downward for 3+ weeks, flag: "Your comp expectations may be anchoring low — review profile.md comp floor and consider whether recent scans are skewing your baseline."*
 
 ---
 
