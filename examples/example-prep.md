@@ -9,6 +9,8 @@ related_stories:
   - "[[stories#Multi-Tenant Governance at Scale]]"
 ---
 
+<!-- Fictional example. "Cipher Analytics" and every detail below are illustrative only. -->
+
 # Cipher Analytics — Senior Data Platform Engineer Interview Prep
 
 **Role:** Senior Data Platform Engineer  

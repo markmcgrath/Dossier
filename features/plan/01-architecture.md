@@ -20,7 +20,7 @@ The good news: the skill is already *partially* vault-first. Lines 22–32 of SK
 **What:** Create a timestamped backup of `dossier.skill`, then extract for editing.
 
 **Steps:**
-1. Copy `dossier.skill` to `skill-update/dossier.skill.bak-2026-04-15`
+1. Copy `dossier.skill` to `skill-update/dossier.skill.bak-YYYY-MM-DD`
 2. Extract: `unzip -o dossier.skill -d /tmp/skill-edit/`
 3. Confirm `SKILL.md` is 764 lines and `scoring-guide.md` is present
 

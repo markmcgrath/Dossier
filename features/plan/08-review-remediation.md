@@ -1,7 +1,6 @@
 # Review Remediation Plan
 
-**Date:** 2026-04-16 (revised)
-**Source:** `features/plan/review-report.md` (2026-04-15)
+**Source:** `features/plan/review-report.md`
 **Target file:** `skill-update/SKILL.md` (1,374 lines — restored from `dossier.skill`)
 **Scope:** All 13 issues from the review report, triaged against restored full file
 
@@ -11,7 +10,7 @@
 
 The review report was written against the 1,374-line SKILL.md packed inside `dossier.skill`. However, `skill-update/SKILL.md` was a stale 764-line draft that predated Streams C–F. This meant nearly half the features the review referenced didn't exist in the editable file.
 
-**Fix applied 2026-04-16:** Extracted the full 1,374-line SKILL.md from `dossier.skill`, stripped null bytes, and replaced the stale editable copy. The old 764-line version is preserved as `SKILL.md.bak-764-stale`. The `scoring-guide.md` was also extracted and cleaned.
+**Fix applied:** Extracted the full 1,374-line SKILL.md from `dossier.skill`, stripped null bytes, and replaced the stale editable copy. The old 764-line version is preserved as `SKILL.md.bak-764-stale`. The `scoring-guide.md` was also extracted and cleaned.
 
 All line numbers below reference the restored 1,374-line file.
 

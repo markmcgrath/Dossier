@@ -1,6 +1,5 @@
 # Dossier Skill — Gap Analysis & Path Forward
 
-**Date:** 2026-04-15
 **Scope:** Competitive landscape review, gap analysis, security/privacy audit, and roadmap to top-tier status.
 
 ---
