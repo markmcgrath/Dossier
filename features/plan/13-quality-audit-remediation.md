@@ -589,3 +589,9 @@ After all streams are complete:
 - [ ] `scoring-guide.md` includes flexibility signals in Dimension 8
 - [ ] All modified files propagated to open-source (excluding PII)
 - [ ] `dossier.skill` repacked in both main vault and open-source
+
+---
+
+## Cross-references
+
+- Plan 16 (test-suite hardening) defers conversion of `test_bias_caveat_in_mode_1`, `test_gate_pass_rule_is_prominent`, and `test_all_config_keys_documented` to hard assertions until this plan ships. When this plan completes, revisit those three tests in `open-source/tests/test_skill_structure.py` and either (a) convert the skip to an assert, or (b) rescope the assertion to read the relevant reference file rather than `SKILL.md`.

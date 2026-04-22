@@ -46,7 +46,14 @@ The Dossier skill lives in `skill/` and is packaged as a `.skill` ZIP bundle (`d
 1. Edit files in `skill/` — `SKILL.md` is the entry point; mode details live under `skill/references/`.
 2. Keep `SKILL.md` under 500 lines.
 3. Verify all `references/` pointers in `SKILL.md` resolve to actual files.
-4. Repack `dossier.skill` from the updated `skill/` folder.
+4. Repack `dossier.skill` from the updated `skill/` folder. The exact command depends on your packager — for the skill-creator tool included with Anthropic's Claude skill workflow:
+
+   ```bash
+   python -m scripts.package_skill /path/to/skill/ /tmp/out/ \
+     && mv /tmp/out/skill.skill ./dossier.skill
+   ```
+
+   If you use a different packager, ensure the resulting ZIP contains `skill/SKILL.md` and `skill/references/*.md` (matching the on-disk layout). `tests/test_skill_package_parity.py` will fail in CI if the repack is stale or mis-shaped.
 5. Run the test suite: `DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v`
 
 **PR checklist:**
@@ -56,6 +63,7 @@ The Dossier skill lives in `skill/` and is packaged as a `.skill` ZIP bundle (`d
 - [ ] No skill references files outside its own directory
 - [ ] `CHANGELOG.md` updated
 - [ ] `open-source/` copy is current (no PII)
+- [ ] `dossier.skill` repacked from `skill/` if either changed (`pytest tests/test_skill_package_parity.py` passes)
 - [ ] PII scan clean: `python .github/scripts/pii_scan.py`
 
 ## Conduct
