@@ -5,6 +5,7 @@ Automated test suite for the Dossier v2 job search skill. Tests verify structura
 ## What Tests Cover
 
 - **Package integrity** (`test_package.py`): ZIP file validity, required files, line counts
+- **Package parity** (`test_skill_package_parity.py`): Every entry in `dossier.skill` must match the on-disk source under `skill/`. Catches stale repacks.
 - **SKILL.md structure** (`test_skill_structure.py`): Required sections, modes, documentation
 - **Notion optionality contracts** (`test_antipatterns.py`): Enforces vault-first architecture — no mandatory-Notion phrases, all references conditional, vault-as-source-of-truth affirmed, disabled path documented, Mode 1 saves to vault
 - **Config permutations** (`test_config_contract.py`): Validates SKILL.md and config.template.md behavior across four config states: missing, Notion disabled, Notion enabled with missing IDs, Notion enabled with valid IDs
@@ -48,6 +49,7 @@ DOSSIER_VAULT="$(pwd)" python -m pytest tests/test_antipatterns.py::test_no_mand
 tests/
 ├── conftest.py                    # Shared fixtures (vault_path, skill_md, eval_files, etc.)
 ├── test_package.py                # ZIP integrity
+├── test_skill_package_parity.py   # ZIP ↔ skill/ byte-parity
 ├── test_skill_structure.py         # SKILL.md sections and modes
 ├── test_antipatterns.py            # Notion optionality contract tests
 ├── test_config_contract.py         # Config-state permutation tests
@@ -106,12 +108,14 @@ Fixtures are **reference inputs for manual testing** with Claude. They're not au
 
 ## CI/CD Integration
 
-Tests run on every push and pull request to `main` via `.github/workflows/ci.yml`. The workflow has two required checks:
+Tests run on every push and pull request to `main` via `.github/workflows/ci.yml`. The workflow defines two jobs that produce three required status checks:
 
-- **`test (3.11)` / `test (3.12)`** — runs `pytest tests/ -v --tb=short` on a Python matrix, with `DOSSIER_VAULT` set to the workspace root.
-- **`pii-scan`** — runs `.github/scripts/pii_scan.py` to block commits containing high-confidence PII or secret patterns.
+- **`test`** (matrix on Python 3.11 and 3.12) — runs `python -m pytest tests/ -v` with `DOSSIER_VAULT` set to the workspace root. The matrix produces two checks: `test (3.11)` and `test (3.12)`.
+- **`pii-scan`** — runs `python .github/scripts/pii_scan.py` to block commits containing high-confidence PII or secret patterns.
 
-See `.github/workflows/ci.yml` for the full definition. All three checks are required to pass before a PR can merge to `main` (see branch protection settings in the repo).
+All three checks (`test (3.11)`, `test (3.12)`, `pii-scan`) must pass before a PR can merge to `main`. See branch protection settings in the repo for enforcement.
+
+> **Canonical source:** `.github/workflows/ci.yml` is authoritative. If this README and the workflow disagree, the workflow wins. Update this section in the same PR as any workflow change.
 
 ## Interpreting Test Failures
 
@@ -138,11 +142,12 @@ Found phrases that imply Notion is mandatory (vault-first violation):
 ## Test Statistics
 
 Current test suite:
-- **Total tests:** 76
+- **Total tests:** 123
 - **Fast execution:** < 1 second (no external calls)
-- **Coverage areas:** 8
+- **Coverage areas:** 9
   - Package integrity: 5 tests
-  - Skill structure: 12 tests
+  - Package parity: 2 tests
+  - Skill structure: 13 tests
   - Notion optionality contracts: 5 tests
   - Config permutations: 17 tests
   - Doc consistency: 10 tests

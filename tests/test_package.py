@@ -3,6 +3,8 @@ Tests for ZIP package integrity of dossier.skill.
 """
 import zipfile
 
+import pytest
+
 
 def test_skill_zip_exists(vault_path):
     """Verify dossier.skill file exists."""

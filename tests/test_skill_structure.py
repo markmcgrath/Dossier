@@ -1,5 +1,21 @@
 """
 Tests for SKILL.md content structure and required sections.
+
+Currently deferred (skipped) tests — all tracked in plan 13 (quality audit
+remediation):
+
+- ``test_gate_pass_rule_is_prominent`` — "Gate-Pass Rule" heading not yet in
+  ``skill/SKILL.md``. Plan 13 Stream A adds it.
+- ``test_bias_caveat_in_mode_1`` — Bias Caveat is being added to
+  ``skill/references/mode1-offer-evaluator.md`` (a reference file), not to
+  ``SKILL.md``. This test will be retired or rescoped when plan 13 ships.
+- ``test_all_config_keys_documented`` — ``redact_comp`` and
+  ``scoring_weights`` not yet documented in ``skill/SKILL.md``. Plan 13
+  Stream C covers the config-schema work.
+
+All other structural tests are hard asserts: a regression that removes a
+required section from ``SKILL.md`` will fail CI loudly rather than
+silently skip.
 """
 import re
 import pytest
@@ -7,26 +23,15 @@ import pytest
 
 def test_content_trust_boundary_exists(skill_md):
     """Verify Content Trust Boundary section appears before first Mode heading."""
-    if "Content Trust Boundary" not in skill_md:
-        pytest.skip(
-            "Content Trust Boundary section not yet added to SKILL.md — "
-            "planned in features/plan/01-architecture.md (Stream A)"
-        )
-
-    # Find position of both
     ctb_pos = skill_md.find("Content Trust Boundary")
+    assert ctb_pos > 0, "Content Trust Boundary section missing from SKILL.md"
     mode_pos = skill_md.find("## Mode")
-    assert ctb_pos > 0, "Content Trust Boundary not found"
     assert mode_pos > ctb_pos, "Content Trust Boundary must appear before first Mode section"
 
 
 def test_mode_0_health_check_exists(skill_md):
     """Verify Mode 0 (health check) section exists and contains health check language."""
-    if "Mode 0" not in skill_md:
-        pytest.skip(
-            "Mode 0 (health check) not yet added to SKILL.md — "
-            "planned in features/plan/ (Stream B)"
-        )
+    assert "Mode 0" in skill_md, "Mode 0 (health check) section missing from SKILL.md"
     mode_0_section = skill_md[skill_md.find("Mode 0") : skill_md.find("Mode 0") + 2000]
     keywords = ["health", "check", "diagnose", "validate"]
     has_keyword = any(kw in mode_0_section.lower() for kw in keywords)
@@ -42,11 +47,7 @@ def test_all_modes_exist(skill_md):
     if "Mode 2.1" not in skill_md:
         missing.append("Mode 2.1")
 
-    if missing:
-        pytest.skip(
-            f"Modes not yet implemented in SKILL.md: {', '.join(missing)}. "
-            "Modes 12, 13, and 2.1 are planned in features/plan/ (Streams D–F)."
-        )
+    assert not missing, f"Modes missing from SKILL.md: {', '.join(missing)}"
 
 
 def test_pipeline_state_reading_section_exists(skill_md):
@@ -56,19 +57,15 @@ def test_pipeline_state_reading_section_exists(skill_md):
         or "Reading the Pipeline" in skill_md
         or "Pipeline State" in skill_md
     )
-    if not has_section:
-        pytest.skip(
-            "Explicit 'Pipeline State' section not yet added to SKILL.md — "
-            "planned in features/plan/01-architecture.md (Stream A vault-first migration)"
-        )
+    assert has_section, "Pipeline State section missing from SKILL.md"
 
 
 def test_gate_pass_rule_is_prominent(skill_md):
     """Verify Gate-Pass Rule appears as a clear section (not buried)."""
     if "Gate-Pass Rule" not in skill_md:
         pytest.skip(
-            "Gate-Pass Rule section not yet added to SKILL.md as a prominent heading — "
-            "planned in features/plan/review-report.md (issue #9)"
+            "Gate-Pass Rule section not present in `skill/SKILL.md`. "
+            "Tracked in plan 13 (quality audit remediation) Stream A."
         )
     assert "gate-pass" in skill_md.lower(), "Gate-pass rule not documented"
 
@@ -77,8 +74,9 @@ def test_bias_caveat_in_mode_1(skill_md):
     """Verify bias caveat appears somewhere in SKILL.md mentioning AI and pattern-matching."""
     if "Bias Caveat" not in skill_md and "bias caveat" not in skill_md.lower():
         pytest.skip(
-            "Explicit Bias Caveat section not yet added to SKILL.md — "
-            "planned in features/plan/review-report.md"
+            "Bias Caveat is being added to `references/mode1-offer-evaluator.md` "
+            "per plan 13 Stream A.2, not to SKILL.md. This test will be retired "
+            "or rescoped when plan 13 ships — see plan 16 follow-up note."
         )
     has_ai = "AI" in skill_md
     has_pattern_or_bias = "pattern" in skill_md.lower() or "bias" in skill_md.lower()
@@ -106,53 +104,40 @@ def test_all_config_keys_documented(skill_md):
     missing_keys = [k for k in config_keys if k not in skill_md]
     if missing_keys:
         pytest.skip(
-            f"Config keys not yet documented in SKILL.md: {', '.join(missing_keys)}. "
-            "These are planned config extensions in features/plan/ (Stream C)."
+            f"Config keys not yet documented in `skill/SKILL.md`: "
+            f"{', '.join(missing_keys)}. Tracked in plan 13 Stream C "
+            "(config schema work). `gmail_allow_domains`, "
+            "`gmail_deny_domains`, `target_companies` are already present."
         )
 
 
 def test_frontmatter_template_has_outcome(skill_md):
     """Verify frontmatter template includes outcome: field."""
-    if "outcome:" not in skill_md:
-        pytest.skip(
-            "outcome: field not yet added to the frontmatter template in SKILL.md — "
-            "present in example eval files but not yet in the skill's template block. "
-            "Planned in features/plan/03-foundation.md."
-        )
+    assert "outcome:" in skill_md, (
+        "`outcome:` field missing from the frontmatter template in SKILL.md"
+    )
 
 
 def test_frontmatter_template_has_legitimacy(skill_md):
     """Verify frontmatter template includes legitimacy: field."""
-    if "legitimacy:" not in skill_md:
-        pytest.skip(
-            "legitimacy: field not yet added to the frontmatter template in SKILL.md — "
-            "present in example eval files but not yet in the skill's template block. "
-            "Planned in features/plan/03-foundation.md."
-        )
+    assert "legitimacy:" in skill_md, (
+        "`legitimacy:` field missing from the frontmatter template in SKILL.md"
+    )
 
 
 def test_mode_12_batch_pipeline_exists(skill_md):
     """Verify Mode 12 (Batch Pipeline) section exists."""
-    if "Mode 12" not in skill_md and "Batch Pipeline" not in skill_md.lower():
-        pytest.skip(
-            "Mode 12 (Batch Pipeline) not yet implemented in SKILL.md — "
-            "planned in features/plan/05-advanced.md"
-        )
+    has_section = "Mode 12" in skill_md or "batch pipeline" in skill_md.lower()
+    assert has_section, "Mode 12 (Batch Pipeline) missing from SKILL.md"
 
 
 def test_mode_13_calibration_exists(skill_md):
     """Verify Mode 13 (Calibration Report) section exists."""
-    if "Mode 13" not in skill_md and "Calibration Report" not in skill_md.lower():
-        pytest.skip(
-            "Mode 13 (Calibration Report) not yet implemented in SKILL.md — "
-            "planned in features/plan/05-advanced.md"
-        )
+    has_section = "Mode 13" in skill_md or "calibration report" in skill_md.lower()
+    assert has_section, "Mode 13 (Calibration Report) missing from SKILL.md"
 
 
 def test_portal_scan_submode_exists(skill_md):
     """Verify Mode 2.1 (Portal Scan) submode exists."""
-    if "Mode 2.1" not in skill_md and "Portal Scan" not in skill_md:
-        pytest.skip(
-            "Mode 2.1 (Portal Scan) not yet implemented in SKILL.md — "
-            "planned in features/plan/04-competitive.md"
-        )
+    has_section = "Mode 2.1" in skill_md or "Portal Scan" in skill_md
+    assert has_section, "Mode 2.1 (Portal Scan) missing from SKILL.md"
