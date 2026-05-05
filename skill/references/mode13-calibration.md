@@ -12,7 +12,7 @@ Analyze the correlation between evaluation grades and actual outcomes to detect 
 
 2. **Minimum threshold:** If fewer than 15 outcomes exist, respond: "Not enough outcomes yet — update outcomes via Mode 9 and check back when you have at least 15." Stop here.
 
-3. **Grade-to-outcome correlation:** For each grade band (A, B+, B, C, D, F), compute:
+3. **Grade-to-outcome correlation:** For each grade band (A, B+, B, B-, C, D, F), compute:
    - Total evals in that band
    - % reaching Interview+ outcomes (Phone Screen, Interview, Offer, Accepted)
    - % reaching Offer+ outcomes (Offer, Accepted)
@@ -41,6 +41,7 @@ Analyze the correlation between evaluation grades and actual outcomes to detect 
 | A     | 5 | 80% | 40% | 0% | 20% |
 | B+    | 8 | 62% | 25% | 25% | 13% |
 | B     | 12 | 50% | 17% | 25% | 33% |
+| B-    | 9 | 40% | 13% | 30% | 38% |
 | C     | 10 | 30% | 10% | 40% | 50% |
 | D     | 6 | 17% | 0% | 50% | 83% |
 | F     | 4 | 0% | 0% | 75% | 25% |

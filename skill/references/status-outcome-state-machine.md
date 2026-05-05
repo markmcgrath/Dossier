@@ -4,7 +4,7 @@
 
 This document defines how the `status` and `outcome` frontmatter fields on eval artifacts are updated together. The two fields are **not aliases** — they express different things:
 
-- **`status`** is the *pipeline state* from your point of view: where the application sits (Evaluating, Applied, Interviewing, Offer, Rejected, Passed).
+- **`status`** is the *pipeline state* from your point of view: where the application sits (Evaluating, Applied, Interviewing, Offer, Rejected, Passed, Superseded).
 - **`outcome`** is the *response/advancement state* from the employer's side: what the most recent signal was (Pending, No Response, Phone Screen, Interview, Offer, Accepted, Rejected, Withdrawn).
 
 They can legitimately diverge — e.g. `status: Applied` with `outcome: Pending` means you've applied and nothing has come back yet.
@@ -23,6 +23,7 @@ Every status-write on an eval must also write the outcome per this table. The `o
 | Offer received | `Offer` | `Offer` | Mode 9 (offer email) or user-reported |
 | User accepts offer | `Offer` | `Accepted` | User action |
 | User withdraws / decides not to pursue | `Passed` | `Withdrawn` | User action |
+| Eval created in error and replaced by a newer eval at same `[company-slug]` and a later `date:` | `Superseded` | *(omit)* | Mode 1 dedup recovery; user manual cleanup |
 
 ## Rules
 
@@ -40,6 +41,13 @@ Every status-write on an eval must also write the outcome per this table. The `o
 
 `Rejected`, `Passed`, `Offer-Declined` are terminal statuses. When status transitions to any terminal value, Mode 9's Application Status Sync folds the archival move into the same batch approval per `references/terminal-archival.md` — the entire company bundle moves to `archive/[slug]/` (or `archive/[slug]-v{N}/` on repeat archivals).
 
+`Superseded` is a *bookkeeping-terminal* status. The eval no longer represents an active assessment — it is preserved (per the no-delete rule) but is not part of the active pipeline. Bookkeeping-terminal evals:
+
+- Carry `status: Superseded` and a `supersedes:` field pointing to the canonical eval at the same `[company-slug]` whose `date:` is later (or, exceptionally, earlier — see "in-error" pattern below).
+- Carry a `reason:` field explaining the supersede (typically a Mode 1 dedup glob miss followed by re-detection).
+- **Are exempt from grade/score/outcome schema validation.** The frontmatter only requires `type`, `company`, `role`, `status`, `date`. `grade`, `score`, and `outcome` are omitted because the original assessment lives in the canonical eval being pointed to.
+- Do **not** trigger archival. They stay in `evals/` so the relationship to the canonical eval is visible alongside it. Archival is reserved for full company-bundle terminal moves.
+
 Cold-detection (`status: Passed` with `outcome: No Response` after 90+ days of silence) is **not currently automated** — it requires date arithmetic that no mode implements today. Handle manually for now.
 
 ## Example transitions
@@ -50,3 +58,4 @@ Cold-detection (`status: Passed` with `outcome: No Response` after 90+ days of s
 - Mode 9 finds a panel/onsite invite → proposes `status: Interviewing`, `outcome: Interview`.
 - Mode 9 finds a rejection email → proposes `status: Rejected`, `outcome: Rejected`. (Last-event wins even if we were at `Interview`.)
 - User reports an offer → `status: Offer`, `outcome: Offer`. User accepts → `status: Offer`, `outcome: Accepted`.
+- Mode 1's daily-scan dedup glob misses a duplicate and creates `evals/eval-acme-2026-05-02.md` after `evals/eval-acme-2026-04-29.md` already exists. On post-write detection, the newer file is rewritten as `status: Superseded`, `supersedes: eval-acme-2026-04-29.md`, `reason: "Created in error during the daily-scan run on 2026-05-02. ..."`, with `grade`, `score`, and `outcome` omitted.

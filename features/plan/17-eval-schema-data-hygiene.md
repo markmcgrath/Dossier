@@ -1,7 +1,7 @@
 ---
 type: plan
 feature: eval-schema-data-hygiene
-status: draft
+status: shipped
 created: 2026-05-05
 author: claude
 tags: [tests, schema, evals, state-machine, data-hygiene]
@@ -9,6 +9,20 @@ related: "[[13-quality-audit-remediation]], [[16-test-suite-hardening]], [[skill
 ---
 
 # Plan 17 — Eval Schema & Data Hygiene Cleanup
+
+## Decisions taken (2026-05-05)
+
+All four streams shipped in a single session. Choices made:
+
+- **Stream A — Option A (widen rubric).** Added a B- band carved from the bottom of the existing B band: `B: 3.70–3.99` (was 3.50–3.99); `B-: 3.50–3.69` (new); `C: 3.00–3.49` (unchanged). C is untouched, only B narrows. Rubric updates landed in `scoring-guide.md`, `SKILL.md`, `file-conventions.md`. Calibration table in `mode13-calibration.md` and weekly trend table in `weekly-trend-report.md` extended to include B-.
+- **Stream B — fixed.** Two evals from April 2026 had their `outcome: Applied` corrected to `outcome: Pending`.
+- **Stream C — Option A (formalize Superseded).** `Superseded` added to `VALID_STATUSES`. New row in the state-machine transition table. Marked as a *bookkeeping-terminal* status (distinct from full archival): the eval stays in `evals/` next to the canonical entry it points to via `supersedes:`. Schema validation introduced a `SCHEMA_EXEMPT_STATUSES` set so Superseded evals only require `type`, `company`, `role`, `status`, `date` — `grade`, `score`, `outcome` are exempt because the canonical assessment lives on the eval being pointed to. Mode 0 health check updated to recognize the exemption and to validate `supersedes:` instead of (status, outcome). Mode 1 dedup-recovery flow documented for the case where the dedup glob misses and a duplicate is created. The 5 affected evals had the kludgy `grade: superseded` value removed (status alone now carries the meaning).
+- **Stream D — fixed.** The main-vault `tests/conftest.py` was truncated mid-fixture (`return ex` instead of `return example_file.read_text(...)`) and was missing the `example_prep_frontmatter` fixture entirely. Both completed; the test now passes. (The open-source conftest already had both fixtures intact — main vault was the only side that needed the fix.)
+
+Final test posture:
+
+- **Main vault:** 67 passed, 6 skipped, 3 failed. The 3 failures are the long-standing plan-13 deferrals (`test_gate_pass_rule_is_prominent`, `test_bias_caveat_in_mode_1`, `test_all_config_keys_documented`) — out of scope for plan 17.
+- **Open-source:** 123 passed, 3 skipped (same 3 deferrals, but skipped rather than failed in the open-source variant of `test_skill_structure.py`).
 
 ## Problem
 

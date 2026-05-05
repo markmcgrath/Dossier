@@ -14,7 +14,14 @@ VALID_STATUSES = {
     "Passed",
     "Offer-Declined",
     "Batch-Evaluated",
+    "Superseded",
 }
+
+# Terminal bookkeeping statuses where the eval no longer represents an active
+# assessment — grade, score, and outcome are exempt from schema validation
+# because the eval may have been re-evaluated under a new file (same slug,
+# later date) and the original assessment is preserved there.
+SCHEMA_EXEMPT_STATUSES = {"Superseded"}
 VALID_OUTCOMES = {
     "Pending",
     "No Response",
@@ -29,13 +36,20 @@ VALID_LEGITIMACIES = {"Verified", "Plausible", "Suspect", "Likely Ghost"}
 
 
 def test_all_evals_have_required_fields(eval_files):
-    """Verify all eval files have required frontmatter fields."""
-    required = {"type", "company", "role", "grade", "score", "status", "date", "outcome"}
+    """Verify all eval files have required frontmatter fields.
+
+    Evals in a SCHEMA_EXEMPT_STATUSES state (e.g. Superseded) only need
+    type, company, role, status, date — grade/score/outcome are exempt.
+    """
+    base_required = {"type", "company", "role", "status", "date"}
+    full_required = base_required | {"grade", "score", "outcome"}
     missing = []
 
     for fm in eval_files:
         file_name = fm.get("__file__", "unknown")
-        fm_required = required.copy()
+        required = (
+            base_required if fm.get("status") in SCHEMA_EXEMPT_STATUSES else full_required
+        )
         for field in required:
             if field not in fm or fm[field] is None:
                 missing.append((file_name, field))
@@ -48,9 +62,14 @@ def test_all_evals_have_required_fields(eval_files):
 
 
 def test_grade_values_are_valid(eval_files):
-    """Verify all grade values are in valid set."""
+    """Verify all grade values are in valid set.
+
+    Schema-exempt statuses skip this check.
+    """
     invalid = []
     for fm in eval_files:
+        if fm.get("status") in SCHEMA_EXEMPT_STATUSES:
+            continue
         grade = fm.get("grade")
         file_name = fm.get("__file__", "unknown")
         if grade not in VALID_GRADES:
@@ -80,9 +99,14 @@ def test_status_values_are_valid(eval_files):
 
 
 def test_outcome_values_are_valid(eval_files):
-    """Verify all outcome values are valid."""
+    """Verify all outcome values are valid.
+
+    Schema-exempt statuses skip this check.
+    """
     invalid = []
     for fm in eval_files:
+        if fm.get("status") in SCHEMA_EXEMPT_STATUSES:
+            continue
         outcome = fm.get("outcome")
         file_name = fm.get("__file__", "unknown")
         # outcome can be None (for old evals), but if present must be valid
@@ -136,9 +160,14 @@ def test_date_format_is_correct(eval_files):
 
 
 def test_score_is_numeric_in_range(eval_files):
-    """Verify all score values are numeric and in range 1.0–5.0."""
+    """Verify all score values are numeric and in range 1.0–5.0.
+
+    Schema-exempt statuses skip this check.
+    """
     invalid = []
     for fm in eval_files:
+        if fm.get("status") in SCHEMA_EXEMPT_STATUSES:
+            continue
         score = fm.get("score")
         file_name = fm.get("__file__", "unknown")
         try:
@@ -156,9 +185,14 @@ def test_score_is_numeric_in_range(eval_files):
 
 
 def test_all_evals_have_outcome_pending_or_real(eval_files):
-    """Verify all 11 backfilled evals have outcome field (Pending or real outcome)."""
+    """Verify all backfilled evals have outcome field (Pending or real outcome).
+
+    Schema-exempt statuses skip this check.
+    """
     missing_outcome = []
     for fm in eval_files:
+        if fm.get("status") in SCHEMA_EXEMPT_STATUSES:
+            continue
         if "outcome" not in fm or fm["outcome"] is None:
             missing_outcome.append(fm.get("__file__", "unknown"))
 
