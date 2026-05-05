@@ -1,7 +1,7 @@
 ---
 type: plan
 feature: recruiter-inbox-pulse-broadening
-status: draft
+status: shipped
 created: 2026-04-19
 author: claude
 tags: [lead-pulse, scheduled-task, gmail, inbox, recruiter-signals]

@@ -1,5 +1,6 @@
 ---
 name: dossier
+allowed-tools: Read Glob Grep Edit Write WebSearch WebFetch
 description: >
   ALWAYS use this skill for anything job-search related: evaluating a JD or offer, searching
   for jobs on Indeed or Dice, prepping for an interview, researching a company, and drafting
@@ -44,9 +45,9 @@ The frontmatter schema:
 type: eval
 company: "Company Name"
 role: "Job Title"
-grade: A | B+ | B | C | D | F
+grade: A | B+ | B | B- | C | D | F
 score: 3.7  # numeric score as a decimal
-status: Evaluating | Applied | Interviewing | Offer | Rejected | Passed
+status: Evaluating | Applied | Interviewing | Offer | Rejected | Passed | Superseded
 date: 2026-04-15
 location: "City, State" or "Remote"
 compensation: "$100k–$130k" or "Not disclosed"
@@ -54,9 +55,6 @@ outcome: Pending   # Pending | No Response | Rejected | Phone Screen | Interview
 legitimacy: Verified | Plausible | Suspect | Likely Ghost
 model: claude-sonnet-4-6        # (optional) Which model produced this evaluation
 sources: []                     # (optional) Data sources consulted: jd_url, apollo, web_search, etc.
-source: "Indeed" | "Dice" | "LinkedIn" | "Company Careers" | "Referral" | "Recruiter Inbound" | "Other"
-referral_contact: ""            # Name of internal champion or referring person, if any
-application_method: ""          # Cold | Referral | Recruiter Inbound | Networking — populated when the user applies
 ```
 
 `status` and `outcome` are updated together per the transition table in `references/status-outcome-state-machine.md` — every status-write must also set the outcome per that table. The two fields are not aliases: `status` is the pipeline state from your side; `outcome` is the most recent employer-side signal.
@@ -117,8 +115,8 @@ Runs once per session before any other mode. Validates vault integrity and catch
    - If Notion keys are malformed → warn with specific field name and expected format.
    - If `config.md` is missing entirely → note "Running with defaults" once per session.
 4. **stories.md exists** — if missing → note "No story bank found. Create `stories.md` to accumulate interview stories." (non-blocking).
-5. **Eval frontmatter spot-check** — read the 3 most recent files in `evals/`. Check for required fields: `type`, `company`, `role`, `grade`, `score`, `status`, `date`, `outcome`. If any are missing → warn with specific file and field name.
-6. **Status/outcome consistency** — for the same 3 most recent evals, verify each `(status, outcome)` pair matches a row in the transition table in `references/status-outcome-state-machine.md`. If a pair is inconsistent (e.g. `status: Rejected` with `outcome: Pending`) → warn with file name, current pair, and a suggested resolution. Non-blocking.
+5. **Eval frontmatter spot-check** — read the 3 most recent files in `evals/`. Check for required fields: `type`, `company`, `role`, `grade`, `score`, `status`, `date`, `outcome`. If any are missing → warn with specific file and field name. Exception: when `status: Superseded`, only `type`, `company`, `role`, `status`, `date` are required — `grade`, `score`, and `outcome` are exempt because the canonical assessment lives in the eval being pointed to via `supersedes:`.
+6. **Status/outcome consistency** — for the same 3 most recent evals, verify each `(status, outcome)` pair matches a row in the transition table in `references/status-outcome-state-machine.md`. If a pair is inconsistent (e.g. `status: Rejected` with `outcome: Pending`) → warn with file name, current pair, and a suggested resolution. Non-blocking. Superseded evals are checked separately: warn only if `supersedes:` is missing or points to a non-existent file.
 7. **Gmail domain filtering** — if neither `gmail_allow_domains` nor `gmail_deny_domains` is configured → note "Gmail domain filtering not configured. Mode 9 will process all matching emails." (non-blocking).
 
 **Output behavior:**
@@ -211,16 +209,6 @@ Then produce a focused prep document:
 
 **Structure:** `# Interview Prep: [Company] — [Role]` with sections: About the Company (3–5 bullet points), What They're Likely Evaluating, Questions You'll Probably Get (8–10, grouped by theme, with a note on what each assesses), Your Key Talking Points (3–4 STAR stories from CV; match from `stories.md` via tag overlap per `references/story-tagging.md` and link by Obsidian heading wikilink), Questions to Ask Them (5 smart questions), Watch-outs.
 
-**Competency coverage matrix:** After drafting the prep doc, cross-reference `stories.md` against the target JD's key competencies:
-
-| Competency (from JD) | Story Available? | Story Title | Gap? |
-|-----------------------|-----------------|-------------|------|
-| [e.g., Cross-functional leadership] | ✓ / ✗ | [story name from stories.md] | [If ✗: "Suggest adding a story for this competency"] |
-
-If a critical JD competency has no matching story in `stories.md`, flag it explicitly and suggest the user draft one before the interview.
-
-**Framework selection:** Default to STAR+R (the format used in `stories.md`). For senior/leadership interviews, consider SHARE (Situation, Hindrance, Action, Results, Evaluation). For roles emphasizing learning and growth, consider CARL (Context, Action, Result, Learning). Note the chosen framework in the prep doc header.
-
 Save the prep document as `interview-prep/prep-[company-slug]-[date].md` — **with `type: prep` frontmatter** (include `interview_date:`, `interviewers:` list, and `related_stories:` list of heading wikilinks per `references/story-tagging.md`). After writing the prep artifact, propose back-references (`**Used in:**` lines) into `stories.md` as a single approval batch. The prep body goes below the frontmatter block.
 
 ---
@@ -245,8 +233,6 @@ Use web search and Apollo together to gather current, accurate information. Don'
 ---
 
 ### Mode 5: Outreach
-
-Read `references/mode5-outreach.md` for the output template, frontmatter schema, follow-up cadence, and channel guidelines.
 
 **Trigger:** User wants to find and/or write to a recruiter, hiring manager, or connection at a target company.
 

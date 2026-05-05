@@ -33,9 +33,9 @@ Every artifact file **must** start with YAML frontmatter. The `type` field is ho
 type: eval
 company: "Company Name"
 role: "Role Title"
-grade: A            # A | B+ | B | C | D | F
+grade: A            # A | B+ | B | B- | C | D | F
 score: 4.5
-status: Evaluating  # Evaluating | Applied | Interviewing | Offer | Rejected | Passed
+status: Evaluating  # Evaluating | Applied | Interviewing | Offer | Rejected | Passed | Superseded
 date: YYYY-MM-DD
 location: "Remote"
 compensation: "$X–$Y"     # or "Not disclosed"
@@ -102,7 +102,7 @@ Daily scans, lead pulses, recruiter triage, pipeline digests, and week-aheads ar
 
 ### Naming
 
-- Company slug: lowercase, hyphen-separated, no punctuation. `acme-corp`, `cipher-analytics`, `nova-systems`.
+- Company slug: lowercase, hyphen-separated, no punctuation. `acme-corp`, `wayne-enterprises`, `globex-industries`.
 - Dates: ISO-8601 (`YYYY-MM-DD`).
 - One file per artifact per company per day. If you re-evaluate the same company and role on the same day, version the files using a `-v#` suffix rather than overwriting — see Dedup Check section for details. Cross-day re-evaluations get different date stamps naturally.
 
