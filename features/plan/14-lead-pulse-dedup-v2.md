@@ -1,7 +1,7 @@
 ---
 type: plan
 feature: lead-pulse-dedup-v2
-status: draft
+status: shipped
 created: 2026-04-19
 author: claude
 tags: [lead-pulse, scheduled-task, dedup, state-management]
