@@ -1,7 +1,7 @@
 ---
 type: plan
 feature: test-suite-hardening
-status: draft
+status: shipped
 created: 2026-04-22
 author: claude
 tags: [tests, ci, packaging, release-readiness]
