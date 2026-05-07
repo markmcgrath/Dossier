@@ -150,12 +150,12 @@ application_method: "Cold" | "Referral" | "Recruiter Inbound" | "Networking"  # 
    - `referral_contact: ""`
    - `application_method: ""`
    - `outcome: Pending`
-3. Fix the UKG eval (`eval-ukg-2026-04-14.md`): resolve the grade inconsistency — frontmatter says `grade: A` but the body heading says "Grade: A-". These must match. Use the frontmatter value (A) as authoritative and update the body heading.
+3. Fix the ACME eval (`eval-acme-corp-2026-04-14.md`): resolve the grade inconsistency — frontmatter says `grade: A` but the body heading says "Grade: A-". These must match. Use the frontmatter value (A) as authoritative and update the body heading.
 
 **Acceptance:**
 - Every eval in `evals/` has all schema fields present
 - No Dataview query returns fewer results due to missing frontmatter
-- UKG grade is consistent between frontmatter and body
+- ACME grade is consistent between frontmatter and body
 
 ### A.6 — Add Grade Validation Rule
 
@@ -268,21 +268,21 @@ After 3 touches with no response, archive the outreach. Do not follow up a 4th t
 - Covered by B.1 (the reference file defines these fields). This task is a validation checkpoint.
 
 **Acceptance:**
-- Existing outreach docs (`outreach-ukg-2026-04-14.md`, `outreach-guy-carpenter-2026-04-14.md`) are updated with the new fields (default values for unsent drafts: `sent_date: ""`, `first_response_date: ""`, `touch_count: 0`)
+- Existing outreach docs (`outreach-acme-corp-2026-04-14.md`, `outreach-globex-industries-2026-04-14.md`) are updated with the new fields (default values for unsent drafts: `sent_date: ""`, `first_response_date: ""`, `touch_count: 0`)
 
 ### B.3 — Update Existing Outreach Docs
 
 **What:** Backfill the new frontmatter fields onto the two existing outreach documents.
 
 **Steps:**
-1. Add to `outreach-ukg-2026-04-14.md`:
+1. Add to `outreach-acme-corp-2026-04-14.md`:
    ```yaml
    sent_date: ""
    first_response_date: ""
    followup_dates: []
    touch_count: 0
    ```
-2. Add to `outreach-guy-carpenter-2026-04-14.md`:
+2. Add to `outreach-globex-industries-2026-04-14.md`:
    ```yaml
    sent_date: ""
    first_response_date: ""

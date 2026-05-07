@@ -112,7 +112,7 @@ Scan `evals/` for all `.md` files. For each file, read its frontmatter and check
 - `referral_contact: ""` (if missing)
 - `application_method: ""` (if missing)
 
-**Special fix:** In `evals/eval-ukg-2026-04-14.md`, find the body heading that says "Grade: A-" and change it to "Grade: A" to match the frontmatter value `grade: A`.
+**Special fix:** In `evals/eval-acme-corp-2026-04-14.md`, find the body heading that says "Grade: A-" and change it to "Grade: A" to match the frontmatter value `grade: A`.
 
 Do NOT change any existing field values — only add missing fields. Preserve the exact formatting and content of each file.
 
@@ -219,7 +219,7 @@ Read `references/mode5-outreach.md` for the output template, frontmatter schema,
 
 ### B.2/B.3 — Backfill Existing Outreach Docs
 
-Edit `outreach/outreach-ukg-2026-04-14.md`. Add these fields to its YAML frontmatter (after the existing fields, before the closing `---`):
+Edit `outreach/outreach-acme-corp-2026-04-14.md`. Add these fields to its YAML frontmatter (after the existing fields, before the closing `---`):
 
 ```yaml
 sent_date: ""
@@ -241,7 +241,7 @@ Also add a follow-up schedule skeleton to the body, before the "## Notes Before 
 | Archive | — | TBD | — |
 ```
 
-Do the same for `outreach/outreach-guy-carpenter-2026-04-14.md`.
+Do the same for `outreach/outreach-globex-industries-2026-04-14.md`.
 
 ---
 

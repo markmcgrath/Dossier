@@ -182,7 +182,7 @@ These are unambiguous requests that clearly map to a single mode. Both monolithi
 ### T-014 — Salary Negotiation (range question)
 
 **Prompt:**
-> "What should I be asking for? I'm a senior analytics engineer with 12 years of experience, remote in Arkansas."
+> "What should I be asking for? I'm a senior analytics engineer with 12 years of experience, remote, US-based."
 
 **Category:** Direct  
 **Expected (monolithic):** dossier → Mode 7  
