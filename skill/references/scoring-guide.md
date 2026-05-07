@@ -123,3 +123,21 @@ Does taking this role move the user's career forward in a meaningful way?
 | < 2.00 | F | Not recommended |
 
 **Gate-pass rule:** If Dimension 1 or Dimension 2 scores 2 or below, cap the final grade at D — even if other dimensions score high. The role or skills mismatch is too fundamental to overcome.
+
+---
+
+## Positioning Keyword Reference
+
+When scoring Dimensions 1, 2, and 10, consult `profile.md` for the canonical lists of:
+
+- **Positioning Keywords** — JD language that signals fit (favor) or downrank (flag)
+- **Domain Preferences** — verticals to favor based on the user's background and goals
+- **Location Preferences** — full in-scope / out-of-scope geography list, including any renter-only or comp-gated markets the user has called out
+- **Target Roles (Primary / Secondary / Emerging)** — multi-tier role list. Emerging-tier titles (forward-looking categories that may not yet exist as standard JD postings) should not be penalized as overreach when matching JDs.
+
+`profile.md` is the source of truth. Do not duplicate keyword lists into this file — read profile.md when scoring.
+
+### Calibration adjustments tied to location
+
+- Dimension 8 (Remote/Location Fit): cities listed as in-scope (including hybrid-acceptable metros and renter-only relocation candidates) score 3-4, not 1.
+- Dimension 4 (Comp vs Market): for high-cost-of-living markets in profile.md, calibrate against local cost of living, not the user's current baseline. Markets explicitly flagged as "high-pay only" require above-market offers to score 4+.
