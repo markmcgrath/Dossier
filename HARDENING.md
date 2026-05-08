@@ -70,6 +70,8 @@ Actions are enabled with a deliberately narrow policy:
 
 **CI workflow** (`.github/workflows/ci.yml`) declares `permissions: contents: read` at the workflow level — least privilege even below the repo default.
 
+**Release workflow** (`.github/workflows/release.yml`) declares `permissions: contents: write` at the workflow level — the minimum needed for `gh release create`. The elevated grant is scoped to this one workflow file; CI's `contents: read` is unchanged. The release workflow triggers only on tag push (`v*`), never on PR or push-to-branch, so a malicious PR cannot exfiltrate via the elevated permission. The release workflow is *not* a required status check (it cannot be — required checks gate branch merges, and the release workflow runs after merge on the resulting tag); the merge-time gates (`pii-scan`, `test (3.11)`, `test (3.12)`, `changelog-check`) cover that role.
+
 **Operational verification:** The allowlist was end-to-end tested on PR #18. A misconfigured allowlist (patterns saved as a single CRLF-joined string) produced a `startup_failure`; after splitting into two entries via `PUT /actions/permissions/selected-actions`, CI ran successfully.
 
 ---
@@ -149,6 +151,7 @@ Local gate: `.github/scripts/pii_scan.py`, wired into CI as a required status ch
 - `test (3.11)` — full pytest suite on Python 3.11.
 - `test (3.12)` — full pytest suite on Python 3.12.
 - `changelog-check` — gates PRs that touch `skill/`, `tests/`, or `dossier.skill` on a corresponding `## [Unreleased]` CHANGELOG entry. Bypassable via `[skip-changelog]` token in any commit message in the PR range.
+- `release.yml` re-runs the test suite as defense-in-depth before building the artifact. ~3 min cost per tag; catches the corner case where a maintainer tags a commit that didn't go through CI (e.g., a tag on a long-lived branch).
 
 **Test surface** (121 passing, 3 skipped as of the last run):
 
@@ -193,6 +196,7 @@ The shipped repo intentionally does NOT contain:
 - **Every change goes through a PR.** Direct push to `main` is rejected by the ruleset.
 - **Squash merges only.** Linear history is enforced.
 - **ZIP repack is deterministic.** `dossier.skill` is rebuilt from `skill/` with sorted file order, pinned timestamps (2026-01-01), and DEFLATE compression, so diffs are minimal.
+- The pinned timestamp is `2026-01-01T00:00:00Z` for every entry. The `built_at` field in `skill/manifest.json` is also pinned to this value (not a wall-clock timestamp), so two builds of the same source tree produce byte-identical bundles. The `commit` field in the manifest is the only volatile element. The byte-match guard in `build_skill.sh` exits 3 if a freshly built bundle differs from the committed `dossier.skill`; recovery is `cp dist/dossier-*.skill dossier.skill && git commit && git push && retag` (delete the prior tag/release first if the tag was already pushed).
 - **User-layer / system-layer separation** is documented in `DATA_CONTRACT.md` and enforced by `.gitignore`. User-layer files (`cv.md`, `profile.md`, `stories.md`, `config.md`, all working folders) are never overwritten by skill updates.
 - **Ruleset cycle for admin history changes.** Documented in §1: disable ruleset, perform action, re-enable, verify.
 - **Permissions-mode friction is a feature.** Destructive operations (force-push, history rewrite, security policy edits) are gated by the Claude Code permission system. Each gate was lifted only by explicit per-command authorization, not by a broad bypass.
@@ -222,6 +226,7 @@ GitHub security features that can only be enabled once a repo is public, which c
 - **Secret scanning** — catches 200+ known secret types in content (different from the narrow regex set in §5). Enable in Settings → Code security.
 - **Push protection** — blocks commits containing detected secrets before they reach the remote. Enable in the same pane.
 - **CodeQL default setup** — static analysis for common vulnerabilities. One-click setup.
+- **Release workflow coverage** — secret scanning and push protection apply to the commits and tag pushes that trigger `release.yml` by the same repo-level policy that covers regular branch pushes. No additional configuration is needed for the release workflow to benefit from these protections.
 
 Secret scanning specifically closes part of the git-metadata gap called out in §5: it *does* scan commit messages and patch contents, so a future accidental leak in an author email or commit body has an independent safety net.
 

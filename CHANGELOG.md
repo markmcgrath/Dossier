@@ -6,6 +6,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-05-08
+
 ### Added
 
 - Deterministic skill packer (`.github/scripts/build_skill.sh`) replaces manual repack. `dossier.skill` now contains `skill/manifest.json` and pinned `2026-01-01` timestamps for byte-stable rebuilds.

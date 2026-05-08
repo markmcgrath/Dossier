@@ -26,6 +26,8 @@ All tasks target the `open-source/` folder. This is the public GitHub release co
 | 12 | LLM Safety section in README | **NEEDED** | Add section to README.md |
 | 13 | Final consistency pass | **NEEDED** | Fix automation claim, verify wikilinks, check terminology |
 
+**Closed by Plan 18** ([18-version-tag-release-pipeline](18-version-tag-release-pipeline.md)) — `.github/workflows/release.yml` + `.github/scripts/build_skill.sh` ship the originally-deferred release automation as of 2026-05-08.
+
 ---
 
 ## Execution Steps
