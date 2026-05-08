@@ -168,8 +168,13 @@ with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         if "/bin/" in arcname:
             info.external_attr = (0o755 << 16) | (info.external_attr & 0xFFFF)
         # Pin mtime to a fixed timestamp so two builds of the same source
-        # produce byte-identical archives. This is the critical fix.
+        # produce byte-identical archives.
         info.date_time = (2026, 1, 1, 0, 0, 0)
+        # ZipInfo.from_file() defaults compress_type to ZIP_STORED regardless
+        # of the parent ZipFile's compression= setting; writestr(info, ...)
+        # uses the per-entry value, so set it explicitly to honour the
+        # DEFLATE invariant from HARDENING.md §9.
+        info.compress_type = zipfile.ZIP_DEFLATED
         zf.writestr(info, path.read_bytes())
 PYEOF
 
