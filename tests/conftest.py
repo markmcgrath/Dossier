@@ -27,6 +27,13 @@ def skill_zip(vault_path):
 
 
 @pytest.fixture(scope="session")
+def manifest(skill_zip):
+    """Parsed manifest.json from dossier.skill."""
+    import json
+    return json.loads(skill_zip.read("skill/manifest.json").decode("utf-8"))
+
+
+@pytest.fixture(scope="session")
 def skill_md(skill_zip):
     """Full text of SKILL.md as a string (root, skill/, or skill-update/ subfolder)."""
     names = skill_zip.namelist()
