@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - `build_skill.sh` byte-match guard reworked as a **content-match** that excludes `skill/manifest.json`. The original byte-match was unworkable because the manifest's `commit` and `version` fields reflect HEAD at pack time and necessarily drift across commits, producing false-positive failures on every PR after the bundle was last regenerated. The content-match preserves the guard's intent (catch stale `skill/` content) without the churn. HARDENING.md §9 updated to match.
+- `verify_skill_artifact.py` version regex relaxed from `^v\d+\.\d+\.\d+(-[\w.+]+)?$` to `^v\d+\.\d+\.\d+(-[\w.+-]+)?$` so pre-release suffixes containing hyphens (e.g. `v0.0.0-rc-test`, `v1.0.0-beta-1`) are accepted. Standard semver allows hyphens in pre-release identifiers; the original regex was over-strict.
 
 ## [1.1.0] — 2026-05-08
 

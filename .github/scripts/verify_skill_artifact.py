@@ -22,7 +22,7 @@ Checks performed:
     7. skill/references/scoring-guide.md length > 100 lines.
     8. skill/manifest.json is valid JSON with exactly four keys
        (name, version, built_at, commit); name == "dossier";
-       version matches ^v\\d+\\.\\d+\\.\\d+(-[\\w.+]+)?$.
+       version matches ^v\\d+\\.\\d+\\.\\d+(-[\\w.+-]+)?$.
 
 Stdlib only — no third-party imports. Inline parse_frontmatter helper
 duplicates the logic from tests/conftest.py rather than importing it, so
@@ -191,7 +191,7 @@ def main():
         fail(
             f"skill/manifest.json name must be 'dossier'; got {manifest['name']!r}"
         )
-    version_pattern = r"^v\d+\.\d+\.\d+(-[\w.+]+)?$"
+    version_pattern = r"^v\d+\.\d+\.\d+(-[\w.+-]+)?$"
     if not re.match(version_pattern, manifest["version"]):
         fail(
             f"skill/manifest.json version {manifest['version']!r} does not match "
