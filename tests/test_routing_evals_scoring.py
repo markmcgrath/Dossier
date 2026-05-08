@@ -10,8 +10,8 @@ Authority: ~/.claude/plans/lucky-pondering-dragon.md (Plan 19 Stream B)
 import sys
 from pathlib import Path
 
-# Add .github/scripts to sys.path so we can import the harness.
-sys.path.insert(0, str(Path(__file__).parent.parent / ".github" / "scripts"))
+# Add tools/ to sys.path so we can import the maintainer-side harness.
+sys.path.insert(0, str(Path(__file__).parent.parent / "tools"))
 
 from run_routing_evals import score  # noqa: E402
 
