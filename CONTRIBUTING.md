@@ -128,6 +128,36 @@ Tags that do not match (e.g. `vlatest`, `v-snapshot-2026-q3`, `v1`, `v1.0`) will
 
 ---
 
+## Routing eval (optional, pre-tag)
+
+`tools/run_routing_evals.py` is a maintainer-side aid that runs the 45
+golden prompts (`tests/golden_prompts/routing_test_set.md`) through the
+local `claude` CLI with `skill/SKILL.md` as system context, scores
+routing decisions against expected outcomes, and writes a markdown
+report. It does NOT use the Anthropic SDK or `ANTHROPIC_API_KEY` —
+invocations draw from your existing Claude Code subscription.
+
+Run before tagging a release to catch holistic routing regressions that
+the structural test (`tests/test_routing_golden.py`) wouldn't catch:
+
+```bash
+# Quick dry-run on 5 prompts
+python tools/run_routing_evals.py --max-prompts 5
+
+# Full run (~45 prompts)
+python tools/run_routing_evals.py
+```
+
+Requires `claude` (Claude Code CLI) on PATH and authenticated. The
+harness exits 0 on completion regardless of accuracy — score acceptability
+is your judgment call. The report (default `routing-evals-report.md`)
+captures per-prompt detail and any failures with the model's rationale.
+
+This step is optional and not enforced in CI. Routing regressions are
+also caught in normal Claude Code use within hours of breaking SKILL.md.
+
+---
+
 ## Conduct
 
 Be direct and constructive. If something is wrong, say what's wrong and propose a fix. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

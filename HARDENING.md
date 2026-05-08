@@ -292,7 +292,7 @@ If you're bootstrapping a similar repo from scratch, roughly this order minimize
 
 ---
 
-## 14. Conventional Commits + git-cliff
+## 13. Conventional Commits + git-cliff
 
 **Conventional Commits enforcement.** A `commit-msg` hook in `.githooks/`
 validates new commit messages against the CC format. Opt-in via
@@ -313,7 +313,7 @@ and pastes the suggestion into CHANGELOG.md.
 
 ---
 
-## 13. Review this document when any of the following change
+## 14. Review this document when any of the following change
 
 - A rule is added to, removed from, or reconfigured in the `Public` ruleset.
 - The Actions allowlist, workflow-token defaults, or SHA-pinning setting changes.

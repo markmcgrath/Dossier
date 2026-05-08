@@ -21,7 +21,7 @@
 #      valid ZIP, required entries present, manifest.json shape, etc.).
 #   6. Awk-extract the CHANGELOG section matching the tag (## [<ver>] —),
 #      with [Unreleased] fallback and a placeholder when both are absent.
-#   7. Create a GitHub Release with both assets attached.
+#   7. Create a GitHub Release with .skill and .sha256 attached as assets.
 #
 # Permissions: contents: write — minimum required for `gh release create`.
 # Scoped to this workflow only; CI's contents: read is unchanged.
@@ -31,7 +31,7 @@
 # changelog-check) cover that role.
 #
 # Cross-reference: features/plan/18-version-tag-release-pipeline.md (Stream C)
-# Execution plan: ~/.claude/plans/lucky-pondering-dragon.md
+# Execution plan: ~/.claude/plans/lucky-pondering-dragon.md (Stream B)
 
 name: release
 
