@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Release workflow's `on.push.tags` glob tightened from `v*` to `v[0-9]*.[0-9]*.[0-9]*` (with pre-release variant). Operational tag prefixes `snapshot-*`, `archive-*`, `wip-*` are now reserved for non-release uses; tags like `v-snapshot-2026-q3` no longer trigger publication. (Plan 19 Stream C)
+
 ### Fixed
 
 - `build_skill.sh` byte-match guard reworked as a **content-match** that excludes `skill/manifest.json`. The original byte-match was unworkable because the manifest's `commit` and `version` fields reflect HEAD at pack time and necessarily drift across commits, producing false-positive failures on every PR after the bundle was last regenerated. The content-match preserves the guard's intent (catch stale `skill/` content) without the churn. HARDENING.md §9 updated to match.

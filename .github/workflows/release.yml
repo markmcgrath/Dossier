@@ -1,6 +1,10 @@
-# Release workflow — packages the skill on every annotated v* tag push.
+# Release workflow — packages the skill on every annotated vN.N.N(-pre)? tag push.
 #
-# Trigger: push of a tag matching v*.
+# Trigger: push of a tag matching vN.N.N or vN.N.N-<suffix> (semver-shaped only).
+# Accepted: v1.2.3, v0.0.0-rc-test, v1.0.0-rc.1, v0.0.0-dev+abc1234
+# Rejected: v-snapshot-2026-q3, vlatest, v2026q3, v1, v1.0
+# Operational tags (snapshot-*, archive-*, wip-*) are reserved for non-release
+# uses and must NOT start with vN… — they will not trigger this workflow.
 #
 # Steps:
 #   1. Checkout at the tag (full history — needed for `git describe`).
@@ -34,7 +38,8 @@ name: release
 on:
   push:
     tags:
-      - "v*"
+      - "v[0-9]*.[0-9]*.[0-9]*"      # v1.2.3
+      - "v[0-9]*.[0-9]*.[0-9]*-*"    # v1.2.3-rc.1, v0.0.0-rc-test
 
 permissions:
   contents: write    # create release + upload assets

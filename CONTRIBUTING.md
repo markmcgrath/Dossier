@@ -66,6 +66,15 @@ The Dossier skill lives in `skill/` and is packaged as a `.skill` ZIP bundle (`d
 - [ ] `dossier.skill` repacked from `skill/` if either changed (`pytest tests/test_skill_package_parity.py` passes)
 - [ ] PII scan clean: `python .github/scripts/pii_scan.py`
 
+## Tagging a Release
+
+The release workflow fires only on semver-shaped tags. Accepted patterns:
+
+- `vN.N.N` — e.g. `v1.2.3`, `v10.20.30`
+- `vN.N.N-<suffix>` — e.g. `v1.0.0-rc.1`, `v0.0.0-rc-test`, `v0.0.0-dev+abc1234`
+
+Tags that do not match (e.g. `vlatest`, `v-snapshot-2026-q3`, `v1`, `v1.0`) will not trigger publication. The operational prefixes `snapshot-*`, `archive-*`, and `wip-*` are reserved for non-release purposes and must not start with `vN…`.
+
 ## Conduct
 
 Be direct and constructive. If something is wrong, say what's wrong and propose a fix. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
