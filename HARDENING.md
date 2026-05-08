@@ -20,6 +20,8 @@ Ruleset `Public` is active on the default branch (`main`). It applies to `~DEFAU
   - `pii-scan`
   - `test (3.11)`
   - `test (3.12)`
+  - `changelog-check (PR-only)`
+    - Gated with `if: github.event_name == 'pull_request'` — the check only runs on PR events and is skipped on push-to-branch runs.
   - Strict mode forces the PR branch to be up to date with `main` so CI re-runs against the current base before merge
 - `required_linear_history` — reinforces squash-only; blocks merge commits from ever landing
 
@@ -141,11 +143,12 @@ Local gate: `.github/scripts/pii_scan.py`, wired into CI as a required status ch
 
 **Matrix.** Python 3.11 and 3.12 on `ubuntu-latest`. Triggers: push to `main`, pull_request targeting `main`.
 
-**Required status checks** (all three must pass for merge):
+**Required status checks** (all four must pass for merge):
 
 - `pii-scan` — runs the scanner described in §5.
 - `test (3.11)` — full pytest suite on Python 3.11.
 - `test (3.12)` — full pytest suite on Python 3.12.
+- `changelog-check` — gates PRs that touch `skill/`, `tests/`, or `dossier.skill` on a corresponding `## [Unreleased]` CHANGELOG entry. Bypassable via `[skip-changelog]` token in any commit message in the PR range.
 
 **Test surface** (121 passing, 3 skipped as of the last run):
 
