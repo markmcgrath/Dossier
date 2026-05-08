@@ -10,6 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Conventional Commits enforcement: `commit-msg` hook (`.githooks/`) + CI check (`.github/scripts/check_conventional_commits.sh`). Opt-in via `git config core.hooksPath .githooks`. Bypass token: `[skip-cc]`. (Plan 19 Stream A)
 - `cliff.toml` configures git-cliff for maintainer-aided CHANGELOG promotion at tag time. CC type → section mapping: feat→Added, fix→Fixed, perf/refactor→Changed, docs→Documentation. (Plan 19 Stream A)
+- Routing eval harness (`.github/scripts/run_routing_evals.py`) executes the 45 golden prompts (`tests/golden_prompts/routing_test_set.md`) against Claude Sonnet 4.7 with the bundled SKILL.md as system context, scores routing decisions, and gates release publication on accuracy ≥ 0.95. Adds `anthropic>=0.40` to requirements.txt. Requires `ANTHROPIC_API_KEY` repo secret; fork-safe (skips on missing secret). Report attached as third release asset. (Plan 19 Stream B)
 
 ### Changed
 

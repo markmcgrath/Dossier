@@ -232,7 +232,37 @@ Secret scanning specifically closes part of the git-metadata gap called out in �
 
 ---
 
-## 12. Using this as a template
+## 12. Routing eval gate
+
+**Routing eval gate.** The release workflow runs
+`.github/scripts/run_routing_evals.py` against the SKILL.md extracted
+from the freshly built `dist/dossier-*.skill` artifact. The harness
+loads the 45 prompts from `tests/golden_prompts/routing_test_set.md`,
+issues one Anthropic API call per prompt with the bundled SKILL.md as
+system context (prompt-cached for cost), and scores routing decisions
+against expected outcomes. Default threshold: 0.95. Default model:
+claude-sonnet-4-7-20260101 (override via `--model`).
+
+**Secret:** `ANTHROPIC_API_KEY` (repo-level). Configured via
+Settings → Secrets and variables → Actions. Forks running the workflow
+get an empty value; the eval step skips with an explicit notice and the
+release still publishes — fork-safe behavior.
+
+**Cost:** approx $0.25/release at Sonnet 4.7 list pricing
+(45 prompts × ~1500 input tokens cached + ~80 output tokens).
+
+**Failure semantics:** below-threshold accuracy aborts publication
+(exit 1 from the harness fails the workflow before `gh release create`).
+The artifact exists in the runner but is not published. Maintainer
+adjusts SKILL.md, re-tags, retries. No GitHub Release cleanup needed
+because none was created.
+
+**Report:** A markdown report `routing-evals-<tag>.md` is uploaded as a
+third asset alongside `.skill` and `.sha256` on every successful release.
+
+---
+
+## 13. Using this as a template
 
 This posture is one working configuration, not a universal standard. Adopt selectively.
 
@@ -313,7 +343,7 @@ and pastes the suggestion into CHANGELOG.md.
 
 ---
 
-## 13. Review this document when any of the following change
+## 15. Review this document when any of the following change
 
 - A rule is added to, removed from, or reconfigured in the `Public` ruleset.
 - The Actions allowlist, workflow-token defaults, or SHA-pinning setting changes.

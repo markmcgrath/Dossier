@@ -128,6 +128,28 @@ Tags that do not match (e.g. `vlatest`, `v-snapshot-2026-q3`, `v1`, `v1.0`) will
 
 ---
 
+## Routing eval (optional, pre-tag)
+
+Before tagging a release, run the eval harness locally to catch routing
+regressions:
+
+```bash
+pip install anthropic
+export ANTHROPIC_API_KEY=...
+python .github/scripts/run_routing_evals.py \
+  skill/SKILL.md tests/golden_prompts/routing_test_set.md \
+  --max-prompts 5     # quick dry-run
+python .github/scripts/run_routing_evals.py \
+  skill/SKILL.md tests/golden_prompts/routing_test_set.md
+  # full run, ~30-90s
+```
+
+Required for maintainers tagging from the canonical repo (CI runs the
+same gate). Optional for fork contributors — the CI step skips when
+`ANTHROPIC_API_KEY` is absent.
+
+---
+
 ## Conduct
 
 Be direct and constructive. If something is wrong, say what's wrong and propose a fix. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
