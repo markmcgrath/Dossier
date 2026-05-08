@@ -1,7 +1,8 @@
 ---
 type: plan
 feature: version-tag-release-pipeline
-status: draft
+status: shipped
+closed: 2026-05-08
 created: 2026-05-07
 author: claude
 tags: [release, ci, packaging, hardening, versioning, github-actions]
@@ -143,7 +144,7 @@ Total: 6–9 hours.
 ### Stream A — `build_skill.sh` and structural smoke
 
 1. Create `.github/scripts/build_skill.sh` from the Commonplace template. Reproduce its version-resolution branch (`DOSSIER_VERSION` override, exact-match tag, latest-tag + sha, fallback). Set `OUT="${DIST_DIR}/dossier-${VERSION}.skill"`.
-2. Replace the `cp -R "${SKILL_DIR}/" "${STAGE}/"` step with the Dossier-shaped copy (`skill/SKILL.md`, `skill/references/`, `skill/scoring-guide.md` — confirmed layout).
+2. Replace the `cp -R "${SKILL_DIR}/" "${STAGE}/"` step with the Dossier-shaped copy (`skill/SKILL.md`, `skill/references/`, `skill/references/scoring-guide.md` — confirmed layout).
 3. Reproduce the strip step (`__pycache__`, `.pyc`, `.DS_Store`, etc.). Most of these don't exist in `skill/`, but the strip is cheap and matches Commonplace's posture.
 4. Write `manifest.json` with `name: "dossier"`, `version`, `built_at`, `commit`. Dossier currently has no manifest in the bundle; this is a net-new addition. Update `tests/test_package.py` to expect the manifest.
 5. Reproduce the Python `zipfile` packing loop (sorted directory walk, deterministic insertion, executable bits preserved if any — Dossier has no `bin/`, but keep the bit-preservation logic so the script is identical to Commonplace's where possible).

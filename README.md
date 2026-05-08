@@ -15,6 +15,16 @@ Generic ATS scoring and one-size-fits-all tracker apps don't know your career. D
 - **A live pipeline dashboard** — Obsidian Dataview queries show your active applications, unsent outreach, and follow-ups due at a glance.
 - **Five-minute setup** — Claude walks you through it. Bring your resume; leave with a working vault and your first evaluation.
 
+## Get the skill
+
+Two paths:
+
+**From the repo** — `dossier.skill` is committed at the repo root and rebuilt deterministically from `skill/`. `git clone` and you have it.
+
+**From a Release** — every annotated `v*` tag produces a [GitHub Release](../../releases) with `dossier-<tag>.skill` and a `dossier-<tag>.skill.sha256`. Download both, verify with `sha256sum -c dossier-<tag>.skill.sha256`, then drop the `.skill` file into your Claude project.
+
+Both paths produce the same bundle: `.github/scripts/build_skill.sh` is deterministic, and the byte-match guard enforces parity at release time.
+
 ## How it works
 
 ```mermaid
@@ -235,3 +245,7 @@ MIT — see [LICENSE](LICENSE).
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines, test instructions, and what kinds of contributions are most welcome.
+
+## Acknowledgments
+
+Dossier's multi-mode "career ops" workflow pattern — using an AI agent as a job-search command center that produces standardized artifacts, supports batch evaluation, and surfaces a pipeline dashboard — was inspired by [`santifer/career-ops`](https://github.com/santifer/career-ops). Dossier diverges from that lineage by making a local markdown vault the single source of truth (rather than a tracker database) and grading every role against a user-authored `cv.md` and `profile.md` instead of a generic rubric.
