@@ -204,21 +204,54 @@ if [[ -f "${DIST_DIR}/dossier-${VERSION}.skill.sha256" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Byte-match guard (Dossier-specific)
+# Content-match guard (Dossier-specific)
 # ---------------------------------------------------------------------------
 #
-# If dossier.skill is committed and SKIP_BYTE_MATCH is unset, the freshly
-# built artifact must byte-match the committed copy. Exit 3 on mismatch so
-# CI can distinguish a build failure (1) from a stale committed bundle (3).
+# If dossier.skill is committed and SKIP_BYTE_MATCH is unset, every entry
+# under skill/ in the freshly built artifact must match the committed copy
+# byte-for-byte — EXCEPT skill/manifest.json, whose `commit` and `version`
+# fields necessarily change with each HEAD commit. Exit 3 on mismatch so CI
+# distinguishes a build failure (1) from a stale committed bundle (3).
+#
+# A whole-file byte-match is unworkable because the bundle's manifest tracks
+# the HEAD commit SHA: any commit landing after the bundle was packed would
+# spuriously fail the guard. The content-match below preserves the spirit
+# (catch contributors who edit skill/ without re-running the packer) without
+# the false-positive on commit-SHA churn.
 #
 # Recovery: cp dist/dossier-*.skill dossier.skill && git add dossier.skill
 #           && git commit && git push && retag
 
 if [[ -f "${REPO_ROOT}/dossier.skill" ]] && [[ -z "${SKIP_BYTE_MATCH:-}" ]]; then
-    if ! cmp -s "${OUT}" "${REPO_ROOT}/dossier.skill"; then
-        echo "error: freshly built ${OUT} differs from committed dossier.skill" >&2
-        echo "       to recover: cp ${OUT} ${REPO_ROOT}/dossier.skill && commit" >&2
-        exit 3
-    fi
-    echo "byte-match: passed"
+    "${PYTHON:-python3}" - "${OUT}" "${REPO_ROOT}/dossier.skill" <<'PYEOF'
+import sys
+import zipfile
+
+fresh_path, committed_path = sys.argv[1], sys.argv[2]
+SKIP = {"skill/manifest.json"}
+
+with zipfile.ZipFile(fresh_path) as a, zipfile.ZipFile(committed_path) as b:
+    a_names = sorted(n for n in a.namelist() if n not in SKIP)
+    b_names = sorted(n for n in b.namelist() if n not in SKIP)
+    if a_names != b_names:
+        only_a = sorted(set(a_names) - set(b_names))
+        only_b = sorted(set(b_names) - set(a_names))
+        print("error: bundle entry list mismatch", file=sys.stderr)
+        if only_a:
+            print(f"       only in fresh build:  {only_a}", file=sys.stderr)
+        if only_b:
+            print(f"       only in committed:    {only_b}", file=sys.stderr)
+        print(f"       to recover: cp {fresh_path} dossier.skill && commit",
+              file=sys.stderr)
+        sys.exit(3)
+    diffs = [name for name in a_names if a.read(name) != b.read(name)]
+    if diffs:
+        print("error: skill/ content drift between fresh and committed bundle",
+              file=sys.stderr)
+        print(f"       differing entries: {diffs}", file=sys.stderr)
+        print(f"       to recover: cp {fresh_path} dossier.skill && commit",
+              file=sys.stderr)
+        sys.exit(3)
+PYEOF
+    echo "content-match: passed (manifest.json excluded — see HARDENING.md §9)"
 fi
