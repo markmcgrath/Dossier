@@ -50,3 +50,20 @@ jobs:
 
       - name: Run PII scan
         run: python .github/scripts/pii_scan.py
+
+  changelog-check:
+    name: changelog-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Run CHANGELOG gate
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+          HEAD_REF: HEAD
+        run: |
+          git fetch --no-tags --prune origin "${{ github.base_ref }}"
+          bash .github/scripts/changelog_check.sh
