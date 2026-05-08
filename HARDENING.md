@@ -292,6 +292,27 @@ If you're bootstrapping a similar repo from scratch, roughly this order minimize
 
 ---
 
+## 14. Conventional Commits + git-cliff
+
+**Conventional Commits enforcement.** A `commit-msg` hook in `.githooks/`
+validates new commit messages against the CC format. Opt-in via
+`git config core.hooksPath .githooks`. CI also runs
+`.github/scripts/check_conventional_commits.sh` on PRs (server-side
+mirror, since hooks are not enforced server-side). Bypass token
+`[skip-cc]` in any commit message in the PR range short-circuits the
+check (parallel to `[skip-changelog]`).
+
+The job is NOT a required status check initially — promote after one
+stable release cycle.
+
+**git-cliff is a maintainer-side aid**, not CI infrastructure. The
+release workflow's awk extractor (Plan 18 Stream C) is unchanged; it
+still reads `## [<ver>] —` from CHANGELOG.md as the source of truth.
+At tag time the maintainer runs `git cliff --unreleased --tag <ver>`
+and pastes the suggestion into CHANGELOG.md.
+
+---
+
 ## 13. Review this document when any of the following change
 
 - A rule is added to, removed from, or reconfigured in the `Public` ruleset.

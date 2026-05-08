@@ -66,6 +66,48 @@ The Dossier skill lives in `skill/` and is packaged as a `.skill` ZIP bundle (`d
 - [ ] `dossier.skill` repacked from `skill/` if either changed (`pytest tests/test_skill_package_parity.py` passes)
 - [ ] PII scan clean: `python .github/scripts/pii_scan.py`
 
+## Conventional Commits
+
+All new commits should follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+```
+<type>(<scope>)?(!)?:  <description>
+```
+
+**Valid types** and their CHANGELOG sections:
+
+| Type | CHANGELOG section |
+|---|---|
+| `feat` | Added |
+| `fix` | Fixed |
+| `perf` | Changed |
+| `refactor` | Changed |
+| `docs` | Documentation |
+| `revert` | Changed |
+| `chore` | (dropped — not shown in CHANGELOG) |
+| `build` | (dropped) |
+| `ci` | (dropped) |
+| `style` | (dropped) |
+| `test` | (dropped) |
+
+**Breaking changes** — add `!` after the type/scope (e.g. `feat!: ...` or `feat(scope)!: ...`) or include `BREAKING CHANGE:` in the commit footer. Breaking commits appear with a `[BREAKING]` callout in the generated output regardless of type.
+
+**Scope** is optional. Use a lowercase noun describing the affected area (e.g. `feat(ci):`).
+
+**Auto-generated messages** (`Merge ...`, `Revert "..."`) are allowed without format validation.
+
+**Opt-in to the local commit-msg hook:**
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This installs the hook from `.githooks/commit-msg` for your local clone. The same check runs server-side in CI on every PR via `.github/scripts/check_conventional_commits.sh`. Bypass token: add `[skip-cc]` to any commit message in the PR range to short-circuit the CI check.
+
+**Cutover note:** Only commits from Plan 19 (Stream A) onward are expected to follow CC format. Prior history (~77% non-CC) is unaffected and will produce truncated `git cliff` suggestions for release ranges spanning the cutover — supplement with manual CHANGELOG entries in that case.
+
+---
+
 ## Tagging a Release
 
 The release workflow fires only on semver-shaped tags. Accepted patterns:
@@ -74,6 +116,17 @@ The release workflow fires only on semver-shaped tags. Accepted patterns:
 - `vN.N.N-<suffix>` — e.g. `v1.0.0-rc.1`, `v0.0.0-rc-test`, `v0.0.0-dev+abc1234`
 
 Tags that do not match (e.g. `vlatest`, `v-snapshot-2026-q3`, `v1`, `v1.0`) will not trigger publication. The operational prefixes `snapshot-*`, `archive-*`, and `wip-*` are reserved for non-release purposes and must not start with `vN…`.
+
+**Pre-tag steps (maintainer):**
+
+1. Ensure all PRs are merged and CI is green on `main`.
+2. Run `git cliff --unreleased --tag vX.Y.Z` to preview a suggested CHANGELOG section. git-cliff is a maintainer-only tool — install via `cargo install git-cliff` or `brew install git-cliff`. This step can be skipped if git-cliff is not installed; write the CHANGELOG entry manually.
+3. Manually paste/edit the suggestion into `CHANGELOG.md` as a new `## [vX.Y.Z] — YYYY-MM-DD` block above `## [Unreleased]`. Re-add an empty `## [Unreleased]` above. Preserve any `### Planned` content verbatim — git-cliff does not emit it.
+4. Commit: `git commit -am "chore(release): vX.Y.Z"`.
+5. Tag: `git tag -a vX.Y.Z -m "Release X.Y.Z"`.
+6. Push: `git push origin main vX.Y.Z`.
+
+---
 
 ## Conduct
 

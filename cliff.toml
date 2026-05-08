@@ -1,0 +1,86 @@
+# cliff.toml — git-cliff configuration for Dossier.
+#
+# Authority: features/plan/18-version-tag-release-pipeline.md (Stream A follow-up).
+# Plan: ~/.claude/plans/lucky-pondering-dragon.md (Plan 19, Stream A).
+#
+# Usage (maintainer-side only — not CI):
+#   git cliff --unreleased --tag vX.Y.Z
+#
+# Output is a suggested `## [vX.Y.Z] — YYYY-MM-DD` block.
+# Paste it into CHANGELOG.md above `## [Unreleased]`, then re-add an empty
+# `## [Unreleased]` above. Preserve any `### Planned` content manually.
+#
+# git-cliff is NOT a CI dependency. Install locally via:
+#   cargo install git-cliff
+#   brew install git-cliff   # macOS
+
+[changelog]
+# Empty header — output is pasted into existing CHANGELOG.md, not regenerated.
+header = ""
+
+# Tera template producing one versioned block per tag.
+# commit.group is set by commit_parsers below.
+body = """
+## [{{ version }}] — {{ timestamp | date(format="%Y-%m-%d") }}
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group }}
+{% for commit in commits %}\
+- {{ commit.message | upper_first | trim_end_matches(pat=".") }}\
+{% if commit.breaking %} [**BREAKING**]{% endif %}
+
+{% endfor %}\
+{% endfor %}\
+"""
+
+# No footer — paste context manages surrounding content.
+footer = ""
+
+# Remove extra blank lines from the template output.
+trim = true
+
+[git]
+# Only include commits that match a commit_parser with a `group`.
+# Non-CC commits are dropped, not silently bucketed into "Other".
+filter_commits = true
+
+# Match annotated tags shaped like v1.2.3 or v0.0.0-rc-test.
+tag_pattern = "v[0-9]*"
+
+# Strip co-author trailers from commit messages before parsing.
+# Pattern targets lines of the form `Co-Authored-By: Name <email>`.
+commit_preprocessors = [
+    { pattern = "(?m)^Co-Authored-By:.*$", replace = "" },
+]
+
+# Map CC type prefixes to CHANGELOG sections.
+# Order matters: earlier rules win. BREAKING CHANGE checked first via footer
+# and `!` in the subject is detected by git-cliff's built-in breaking field.
+commit_parsers = [
+    # BREAKING CHANGE footer or `!` suffix — handled by git-cliff's breaking
+    # detection; these also land in their primary section but carry breaking=true.
+    # feat → Added
+    { message = "^feat(\\(.+\\))?!?:", group = "Added" },
+    # fix → Fixed
+    { message = "^fix(\\(.+\\))?!?:", group = "Fixed" },
+    # perf → Changed
+    { message = "^perf(\\(.+\\))?!?:", group = "Changed" },
+    # refactor → Changed
+    { message = "^refactor(\\(.+\\))?!?:", group = "Changed" },
+    # docs → Documentation (Dossier extension)
+    { message = "^docs(\\(.+\\))?!?:", group = "Documentation" },
+    # revert → Changed (git-cliff populates commit.message with the revert subject)
+    { message = "^revert(\\(.+\\))?!?:", group = "Changed" },
+    # Dropped types — chore, build, ci, style, test are skipped from output.
+    { message = "^chore(\\(.+\\))?!?:", skip = true },
+    { message = "^build(\\(.+\\))?!?:", skip = true },
+    { message = "^ci(\\(.+\\))?!?:", skip = true },
+    { message = "^style(\\(.+\\))?!?:", skip = true },
+    { message = "^test(\\(.+\\))?!?:", skip = true },
+    # Auto-generated git prefixes pass through (Merge, Revert "...") — skipped
+    # here so they don't pollute the changelog; the hook allows them.
+    { message = "^Merge ", skip = true },
+    { message = "^Revert \"", skip = true },
+]
+
+# Sort commits within each section chronologically (oldest first).
+sort_commits = "oldest"
