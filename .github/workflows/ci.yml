@@ -67,3 +67,20 @@ jobs:
         run: |
           git fetch --no-tags --prune origin "${{ github.base_ref }}"
           bash .github/scripts/changelog_check.sh
+
+  conventional-commits:
+    name: conventional-commits
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Run Conventional Commits check
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+          HEAD_REF: HEAD
+        run: |
+          git fetch --no-tags --prune origin "${{ github.base_ref }}"
+          bash .github/scripts/check_conventional_commits.sh

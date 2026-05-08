@@ -6,6 +6,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Conventional Commits enforcement: `commit-msg` hook (`.githooks/`) + CI check (`.github/scripts/check_conventional_commits.sh`). Opt-in via `git config core.hooksPath .githooks`. Bypass token: `[skip-cc]`. (Plan 19 Stream A)
+- `cliff.toml` configures git-cliff for maintainer-aided CHANGELOG promotion at tag time. CC type → section mapping: feat→Added, fix→Fixed, perf/refactor→Changed, docs→Documentation. (Plan 19 Stream A)
+
 ### Changed
 
 - Release workflow's `on.push.tags` glob tightened from `v*` to `v[0-9]*.[0-9]*.[0-9]*` (with pre-release variant). Operational tag prefixes `snapshot-*`, `archive-*`, `wip-*` are now reserved for non-release uses; tags like `v-snapshot-2026-q3` no longer trigger publication. (Plan 19 Stream C)

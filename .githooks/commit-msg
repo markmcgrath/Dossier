@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# commit-msg — Conventional Commits format validator.
+#
+# Authority: features/plan/18-version-tag-release-pipeline.md (Stream A follow-up).
+# Plan: ~/.claude/plans/lucky-pondering-dragon.md (Plan 19, Stream A).
+#
+# Validates that the first non-comment, non-blank line of the commit message
+# conforms to Conventional Commits format.
+#
+# Opt-in:
+#   git config core.hooksPath .githooks
+#
+# Valid types: feat, fix, docs, perf, refactor, revert, chore, build, ci, style, test
+#
+# Examples:
+#   feat: add cliff config
+#   fix(scope): repair changelog parser
+#   feat!: breaking API change
+#   feat(scope)!: breaking scoped change
+#
+# Auto-generated git messages (Merge ..., Revert "...") pass unchecked.
+
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+
+# Read first non-comment, non-blank line.
+FIRST_LINE=""
+while IFS= read -r line; do
+    # Skip comment lines (starting with #) and blank lines.
+    [[ "$line" =~ ^# ]] && continue
+    [[ -z "${line// /}" ]] && continue
+    FIRST_LINE="$line"
+    break
+done < "$COMMIT_MSG_FILE"
+
+if [[ -z "$FIRST_LINE" ]]; then
+    echo "ERROR: commit message is empty." >&2
+    exit 1
+fi
+
+# Allow auto-generated git messages to pass unchecked.
+if [[ "$FIRST_LINE" =~ ^Merge\  ]] || [[ "$FIRST_LINE" =~ ^Revert\  ]]; then
+    exit 0
+fi
+
+# Conventional Commits regex.
+CC_PATTERN='^(feat|fix|docs|perf|refactor|revert|chore|build|ci|style|test)(\(.+\))?!?: .+$'
+
+if [[ "$FIRST_LINE" =~ $CC_PATTERN ]]; then
+    exit 0
+fi
+
+cat >&2 <<EOF
+ERROR: commit message does not follow Conventional Commits.
+Expected: <type>(<scope>)?(!)?: <description>
+  types: feat, fix, docs, perf, refactor, revert, chore, build, ci, style, test
+  example: feat(release): add structured manifest
+
+Saw: ${FIRST_LINE}
+EOF
+exit 1
