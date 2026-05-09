@@ -6,11 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-05-09
+
 ### Added
 
 - Conventional Commits enforcement: `commit-msg` hook (`.githooks/`) + CI check (`.github/scripts/check_conventional_commits.sh`). Opt-in via `git config core.hooksPath .githooks`. Bypass token: `[skip-cc]`. (Plan 19 Stream A)
 - `cliff.toml` configures git-cliff for maintainer-aided CHANGELOG promotion at tag time. CC type → section mapping: feat→Added, fix→Fixed, perf/refactor→Changed, docs→Documentation. (Plan 19 Stream A)
-- Routing eval harness `tools/run_routing_evals.py` — maintainer-side aid that runs the 45 golden prompts (`tests/golden_prompts/routing_test_set.md`) through the local `claude` CLI with `skill/SKILL.md` as system context, scores routing decisions, and writes a markdown report. Uses Claude Code subscription auth (no Anthropic SDK, no API key). Optional pre-tag check; not a CI gate. (Plan 19 Stream B)
+- Routing eval harness `tools/run_routing_evals.py` — maintainer-side aid that runs the 45 golden prompts (`tests/golden_prompts/routing_test_set.md`) through the local `claude` CLI with the `skill/SKILL.md` frontmatter as system context, scores routing decisions, and writes a markdown report. Uses Claude Code subscription auth (no Anthropic SDK, no API key). Optional pre-tag check; not a CI gate. (Plan 19 Stream B)
 
 ### Changed
 
@@ -20,6 +22,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `build_skill.sh` byte-match guard reworked as a **content-match** that excludes `skill/manifest.json`. The original byte-match was unworkable because the manifest's `commit` and `version` fields reflect HEAD at pack time and necessarily drift across commits, producing false-positive failures on every PR after the bundle was last regenerated. The content-match preserves the guard's intent (catch stale `skill/` content) without the churn. HARDENING.md §9 updated to match.
 - `verify_skill_artifact.py` version regex relaxed from `^v\d+\.\d+\.\d+(-[\w.+]+)?$` to `^v\d+\.\d+\.\d+(-[\w.+-]+)?$` so pre-release suffixes containing hyphens (e.g. `v0.0.0-rc-test`, `v1.0.0-beta-1`) are accepted. Standard semver allows hyphens in pre-release identifiers; the original regex was over-strict.
+- `tools/run_routing_evals.py` Windows compatibility: drop `--bare` (which forces `ANTHROPIC_API_KEY` and disables OAuth — defeats the redesign's purpose); resolve `claude` via `shutil.which()` so `subprocess.run` finds the `.cmd` shim on Windows; pass only the SKILL.md frontmatter (~1KB) as `--system-prompt` instead of the full body (32KB), staying under Windows `CreateProcess` argv limit (~32,767 chars). Frontmatter-only is also the more accurate model of real routing — Claude only sees the description when picking a skill, not the body.
 
 ## [1.1.0] — 2026-05-08
 
