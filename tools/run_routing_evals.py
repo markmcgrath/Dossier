@@ -38,7 +38,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 from datetime import datetime, timezone
 
 # ---------------------------------------------------------------------------
@@ -53,10 +52,11 @@ PER_PROMPT_TIMEOUT_S = 120
 RETRY_ATTEMPTS = 2
 
 EVAL_INSTRUCTION_PREFIX = (
-    "You are an expert evaluator for the Dossier job-search skill. "
-    "Given the skill manifest below and the user prompt sent separately, "
-    "determine whether the Dossier skill would trigger and, if so, which "
-    "mode it would use.\n\n"
+    "You are evaluating which Claude skill should route a user prompt. "
+    "The Dossier skill is the only available candidate; its YAML frontmatter "
+    "(what Claude sees when picking a skill to invoke) is shown below. "
+    "Given the user prompt sent separately, decide whether Dossier would "
+    "trigger and, if so, which mode it would route to.\n\n"
     "Respond ONLY with a valid JSON object of this exact shape:\n"
     '{"would_trigger_dossier": true | false, "mode": "Mode N" | null, '
     '"rationale": "<one sentence>"}\n\n'
@@ -64,11 +64,38 @@ EVAL_INSTRUCTION_PREFIX = (
     "- would_trigger_dossier: true if the prompt should activate the "
     "Dossier skill; false otherwise.\n"
     "- mode: the primary mode (e.g. \"Mode 1\", \"Mode 5\") if "
-    "would_trigger_dossier is true; null if false.\n"
+    "would_trigger_dossier is true; null if false. Available modes: 0 "
+    "(health check), 1 (offer evaluator), 2 (portal scan), 3 (interview "
+    "prep), 4 (company research), 5 (outreach), 6 (cover letter), 7 "
+    "(salary negotiation), 8 (LinkedIn browser), 9 (inbox followup), 10 "
+    "(calendar ops), 11 (tailored CV), 12 (batch pipeline), 13 (calibration).\n"
     "- rationale: one sentence explaining the routing decision.\n"
     "Do not include code fences, markdown, or any text outside the "
     "JSON object."
 )
+
+
+def extract_frontmatter(skill_md_content):
+    """
+    Extract the YAML frontmatter (between the first two `---` lines) from
+    SKILL.md. This is what Claude actually sees when deciding whether to
+    route a prompt to a skill — the body is loaded only AFTER routing
+    succeeds. Passing only the frontmatter (~1KB) keeps the system prompt
+    well under Windows CreateProcess argv limits (~32KB).
+    """
+    lines = skill_md_content.splitlines()
+    if not lines or lines[0].strip() != "---":
+        # No frontmatter; return the whole thing (will fail loud if too big)
+        return skill_md_content
+
+    fm_lines = ["---"]
+    for line in lines[1:]:
+        fm_lines.append(line)
+        if line.strip() == "---":
+            return "\n".join(fm_lines)
+
+    # Unterminated frontmatter; return what we have
+    return "\n".join(fm_lines)
 
 
 # ---------------------------------------------------------------------------
@@ -274,18 +301,36 @@ def _extract_assistant_text(data):
     return ""
 
 
-def call_claude_cli(user_prompt, system_prompt_path):
+def call_claude_cli(user_prompt, system_prompt, claude_path):
     """
     Issue one `claude -p` invocation. Up to RETRY_ATTEMPTS attempts.
     Returns the model's response text. Exits 2 if `claude` is missing
     or repeatedly fails (treated as environment error since this is a
     maintainer-side tool — the CLI failing is not an API outage to retry
     around indefinitely).
+
+    Flag choices:
+      --system-prompt <inline>     replaces the default system prompt;
+                                   isolates from CLAUDE.md auto-discovery,
+                                   default tool prompts, etc.
+      --disable-slash-commands     don't load skills (parent project's
+                                   skills/MCP context cannot bleed in)
+      --strict-mcp-config + ""     no MCP servers
+      --output-format json         structured response in `result` field
+
+    Note: `--bare` is intentionally NOT used — it disables OAuth/keychain
+    auth and forces ANTHROPIC_API_KEY, which defeats the point of using
+    Claude Code subscription.
+
+    `claude_path` is the absolute path to the `claude` executable
+    (resolved once via shutil.which at startup) so subprocess.run works
+    on Windows where `claude` is a .cmd shim that argv-style execve
+    doesn't resolve.
     """
     cmd = [
-        "claude", "-p", user_prompt,
-        "--system-prompt-file", system_prompt_path,
-        "--bare",
+        claude_path, "-p", user_prompt,
+        "--system-prompt", system_prompt,
+        "--disable-slash-commands",
         "--strict-mcp-config",
         "--mcp-config", "",
         "--output-format", "json",
@@ -415,7 +460,8 @@ Exit codes:
     args = parser.parse_args()
 
     # --- Environment validation ---
-    if shutil.which("claude") is None:
+    claude_path = shutil.which("claude")
+    if claude_path is None:
         print(
             "ERROR: `claude` CLI not on PATH. Install Claude Code and ensure "
             "`claude` is invokable.",
@@ -444,111 +490,108 @@ Exit codes:
         prompts = prompts[: args.max_prompts]
         print(f"Dry-run mode: evaluating {len(prompts)} of {EXPECTED_PROMPT_COUNT} prompts.")
 
-    # --- Build the system prompt file (eval prefix + SKILL.md) once ---
+    # --- Build the system prompt (eval prefix + SKILL.md frontmatter only) ---
+    # Pass ONLY the YAML frontmatter, not the full SKILL.md body.
+    # Routing decisions are made on the description; the body loads only
+    # AFTER a routing decision is made. This also keeps the system prompt
+    # ~1KB instead of ~30KB, fitting comfortably under Windows
+    # CreateProcess argv limits.
+    skill_frontmatter = extract_frontmatter(skill_md_content)
     system_prompt = (
         EVAL_INSTRUCTION_PREFIX
-        + "\n\n---\n\nSKILL.md follows:\n\n"
-        + skill_md_content
+        + "\n\n---\n\nDossier skill frontmatter (what Claude sees when routing):\n\n"
+        + skill_frontmatter
     )
-    sys_fd, sys_path = tempfile.mkstemp(suffix="-system-prompt.md", text=True)
-    try:
-        with os.fdopen(sys_fd, "w", encoding="utf-8") as fh:
-            fh.write(system_prompt)
 
-        # --- Run evals ---
-        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        total = len(prompts)
-        credits = []
-        per_prompt_rows = []
-        failures = []
+    # --- Run evals ---
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    total = len(prompts)
+    credits = []
+    per_prompt_rows = []
+    failures = []
 
-        print(f"Running {total} prompt(s) via `claude -p` ...")
+    print(f"Running {total} prompt(s) via `claude -p` ...")
 
-        for i, (test_id, prompt_text, expected_text) in enumerate(prompts, 1):
-            print(f"  [{i:2d}/{total}] {test_id} ...", end=" ", flush=True)
+    for i, (test_id, prompt_text, expected_text) in enumerate(prompts, 1):
+        print(f"  [{i:2d}/{total}] {test_id} ...", end=" ", flush=True)
 
-            expected = parse_expected(test_id, expected_text)
-            raw_response = call_claude_cli(prompt_text, sys_path)
+        expected = parse_expected(test_id, expected_text)
+        raw_response = call_claude_cli(prompt_text, system_prompt, claude_path)
 
-            got = None
-            try:
-                cleaned = raw_response.strip()
-                if cleaned.startswith("```"):
-                    cleaned = re.sub(r"^```[a-z]*\n?", "", cleaned)
-                    cleaned = re.sub(r"\n?```$", "", cleaned)
-                got = json.loads(cleaned)
-            except json.JSONDecodeError:
-                print(f"[INVALID JSON] response: {raw_response!r}")
-                got = {"would_trigger_dossier": None, "mode": None, "rationale": "(invalid JSON)"}
+        got = None
+        try:
+            cleaned = raw_response.strip()
+            if cleaned.startswith("```"):
+                cleaned = re.sub(r"^```[a-z]*\n?", "", cleaned)
+                cleaned = re.sub(r"\n?```$", "", cleaned)
+            got = json.loads(cleaned)
+        except json.JSONDecodeError:
+            print(f"[INVALID JSON] response: {raw_response!r}")
+            got = {"would_trigger_dossier": None, "mode": None, "rationale": "(invalid JSON)"}
 
-            credit = score(expected, got) if got.get("would_trigger_dossier") is not None else 0.0
-            credits.append(credit)
+        credit = score(expected, got) if got.get("would_trigger_dossier") is not None else 0.0
+        credits.append(credit)
 
-            if expected["would_trigger"]:
-                expected_str = f"trigger:true mode:{expected['mode'] or 'any'}"
-            else:
-                expected_str = "trigger:false"
+        if expected["would_trigger"]:
+            expected_str = f"trigger:true mode:{expected['mode'] or 'any'}"
+        else:
+            expected_str = "trigger:false"
 
-            got_trigger = got.get("would_trigger_dossier")
-            got_mode = got.get("mode")
-            if got_trigger:
-                got_str = f"trigger:true mode:{got_mode or 'null'}"
-            elif got_trigger is False:
-                got_str = "trigger:false"
-            else:
-                got_str = "trigger:invalid"
+        got_trigger = got.get("would_trigger_dossier")
+        got_mode = got.get("mode")
+        if got_trigger:
+            got_str = f"trigger:true mode:{got_mode or 'null'}"
+        elif got_trigger is False:
+            got_str = "trigger:false"
+        else:
+            got_str = "trigger:invalid"
 
-            tid_num = int(test_id.split("-")[1])
-            if tid_num <= 20:
-                category = "Direct"
-            elif tid_num <= 30:
-                category = "Indirect"
-            elif tid_num <= 38:
-                category = "Negative"
-            else:
-                category = "Ambiguous"
+        tid_num = int(test_id.split("-")[1])
+        if tid_num <= 20:
+            category = "Direct"
+        elif tid_num <= 30:
+            category = "Indirect"
+        elif tid_num <= 38:
+            category = "Negative"
+        else:
+            category = "Ambiguous"
 
-            row = {
+        row = {
+            "id": test_id,
+            "category": category,
+            "expected_str": expected_str,
+            "got_str": got_str,
+            "credit": credit,
+        }
+        per_prompt_rows.append(row)
+
+        print(f"credit={credit:.1f} ({got_str})")
+
+        if credit < 1.0:
+            snippet = prompt_text[:60] + ("..." if len(prompt_text) > 60 else "")
+            failures.append({
                 "id": test_id,
-                "category": category,
+                "prompt_snippet": snippet,
                 "expected_str": expected_str,
                 "got_str": got_str,
+                "rationale": got.get("rationale", ""),
                 "credit": credit,
-            }
-            per_prompt_rows.append(row)
+            })
 
-            print(f"credit={credit:.1f} ({got_str})")
+    # --- Score ---
+    accuracy = sum(credits) / total if total > 0 else 0.0
+    print(f"\nAccuracy: {accuracy:.3f}  ({len(failures)} failure(s))")
 
-            if credit < 1.0:
-                snippet = prompt_text[:60] + ("..." if len(prompt_text) > 60 else "")
-                failures.append({
-                    "id": test_id,
-                    "prompt_snippet": snippet,
-                    "expected_str": expected_str,
-                    "got_str": got_str,
-                    "rationale": got.get("rationale", ""),
-                    "credit": credit,
-                })
-
-        # --- Score ---
-        accuracy = sum(credits) / total if total > 0 else 0.0
-        print(f"\nAccuracy: {accuracy:.3f}  ({len(failures)} failure(s))")
-
-        # --- Write report ---
-        write_report(
-            args.report,
-            timestamp=timestamp,
-            total_prompts=total,
-            accuracy=accuracy,
-            per_prompt_rows=per_prompt_rows,
-            failures=failures,
-        )
-        print(f"Report written to: {args.report}")
-    finally:
-        try:
-            os.unlink(sys_path)
-        except OSError:
-            pass
+    # --- Write report ---
+    write_report(
+        args.report,
+        timestamp=timestamp,
+        total_prompts=total,
+        accuracy=accuracy,
+        per_prompt_rows=per_prompt_rows,
+        failures=failures,
+    )
+    print(f"Report written to: {args.report}")
 
     sys.exit(0)
 
