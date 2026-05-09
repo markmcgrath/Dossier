@@ -37,6 +37,10 @@ Thumbs.db
 __pycache__/
 *.pyc
 
+# Routing eval harness output (tools/run_routing_evals.py default report path)
+routing-evals-report.md
+dist/
+
 # Local PII patterns (maintainer-specific, not committed)
 # Both paths are ignored so legacy local setups don't accidentally
 # commit sensitive regexes while migrating to the .local.txt naming.
