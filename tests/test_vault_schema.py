@@ -4,7 +4,7 @@ Tests for eval frontmatter schema validation.
 from datetime import datetime
 
 
-VALID_GRADES = {"A", "B+", "B", "B-", "C", "D", "F"}
+VALID_GRADES = {"A", "B+", "B", "C", "D", "F"}
 VALID_STATUSES = {
     "Evaluating",
     "Applied",
@@ -13,7 +13,6 @@ VALID_STATUSES = {
     "Rejected",
     "Passed",
     "Offer-Declined",
-    "Batch-Evaluated",
     "Superseded",
 }
 

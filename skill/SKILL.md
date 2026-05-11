@@ -45,14 +45,18 @@ The frontmatter schema:
 type: eval
 company: "Company Name"
 role: "Job Title"
-grade: A | B+ | B | B- | C | D | F
+grade: A | B+ | B | C | D | F
 score: 3.7  # numeric score as a decimal
-status: Evaluating | Applied | Interviewing | Offer | Rejected | Passed | Superseded
+status: Evaluating | Applied | Interviewing | Offer | Rejected | Passed | Offer-Declined | Superseded
 date: 2026-04-15
 location: "City, State" or "Remote"
 compensation: "$100k–$130k" or "Not disclosed"
 outcome: Pending   # Pending | No Response | Rejected | Phone Screen | Interview | Offer | Accepted | Withdrawn
 legitimacy: Verified | Plausible | Suspect | Likely Ghost
+notes: "One-sentence recommendation."                                     # (optional) Short user-facing summary
+source: "Indeed" | "Dice" | "LinkedIn" | "Company Careers" | "Referral" | "Recruiter Inbound" | "Other"  # (optional)
+referral_contact: ""            # (optional) Name of the referrer when source=Referral
+application_method: ""          # (optional) "Easy Apply" | "Direct" | "Recruiter" | etc.
 model: claude-sonnet-4-6        # (optional) Which model produced this evaluation
 sources: []                     # (optional) Data sources consulted: jd_url, apollo, web_search, etc.
 ```
@@ -100,7 +104,7 @@ This is the vault-native alternative to Notion queries. Modes 9 and 10 use this 
 
 All artifacts must be saved to the correct subfolder with YAML frontmatter. Read `references/file-conventions.md` for the full specification: folder structure, frontmatter schemas, cross-linking rules (wikilink syntax for Obsidian), file-first discipline, archive discipline, and naming conventions.
 
-Key folders: `evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `daily/`, `weekly/`, `archive/`.
+Key folders: `evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `negotiation/`, `daily/`, `weekly/`, `archive/`.
 
 ## Mode 0: Health Check
 
@@ -319,7 +323,7 @@ Gather offer details, pull market data from web sources, and produce a negotiati
 
 Read `references/mode7-salary-negotiation.md` for the full negotiation workflow, output template, pushback response scripts, non-comp lever enumeration, and offer comparison format.
 
-**Save to:** `negotiation-[company-slug]-[date].md`
+**Save to:** `negotiation/negotiation-[company-slug]-[date].md`
 
 ---
 

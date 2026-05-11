@@ -123,6 +123,7 @@ Dossier/
 ├── cover-letters/          # Cover letter drafts
 ├── interview-prep/         # Role-specific prep artifacts
 ├── research/               # Company / person research notes
+├── negotiation/            # Salary-negotiation briefs (Mode 7 output)
 ├── daily/                  # Daily journals
 ├── weekly/                 # Weekly pipeline reviews
 ├── examples/               # Reference artifacts (fictional companies)
@@ -142,7 +143,7 @@ company: "Company Name"
 role: "Role Title"
 grade: A | B+ | B | C | D | F
 score: 4.5
-status: Evaluating | Applied | Interviewing | Offer | Rejected | Passed
+status: Evaluating | Applied | Interviewing | Offer | Rejected | Passed | Offer-Declined | Superseded
 date: YYYY-MM-DD
 location: "Remote" | "City, ST" | "Hybrid – City"
 compensation: "$X–$Y" | "Not disclosed"
@@ -152,6 +153,9 @@ notes: "One-sentence recommendation."
 source: "Indeed" | "Dice" | "LinkedIn" | "Company Careers" | "Referral" | "Recruiter Inbound" | "Other"
 referral_contact: ""
 application_method: ""
+# Optional provenance fields (set by the skill when an eval is generated):
+model: claude-sonnet-4-6
+sources: []
 ---
 ```
 

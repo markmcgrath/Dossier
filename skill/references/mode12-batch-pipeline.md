@@ -22,9 +22,9 @@ Accept a list of job descriptions or URLs, process each through a lightweight Mo
 1. **Parse the input.** Determine if the user provided URLs, pasted JDs, or a mixed list. If URLs, fetch each (using web_fetch if needed). If JDs, extract company name and role title from each.
 
 2. **Dedup check.** For each company, search the local `evals/` folder for existing eval files:
-   - Run shell command: `find [vault-path]/evals -name "eval-[company-slug]-*.md"`
-   - If found, extract grade and date from the file frontmatter (YAML). Record: "Previously evaluated — [grade], [date]. Skipping re-eval."
-   - If not found, proceed to step 3.
+   - Use the Glob tool with pattern `evals/eval-[company-slug]-*.md` (cross-platform; do not shell out to `find`).
+   - If a match is found, read the frontmatter and extract `grade` and `date`. Record: "Previously evaluated — [grade], [date]. Skipping re-eval."
+   - If no match, proceed to step 3.
 
 3. **Lightweight evaluation.** For each item not in dedup:
    - Extract: company name, role title, location (if present), compensation (if disclosed), key responsibilities (bulleted), required skills (bulleted).
@@ -66,8 +66,8 @@ Accept a list of job descriptions or URLs, process each through a lightweight Mo
    ```
 
 6. **Notion sync (optional).** If `notion.enabled: true` in `config.md`, offer to log all evaluated items (non-duped) to Notion:
-   - Proposed status: `Batch-Evaluated`
-   - Proposed default next step: grade-dependent (Top Picks → "Apply", Review → "Consider", Skip → skip Notion)
+   - Status: `Evaluating` (matches the vault state machine in `references/status-outcome-state-machine.md` — batch evals are normal Mode 1 evals produced in bulk, not a separate status).
+   - Proposed default next step: grade-dependent (Top Picks → "Apply", Review → "Consider", Skip → skip Notion).
    - Show the user a preview of what will be written (count, sample rows). Wait for confirmation before writing.
 
 **Context window note for the user:**

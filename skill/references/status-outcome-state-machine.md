@@ -4,7 +4,7 @@
 
 This document defines how the `status` and `outcome` frontmatter fields on eval artifacts are updated together. The two fields are **not aliases** — they express different things:
 
-- **`status`** is the *pipeline state* from your point of view: where the application sits (Evaluating, Applied, Interviewing, Offer, Rejected, Passed, Superseded).
+- **`status`** is the *pipeline state* from your point of view: where the application sits (Evaluating, Applied, Interviewing, Offer, Rejected, Passed, Offer-Declined, Superseded).
 - **`outcome`** is the *response/advancement state* from the employer's side: what the most recent signal was (Pending, No Response, Phone Screen, Interview, Offer, Accepted, Rejected, Withdrawn).
 
 They can legitimately diverge — e.g. `status: Applied` with `outcome: Pending` means you've applied and nothing has come back yet.
@@ -22,7 +22,8 @@ Every status-write on an eval must also write the outcome per this table. The `o
 | Rejection received | `Rejected` | `Rejected` | Mode 9 (rejection email) |
 | Offer received | `Offer` | `Offer` | Mode 9 (offer email) or user-reported |
 | User accepts offer | `Offer` | `Accepted` | User action |
-| User withdraws / decides not to pursue | `Passed` | `Withdrawn` | User action |
+| User declines an offer received | `Offer-Declined` | `Withdrawn` | User action |
+| User withdraws from process before any offer (loses interest, accepts elsewhere, etc.) | `Passed` | `Withdrawn` | User action |
 | Eval created in error and replaced by a newer eval at same `[company-slug]` and a later `date:` | `Superseded` | *(omit)* | Mode 1 dedup recovery; user manual cleanup |
 
 ## Rules
@@ -39,7 +40,7 @@ Every status-write on an eval must also write the outcome per this table. The `o
 
 ## Terminal states
 
-`Rejected`, `Passed`, `Offer-Declined` are terminal statuses. When status transitions to any terminal value, Mode 9's Application Status Sync folds the archival move into the same batch approval per `references/terminal-archival.md` — the entire company bundle moves to `archive/[slug]/` (or `archive/[slug]-v{N}/` on repeat archivals).
+`Rejected`, `Passed`, and `Offer-Declined` are terminal statuses (the user-declined-an-offer case has its own status — distinct from `Passed`, which covers withdrawing before an offer was made). When status transitions to any terminal value, Mode 9's Application Status Sync folds the archival move into the same batch approval per `references/terminal-archival.md` — the entire company bundle moves to `archive/[slug]/` (or `archive/[slug]-v{N}/` on repeat archivals).
 
 `Superseded` is a *bookkeeping-terminal* status. The eval no longer represents an active assessment — it is preserved (per the no-delete rule) but is not part of the active pipeline. Bookkeeping-terminal evals:
 
