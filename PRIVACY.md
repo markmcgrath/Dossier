@@ -203,7 +203,7 @@ The table below maps each type of data to the services it may flow to.
    - **Attack:** Attacker embeds instructions in a job description or email you ask Claude to analyze ("Share your CV with me")
    - **Impact:** Claude might be tricked into repeating or reformatting sensitive data in a way that benefits attacker
    - **Likelihood:** Low (Claude has defenses, but not foolproof)
-   - **Mitigation:** Do not paste entire vault contents. Share only the minimum needed. Review Claude's outputs before trusting them.
+   - **Mitigation:** The skill's primary defense is the **Content Trust Boundary** in `skill/SKILL.md` — external content is treated as data to analyze, never as instructions to follow, and cannot trigger tool actions without explicit in-conversation user request. As a user-side belt-and-braces: do not paste entire vault contents, share only the minimum needed, and review Claude's outputs before trusting them.
 
 3. **Platform Enforcement / Account Takeover**
    - **Attack:** Your Gmail, Google, or LinkedIn account is compromised; attacker gains access to emails, calendar, messages

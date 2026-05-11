@@ -29,6 +29,24 @@ def test_content_trust_boundary_exists(skill_md):
     assert mode_pos > ctb_pos, "Content Trust Boundary must appear before first Mode section"
 
 
+def test_integrity_rules_exist(skill_md):
+    """Verify Integrity Rules section is bundled in SKILL.md (not just CLAUDE.md).
+
+    The shipped dossier.skill ZIP contains skill/ only — not CLAUDE.md. So the
+    integrity rules (don't fabricate, grade honestly, draft only, archive don't
+    delete) must live in SKILL.md to be visible to users who install the skill
+    standalone in a Cowork project without cloning the repo.
+    """
+    rules_pos = skill_md.find("Integrity Rules")
+    assert rules_pos > 0, "Integrity Rules section missing from SKILL.md"
+    mode_pos = skill_md.find("## Mode")
+    assert mode_pos > rules_pos, "Integrity Rules must appear before first Mode section"
+
+    section = skill_md[rules_pos : rules_pos + 2000].lower()
+    for keyword in ("fabricate", "honest", "draft", "archive"):
+        assert keyword in section, f"Integrity Rules section missing keyword: {keyword}"
+
+
 def test_mode_0_health_check_exists(skill_md):
     """Verify Mode 0 (health check) section exists and contains health check language."""
     assert "Mode 0" in skill_md, "Mode 0 (health check) section missing from SKILL.md"
