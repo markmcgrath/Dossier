@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `tools/setup-hooks.sh` — idempotent one-shot opt-in for the commit-msg hook. Resolves repo root from its own location, verifies `.githooks/commit-msg` is present, runs `git config core.hooksPath .githooks`, and reads back to confirm. Works under POSIX shells and Git Bash on Windows. CONTRIBUTING.md updated to point at the helper alongside the raw `git config` one-liner.
+
+### Added
+
 - CI `skill-parity` job (`.github/workflows/ci.yml`) — runs `build_skill.sh` on every PR and push to `main`, exiting non-zero if the freshly-built bundle's content drifts from the committed `dossier.skill`. Previously this guard only ran on tag pushes via `release.yml`, meaning a contributor could edit `skill/*.md` without repacking and CI would still greenlight the PR.
 - `tests/test_cc_pattern_parity.py` — asserts the Conventional Commits regex is identical between `.githooks/commit-msg` (client-side) and `.github/scripts/check_conventional_commits.sh` (server-side). Both files declare the pattern verbatim; this test catches accidental drift.
 

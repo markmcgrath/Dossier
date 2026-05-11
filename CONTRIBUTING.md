@@ -99,10 +99,16 @@ All new commits should follow the [Conventional Commits](https://www.conventiona
 **Opt-in to the local commit-msg hook:**
 
 ```bash
+bash tools/setup-hooks.sh
+```
+
+That runs `git config core.hooksPath .githooks` and confirms the hook is wired up. The shell one-liner works too if you prefer:
+
+```bash
 git config core.hooksPath .githooks
 ```
 
-This installs the hook from `.githooks/commit-msg` for your local clone. The same check runs server-side in CI on every PR via `.github/scripts/check_conventional_commits.sh`. Bypass token: add `[skip-cc]` to any commit message in the PR range to short-circuit the CI check.
+Either way installs the hook from `.githooks/commit-msg` for your local clone. The same check runs server-side in CI on every PR via `.github/scripts/check_conventional_commits.sh`. Bypass token: add `[skip-cc]` to any commit message in the PR range to short-circuit the CI check.
 
 **Cutover note:** Only commits from Plan 19 (Stream A) onward are expected to follow CC format. Prior history (~77% non-CC) is unaffected and will produce truncated `git cliff` suggestions for release ranges spanning the cutover — supplement with manual CHANGELOG entries in that case.
 
