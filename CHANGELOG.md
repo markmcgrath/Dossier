@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `skill/SKILL.md` now contains an explicit `## Integrity Rules` section (grade honestly, don't fabricate, draft only, archive don't delete) directly below the Content Trust Boundary. Previously these rules lived only in `CLAUDE.md`, which is not part of the shipped `dossier.skill` bundle — meaning a user installing the skill in a Cowork project without cloning the repo had no in-skill copy of the integrity constraints. `PRIVACY.md` and `SECURITY.md` now cross-reference the Content Trust Boundary as the prompt-injection mitigation mechanism.
+
 ### Fixed
 
 - Skill schema canonicalization: removed unused `B-` grade (the conversion table in `mode1-offer-evaluator.md` never produced it); added `Superseded` and `Offer-Declined` to the `status` enum in `README.md` (both were already used as terminal statuses in narrative docs but missing from the schema), and added the missing `Offer-Declined` row to the status/outcome state-machine transition table; fixed `Offer Declined` → `Offer-Declined` typo in `PRIVACY.md`; aligned optional frontmatter fields (`notes`, `source`, `referral_contact`, `application_method`, `model`, `sources`) across `README.md`, `skill/SKILL.md`, and `skill/references/file-conventions.md`.

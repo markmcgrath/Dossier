@@ -20,7 +20,7 @@ Please do not open public issues for security vulnerabilities.
 The following are considered security issues:
 
 - Data leakage — personal data (CV content, company names, email addresses) exposed through generated artifacts or logs
-- Prompt injection — external content (job descriptions, emails, pasted text) manipulating the skill into unsafe behavior
+- Prompt injection — external content (job descriptions, emails, pasted text) manipulating the skill into unsafe behavior. The skill's defense is documented in the **Content Trust Boundary** section at the top of `skill/SKILL.md`; report any case where that boundary is bypassed.
 - Credential exposure — API keys, tokens, or passwords stored in or surfaced through vault files
 - Unsafe handling of untrusted content — the skill executing instructions embedded in job postings or email bodies
 
