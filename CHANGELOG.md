@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Documentation
+
+- `CONTRIBUTING.md §"Tagging a Release"`: pre-tag steps checklist now includes a cross-link to `§"Routing eval (optional, pre-tag)"` (step 2). A maintainer working through the checklist could previously miss the routing-eval reminder because the two sections were separated by the `---` divider with no internal link between them.
+
 ### Added
 
 - `tests/test_dashboard.py` (new): light syntactic checks on `dashboard.md`'s Dataview code blocks. Dataview silently renders an empty table on a broken query rather than erroring, so a typo can ship to users invisibly. Four checks: dashboard has dataview blocks at all, every fence is closed, every block has balanced parens, every block has a `FROM` clause. Verified by deliberately injecting an unclosed `(` and missing-`FROM` block during development — both new tests flagged it.
