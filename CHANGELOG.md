@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Documentation
+
+- `DATA_CONTRACT.md`: "What's inside `dossier.skill`" updated from the stale two-file description to the actual 17-file layout (`SKILL.md`, `manifest.json`, 15 references). Derived Files section now mentions the `negotiation/` folder from PR-1. Notion section now points readers at the canonical sync rules in `config.template.md` and `skill/SKILL.md §Pipeline Tracker` instead of dead-ending the PRIVACY.md pointer. `Diagram.md` added to the system-layer file list.
+- `README.md`: new `## Upgrading` section with the two upgrade paths (clone vs. release artifact) including SHA256 verification. `Diagram.md` added to the system-layer file list under §Governance. Data-retention section now notes that 90-day cold detection is manual today (the audit found this was implied as automatic in some places but the state machine says otherwise).
+- `START_HERE.md`: mode-list section now distinguishes the six user-facing entry points from the additional capability modes (Mode 0/2.1/8/9/10/11/12/13/Weekly Trend) rather than presenting six modes alongside README's "14 named modes" claim with no reconciliation. Points readers at `SKILL.md` for the complete list.
+- `CLAUDE.md`: integrity rule for archival now notes that Mode 9 auto-proposes terminal-state archival but 90-day cold detection is manual.
+
 ### Added
 
 - `tools/setup-hooks.sh` — idempotent one-shot opt-in for the commit-msg hook. Resolves repo root from its own location, verifies `.githooks/commit-msg` is present, runs `git config core.hooksPath .githooks`, and reads back to confirm. Works under POSIX shells and Git Bash on Windows. CONTRIBUTING.md updated to point at the helper alongside the raw `git config` one-liner.

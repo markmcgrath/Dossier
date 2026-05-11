@@ -190,13 +190,15 @@ Dossier separates user-owned files from system-owned files so that skill updates
 
 **User layer (never overwritten by updates):** `cv.md`, `profile.md`, `stories.md`, `config.md`, `dashboard.md`, and all working folders (`evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `daily/`, `weekly/`, `archive/`).
 
-**System layer (may be updated with new skill versions):** `dossier.skill`, `PRIVACY.md`, `DATA_CONTRACT.md`, `README.md`, `LICENSE`.
+**System layer (may be updated with new skill versions):** `dossier.skill`, `PRIVACY.md`, `DATA_CONTRACT.md`, `README.md`, `Diagram.md`, `LICENSE`.
 
 See [DATA_CONTRACT.md](DATA_CONTRACT.md) for the full ownership model, update expectations, and Notion sync rules.
 
 ## Data retention
 
 Everything stays. Terminal pipeline rows (Rejected, Passed, Offer-Declined, 90+ days cold) are moved to `archive/[company-slug]/` — not deleted. Daily and weekly logs roll into dated subfolders when their counts exceed thresholds (~60 daily, ~26 weekly). Archived files remain searchable by Dataview and plain-text tools.
+
+**Note on the 90+ days cold case:** Mode 9 (Inbox & Follow-up) auto-proposes the archival move when it detects an explicit terminal-state transition (a rejection email, an offer accepted/declined). The 90-day stale detection is **manual today** — it needs date arithmetic that no mode implements yet. Mark stale rows yourself, or ask Claude to "archive applications older than 90 days that never responded."
 
 If you want to purge old data, you can delete archive folders manually. Dossier will never delete files on its own.
 
@@ -211,6 +213,31 @@ Dossier is an assistive system, not an autonomous one. Key principles:
 5. **User responsibility.** Model output is advisory, not authoritative. Always review generated artifacts before acting on them.
 
 For the full threat model, data-flow diagram, and per-service risk analysis, see [PRIVACY.md](PRIVACY.md) and [DATA_CONTRACT.md](DATA_CONTRACT.md). To report a security issue, see [SECURITY.md](SECURITY.md).
+
+## Upgrading
+
+`dossier.skill` is the only file you actively swap when a new version ships. Your vault layer (CV, profile, all working folders) is never touched. See [DATA_CONTRACT.md](DATA_CONTRACT.md) for the full ownership model.
+
+Two paths:
+
+**Cloned the repo** — `git pull` on `main` or check out an annotated `v*` tag. The committed `dossier.skill` at the repo root is rebuilt deterministically from `skill/` and is parity-checked in CI on every PR, so HEAD is always shippable.
+
+**Downloaded a release artifact** —
+
+```bash
+# 1. Grab the artifact and its sha256 alongside.
+curl -LO https://github.com/markmcgrath/Dossier/releases/download/v1.2.0/dossier-v1.2.0.skill
+curl -LO https://github.com/markmcgrath/Dossier/releases/download/v1.2.0/dossier-v1.2.0.skill.sha256
+
+# 2. Verify the hash.
+sha256sum -c dossier-v1.2.0.skill.sha256
+
+# 3. Drop the new file into your Cowork project (Customize → Skills → replace).
+```
+
+Substitute the tag you're upgrading to. The release workflow only fires on semver-shaped tags (`vN.N.N` or `vN.N.N-<suffix>`), so any GitHub Release for this repo is a real version.
+
+System-layer files (`PRIVACY.md`, `DATA_CONTRACT.md`, `README.md`, `Diagram.md`, `LICENSE`) may also be updated alongside the skill. If you've customized any of them, merge by hand — the vault layer is yours, the system layer is shared.
 
 ## Support matrix
 
