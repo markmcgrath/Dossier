@@ -6,47 +6,37 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-### Documentation
+## [1.3.0] — 2026-05-11
 
-- `CONTRIBUTING.md §"Tagging a Release"`: pre-tag steps checklist now includes a cross-link to `§"Routing eval (optional, pre-tag)"` (step 2). A maintainer working through the checklist could previously miss the routing-eval reminder because the two sections were separated by the `---` divider with no internal link between them.
-
-### Added
-
-- `tests/test_dashboard.py` (new): light syntactic checks on `dashboard.md`'s Dataview code blocks. Dataview silently renders an empty table on a broken query rather than erroring, so a typo can ship to users invisibly. Four checks: dashboard has dataview blocks at all, every fence is closed, every block has balanced parens, every block has a `FROM` clause. Verified by deliberately injecting an unclosed `(` and missing-`FROM` block during development — both new tests flagged it.
-- `tests/test_terminal_archival.py::test_no_cold_detection_implementation_symbols`: regression test that fails loudly if any implementation symbol for the deferred cold-detection feature (`cold_threshold_days`, `days_until_cold`, `stale_application_days`, `auto_archive_cold`) lands under `skill/` while the docs still describe it as manual. Prevents the state where the code says "automated" and the docs say "manual."
-- `tests/conftest.py`: comment on the `eval_files` fixture explaining why the glob is intentionally scoped to top-level `evals/` and exempts `archive/` (archived evals were valid against older schemas; revalidating them would break local test runs for users who archived under, say, pre-PR-1 enums).
-
-### Documentation
-
-- `DATA_CONTRACT.md`: "What's inside `dossier.skill`" updated from the stale two-file description to the actual 17-file layout (`SKILL.md`, `manifest.json`, 15 references). Derived Files section now mentions the `negotiation/` folder from PR-1. Notion section now points readers at the canonical sync rules in `config.template.md` and `skill/SKILL.md §Pipeline Tracker` instead of dead-ending the PRIVACY.md pointer. `Diagram.md` added to the system-layer file list.
-- `README.md`: new `## Upgrading` section with the two upgrade paths (clone vs. release artifact) including SHA256 verification. `Diagram.md` added to the system-layer file list under §Governance. Data-retention section now notes that 90-day cold detection is manual today (the audit found this was implied as automatic in some places but the state machine says otherwise).
-- `START_HERE.md`: mode-list section now distinguishes the six user-facing entry points from the additional capability modes (Mode 0/2.1/8/9/10/11/12/13/Weekly Trend) rather than presenting six modes alongside README's "14 named modes" claim with no reconciliation. Points readers at `SKILL.md` for the complete list.
-- `CLAUDE.md`: integrity rule for archival now notes that Mode 9 auto-proposes terminal-state archival but 90-day cold detection is manual.
+This release lands the audit-cleanup series (PRs #47–#54). No backwards-incompatible changes: `B-` and `Batch-Evaluated` were removed from schemas but neither was ever emitted by any mode; everything else is additive. Routing-evals run before tagging scored 0.967 (43.5/45 credit; three pre-existing ambiguous-mode partial-credits; no regressions from the cleanup).
 
 ### Added
 
-- `tools/setup-hooks.sh` — idempotent one-shot opt-in for the commit-msg hook. Resolves repo root from its own location, verifies `.githooks/commit-msg` is present, runs `git config core.hooksPath .githooks`, and reads back to confirm. Works under POSIX shells and Git Bash on Windows. CONTRIBUTING.md updated to point at the helper alongside the raw `git config` one-liner.
-
-### Added
-
-- CI `skill-parity` job (`.github/workflows/ci.yml`) — runs `build_skill.sh` on every PR and push to `main`, exiting non-zero if the freshly-built bundle's content drifts from the committed `dossier.skill`. Previously this guard only ran on tag pushes via `release.yml`, meaning a contributor could edit `skill/*.md` without repacking and CI would still greenlight the PR.
-- `tests/test_cc_pattern_parity.py` — asserts the Conventional Commits regex is identical between `.githooks/commit-msg` (client-side) and `.github/scripts/check_conventional_commits.sh` (server-side). Both files declare the pattern verbatim; this test catches accidental drift.
+- `skill/SKILL.md` now contains an explicit `## Integrity Rules` section (grade honestly, don't fabricate, draft only, archive don't delete) directly below the Content Trust Boundary. Previously these rules lived only in `CLAUDE.md`, which is not part of the shipped `dossier.skill` bundle — meaning a user installing the skill in a Cowork project without cloning the repo had no in-skill copy of the integrity constraints. `PRIVACY.md` and `SECURITY.md` now cross-reference the Content Trust Boundary as the prompt-injection mitigation mechanism.
+- `Offer-Declined` added as a first-class `status` value (distinct from `Passed`, which now strictly covers withdrawing *before* an offer was received). State-machine transition table gains the corresponding row.
+- `examples/example-cover-letter.md` — fourth reference artifact, completing the canonical set covering Mode 1 (eval), Mode 5 (outreach), Mode 3 (prep), and Mode 6 (cover letter). Uses the same fictional *Cipher Analytics / Senior Data Platform Engineer* narrative as the existing examples so the four artifacts form a coherent end-to-end set.
+- `tools/setup-hooks.sh` — idempotent one-shot opt-in for the commit-msg hook. Resolves repo root from its own location, verifies `.githooks/commit-msg` is present, runs `git config core.hooksPath .githooks`, and reads back to confirm. Works under POSIX shells and Git Bash on Windows. `CONTRIBUTING.md` updated to point at the helper.
+- CI `skill-parity` job (`.github/workflows/ci.yml`) — runs `build_skill.sh` on every PR and push to `main`, exiting non-zero if the freshly-built bundle's content drifts from the committed `dossier.skill`. Previously the guard only ran on tag pushes via `release.yml`, meaning a contributor could edit `skill/*.md` without repacking and CI would still greenlight the PR.
+- `tests/test_cc_pattern_parity.py` — asserts the Conventional Commits regex is identical between `.githooks/commit-msg` (client-side) and `.github/scripts/check_conventional_commits.sh` (server-side).
+- `tests/test_dashboard.py` — light syntactic checks on `dashboard.md`'s Dataview code blocks (fence pairing, balanced parens, FROM clause presence). Dataview silently renders an empty table on a broken query rather than erroring, so this catches typos that would otherwise ship invisibly.
+- `tests/test_terminal_archival.py::test_no_cold_detection_implementation_symbols` — regression test that fails loudly if any implementation symbol for the deferred cold-detection feature (`cold_threshold_days`, `days_until_cold`, `stale_application_days`, `auto_archive_cold`) lands under `skill/` while the docs still describe it as manual.
 
 ### Fixed
 
+- Skill schema canonicalization: removed unused `B-` grade (the conversion table in `mode1-offer-evaluator.md` never produced it); added `Superseded` and `Offer-Declined` to the `status` enum in `README.md` (both were already used as terminal statuses in narrative docs but missing from the schema); fixed `Offer Declined` → `Offer-Declined` typo in `PRIVACY.md`; aligned optional frontmatter fields (`notes`, `source`, `referral_contact`, `application_method`, `model`, `sources`) across `README.md`, `skill/SKILL.md`, and `skill/references/file-conventions.md`. `tests/test_vault_schema.py` `VALID_GRADES` and `VALID_STATUSES` aligned to the canonical schema.
+- Mode 7 (Salary Negotiation) now saves to a dedicated `negotiation/` folder instead of the vault root; folder registered in `skill/references/file-conventions.md` with a `type: negotiation` schema.
+- Mode 12 (Batch Pipeline) dedup step no longer shells out to POSIX `find` (broke on Windows); now uses the skill's existing Glob tool. Notion sync section drops the undocumented `Batch-Evaluated` status in favor of the canonical `Evaluating` per the state machine.
 - `requirements.txt` now installs `tomli` on Python <3.11 (`tests/test_cliff_config.py` imports it as a fallback for the stdlib `tomllib` that landed in 3.11). CI matrix is 3.11+3.12 so it passes today, but any contributor running tests locally on 3.10 hit `ModuleNotFoundError`.
 - `tests/test_commit_msg_hook.py` now copies the hook with `write_bytes`/`read_bytes` instead of `write_text`/`read_text`. On Windows, the text-mode copy translated LF to CRLF and would corrupt the bash shebang, making the hook fail with `bad interpreter` on Windows test runs.
 
-### Added
+### Documentation
 
-- `examples/example-cover-letter.md` — fourth reference artifact, completing the set covering Mode 1 (eval), Mode 5 (outreach), Mode 3 (prep), and now Mode 6 (cover letter). Uses the same fictional "Cipher Analytics / Senior Data Platform Engineer" narrative as the existing eval and outreach examples so the four artifacts form a coherent set. `CONTRIBUTING.md:29` had flagged the gap. `tests/test_vault_files.py` extended to require the new file by name (`test_examples_directory_has_required_files`) plus a `type: cover` frontmatter test.
-- `skill/SKILL.md` now contains an explicit `## Integrity Rules` section (grade honestly, don't fabricate, draft only, archive don't delete) directly below the Content Trust Boundary. Previously these rules lived only in `CLAUDE.md`, which is not part of the shipped `dossier.skill` bundle — meaning a user installing the skill in a Cowork project without cloning the repo had no in-skill copy of the integrity constraints. `PRIVACY.md` and `SECURITY.md` now cross-reference the Content Trust Boundary as the prompt-injection mitigation mechanism.
-
-### Fixed
-
-- Skill schema canonicalization: removed unused `B-` grade (the conversion table in `mode1-offer-evaluator.md` never produced it); added `Superseded` and `Offer-Declined` to the `status` enum in `README.md` (both were already used as terminal statuses in narrative docs but missing from the schema), and added the missing `Offer-Declined` row to the status/outcome state-machine transition table; fixed `Offer Declined` → `Offer-Declined` typo in `PRIVACY.md`; aligned optional frontmatter fields (`notes`, `source`, `referral_contact`, `application_method`, `model`, `sources`) across `README.md`, `skill/SKILL.md`, and `skill/references/file-conventions.md`.
-- Mode 7 (Salary Negotiation) now saves to a dedicated `negotiation/` folder instead of the vault root; folder registered in `skill/references/file-conventions.md` with a `type: negotiation` schema.
-- Mode 12 (Batch Pipeline) dedup step no longer shells out to POSIX `find` (broke on Windows); now uses the skill's existing Glob tool. Notion sync section drops the undocumented `Batch-Evaluated` status in favor of the canonical `Evaluating` per the state machine.
+- `DATA_CONTRACT.md` "What's inside `dossier.skill`" updated from the stale two-file description to the actual 17-file layout (`SKILL.md`, `manifest.json`, 15 references). Derived Files section now mentions the `negotiation/` folder. Notion section now points readers at the canonical sync rules in `config.template.md` and `skill/SKILL.md §Pipeline Tracker` instead of a dead-end `PRIVACY.md` pointer. `Diagram.md` added to the system-layer file list.
+- `README.md` — new `## Upgrading` section with the two upgrade paths (clone vs. release artifact) including SHA256 verification. `Diagram.md` added to the system-layer file list under §Governance. Data-retention section now notes that 90-day cold detection is manual today.
+- `START_HERE.md` — mode-list section now distinguishes the six user-facing entry points from the additional capability modes (Mode 0/2.1/8/9/10/11/12/13/Weekly Trend) rather than presenting six modes alongside the "14 named modes" claim with no reconciliation.
+- `CLAUDE.md` — integrity rule for archival now notes that Mode 9 auto-proposes terminal-state archival but 90-day cold detection is manual.
+- `CONTRIBUTING.md §"Tagging a Release"` — pre-tag steps checklist now cross-links to `§"Routing eval (optional, pre-tag)"` (new step 2). A maintainer working through the checklist could previously miss the routing-eval reminder because the two sections were separated by the `---` divider with no internal link.
+- `tests/conftest.py` — comment on the `eval_files` fixture explaining why the glob is intentionally scoped to top-level `evals/` and exempts `archive/` (archived evals were valid against older schemas; revalidating them would break local test runs for users who archived under pre-1.3.0 enums).
 
 ## [1.2.0] — 2026-05-09
 
