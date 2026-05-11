@@ -15,7 +15,10 @@ def tmp_git_repo(tmp_path):
     hooks_dir = tmp_path / ".git" / "hooks"
     hooks_dir.mkdir(exist_ok=True)
     hook_target = hooks_dir / "commit-msg"
-    hook_target.write_text(HOOK.read_text())
+    # write_bytes (not write_text) preserves the original LF line endings.
+    # On Windows, write_text would translate to CRLF and corrupt the bash
+    # shebang interpreter when git tries to execute the hook.
+    hook_target.write_bytes(HOOK.read_bytes())
     hook_target.chmod(0o755)
     (tmp_path / "x.txt").write_text("hi")
     subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)

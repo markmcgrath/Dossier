@@ -8,6 +8,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- CI `skill-parity` job (`.github/workflows/ci.yml`) — runs `build_skill.sh` on every PR and push to `main`, exiting non-zero if the freshly-built bundle's content drifts from the committed `dossier.skill`. Previously this guard only ran on tag pushes via `release.yml`, meaning a contributor could edit `skill/*.md` without repacking and CI would still greenlight the PR.
+- `tests/test_cc_pattern_parity.py` — asserts the Conventional Commits regex is identical between `.githooks/commit-msg` (client-side) and `.github/scripts/check_conventional_commits.sh` (server-side). Both files declare the pattern verbatim; this test catches accidental drift.
+
+### Fixed
+
+- `requirements.txt` now installs `tomli` on Python <3.11 (`tests/test_cliff_config.py` imports it as a fallback for the stdlib `tomllib` that landed in 3.11). CI matrix is 3.11+3.12 so it passes today, but any contributor running tests locally on 3.10 hit `ModuleNotFoundError`.
+- `tests/test_commit_msg_hook.py` now copies the hook with `write_bytes`/`read_bytes` instead of `write_text`/`read_text`. On Windows, the text-mode copy translated LF to CRLF and would corrupt the bash shebang, making the hook fail with `bad interpreter` on Windows test runs.
+
+### Added
+
 - `examples/example-cover-letter.md` — fourth reference artifact, completing the set covering Mode 1 (eval), Mode 5 (outreach), Mode 3 (prep), and now Mode 6 (cover letter). Uses the same fictional "Cipher Analytics / Senior Data Platform Engineer" narrative as the existing eval and outreach examples so the four artifacts form a coherent set. `CONTRIBUTING.md:29` had flagged the gap. `tests/test_vault_files.py` extended to require the new file by name (`test_examples_directory_has_required_files`) plus a `type: cover` frontmatter test.
 - `skill/SKILL.md` now contains an explicit `## Integrity Rules` section (grade honestly, don't fabricate, draft only, archive don't delete) directly below the Content Trust Boundary. Previously these rules lived only in `CLAUDE.md`, which is not part of the shipped `dossier.skill` bundle — meaning a user installing the skill in a Cowork project without cloning the repo had no in-skill copy of the integrity constraints. `PRIVACY.md` and `SECURITY.md` now cross-reference the Content Trust Boundary as the prompt-injection mitigation mechanism.
 
