@@ -68,6 +68,39 @@ def test_archival_defers_cold_detection(archival_text: str) -> None:
     )
 
 
+def test_no_cold_detection_implementation_symbols(vault_path: Path) -> None:
+    """Regression: the deferred cold-detection feature must not be partially
+    shipped while terminal-archival.md still describes it as manual.
+
+    If someone implements automated cold detection, the implementation will
+    introduce a symbol like cold_threshold_days, days_until_cold, or a
+    similar config knob. This test fails loudly when any such symbol lands
+    under skill/ before the manual-fallback language is removed — preventing
+    the state where the code says "automated" and the docs say "manual."
+    """
+    impl_markers = [
+        "cold_threshold_days",
+        "days_until_cold",
+        "stale_application_days",
+        "auto_archive_cold",
+    ]
+
+    offenders: list[str] = []
+    for md_file in (vault_path / "skill").rglob("*.md"):
+        text = md_file.read_text(encoding="utf-8")
+        for marker in impl_markers:
+            if marker in text:
+                offenders.append(f"{md_file.relative_to(vault_path)}: {marker}")
+
+    assert not offenders, (
+        "Cold-detection implementation symbol(s) found in skill/. If "
+        "automated cold detection has shipped, remove the manual-fallback "
+        "language from terminal-archival.md and status-outcome-state-machine.md "
+        "and update this test list to match the new design.\n  "
+        + "\n  ".join(offenders)
+    )
+
+
 # ---------------------------------------------------------------------------
 # Cross-references from the rest of the skill
 # ---------------------------------------------------------------------------

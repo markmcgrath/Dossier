@@ -6,6 +6,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `tests/test_dashboard.py` (new): light syntactic checks on `dashboard.md`'s Dataview code blocks. Dataview silently renders an empty table on a broken query rather than erroring, so a typo can ship to users invisibly. Four checks: dashboard has dataview blocks at all, every fence is closed, every block has balanced parens, every block has a `FROM` clause. Verified by deliberately injecting an unclosed `(` and missing-`FROM` block during development — both new tests flagged it.
+- `tests/test_terminal_archival.py::test_no_cold_detection_implementation_symbols`: regression test that fails loudly if any implementation symbol for the deferred cold-detection feature (`cold_threshold_days`, `days_until_cold`, `stale_application_days`, `auto_archive_cold`) lands under `skill/` while the docs still describe it as manual. Prevents the state where the code says "automated" and the docs say "manual."
+- `tests/conftest.py`: comment on the `eval_files` fixture explaining why the glob is intentionally scoped to top-level `evals/` and exempts `archive/` (archived evals were valid against older schemas; revalidating them would break local test runs for users who archived under, say, pre-PR-1 enums).
+
 ### Documentation
 
 - `DATA_CONTRACT.md`: "What's inside `dossier.skill`" updated from the stale two-file description to the actual 17-file layout (`SKILL.md`, `manifest.json`, 15 references). Derived Files section now mentions the `negotiation/` folder from PR-1. Notion section now points readers at the canonical sync rules in `config.template.md` and `skill/SKILL.md §Pipeline Tracker` instead of dead-ending the PRIVACY.md pointer. `Diagram.md` added to the system-layer file list.

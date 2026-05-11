@@ -117,7 +117,15 @@ def example_prep_frontmatter(example_prep_text):
 
 @pytest.fixture(scope="session")
 def eval_files(vault_path):
-    """List of parsed frontmatter dicts for all .md files in evals/."""
+    """List of parsed frontmatter dicts for all .md files in evals/.
+
+    Intentionally scoped to top-level evals/ — archive/ is exempt. Once an
+    eval is archived, its frontmatter is frozen in time; archived files were
+    valid against whatever schema shipped when they were active, and forcing
+    them to revalidate against the current schema would break local test runs
+    for any user who archived under an older enum (e.g. pre-PR-1 evals that
+    carried `Batch-Evaluated` or `grade: B-`).
+    """
     evals_dir = vault_path / "evals"
     assert evals_dir.exists(), f"evals/ directory not found at {evals_dir}"
 
