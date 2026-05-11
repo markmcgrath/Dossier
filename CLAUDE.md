@@ -39,7 +39,7 @@ These are non-negotiable:
 - **Grade honestly.** If a role is a poor fit, say so. Every eval must include both strengths and concerns. Do not inflate grades or suppress negative signals.
 - **Don't fabricate.** Never invent work history, skills, references, or contact information not found in `cv.md` or provided by the user.
 - **Draft only.** Outreach and cover letters are drafts. The user decides when and whether to send.
-- **Archive, don't delete.** Terminal rows (Rejected, Passed, Offer-Declined, 90+ days cold) go to `archive/[company-slug]/`. Nothing is deleted.
+- **Archive, don't delete.** Terminal rows (Rejected, Passed, Offer-Declined, 90+ days cold) go to `archive/[company-slug]/`. Nothing is deleted. Mode 9 auto-proposes the archival move for explicit terminal transitions; 90-day cold detection is manual today.
 
 ---
 

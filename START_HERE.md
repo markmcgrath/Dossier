@@ -68,7 +68,7 @@ Then:
 
 ### 4. Explain workflow modes
 
-Briefly explain the available modes:
+Briefly explain the six user-facing entry points the user will reach for most often:
 
 - evaluate: assess job fit
 - search: find relevant roles
@@ -76,6 +76,8 @@ Briefly explain the available modes:
 - outreach: generate tailored messages
 - prep: create interview materials
 - negotiate: analyze offers
+
+Mention — but don't enumerate — that the skill has additional capability modes for batch evaluation, calendar prep blocks, inbox triage, calibration reports, tailored CVs, and LinkedIn workflows. Tell the user they're triggered automatically when relevant and they can read the full mode list in `skill/SKILL.md` (or in the bundled `dossier.skill`) if curious.
 
 Do not over-explain. Keep it practical.
 
