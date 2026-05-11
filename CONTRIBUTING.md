@@ -126,11 +126,12 @@ Tags that do not match (e.g. `vlatest`, `v-snapshot-2026-q3`, `v1`, `v1.0`) will
 **Pre-tag steps (maintainer):**
 
 1. Ensure all PRs are merged and CI is green on `main`.
-2. Run `git cliff --unreleased --tag vX.Y.Z` to preview a suggested CHANGELOG section. git-cliff is a maintainer-only tool — install via `cargo install git-cliff` or `brew install git-cliff`. This step can be skipped if git-cliff is not installed; write the CHANGELOG entry manually.
-3. Manually paste/edit the suggestion into `CHANGELOG.md` as a new `## [vX.Y.Z] — YYYY-MM-DD` block above `## [Unreleased]`. Re-add an empty `## [Unreleased]` above. Preserve any `### Planned` content verbatim — git-cliff does not emit it.
-4. Commit: `git commit -am "chore(release): vX.Y.Z"`.
-5. Tag: `git tag -a vX.Y.Z -m "Release X.Y.Z"`.
-6. Push: `git push origin main vX.Y.Z`.
+2. *(Optional)* Run the routing evals harness — see [§Routing eval (optional, pre-tag)](#routing-eval-optional-pre-tag) below. Catches holistic routing regressions before they ship in a release.
+3. Run `git cliff --unreleased --tag vX.Y.Z` to preview a suggested CHANGELOG section. git-cliff is a maintainer-only tool — install via `cargo install git-cliff` or `brew install git-cliff`. This step can be skipped if git-cliff is not installed; write the CHANGELOG entry manually.
+4. Manually paste/edit the suggestion into `CHANGELOG.md` as a new `## [vX.Y.Z] — YYYY-MM-DD` block above `## [Unreleased]`. Re-add an empty `## [Unreleased]` above. Preserve any `### Planned` content verbatim — git-cliff does not emit it.
+5. Commit: `git commit -am "chore(release): vX.Y.Z"`.
+6. Tag: `git tag -a vX.Y.Z -m "Release X.Y.Z"`.
+7. Push: `git push origin main vX.Y.Z`.
 
 ---
 
