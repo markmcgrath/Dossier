@@ -18,6 +18,7 @@ Dossier/
 ├── cover-letters/          ← cover-[slug]-[date].md      (Mode 6 output)
 ├── interview-prep/         ← prep-[slug]-[date].md       (Mode 3 output)
 ├── research/               ← target-brief-*.md, company research (Mode 4)
+├── negotiation/            ← negotiation-[slug]-[date].md (Mode 7 output)
 ├── daily/                  ← daily-scan-*, leads-*-am/pm, recruiter-triage-*
 ├── weekly/                 ← pipeline-digest-*, week-ahead-*
 └── archive/                ← archived per-company bundles once terminal
@@ -33,13 +34,21 @@ Every artifact file **must** start with YAML frontmatter. The `type` field is ho
 type: eval
 company: "Company Name"
 role: "Role Title"
-grade: A            # A | B+ | B | B- | C | D | F
+grade: A            # A | B+ | B | C | D | F
 score: 4.5
-status: Evaluating  # Evaluating | Applied | Interviewing | Offer | Rejected | Passed | Superseded
+status: Evaluating  # Evaluating | Applied | Interviewing | Offer | Rejected | Passed | Offer-Declined | Superseded
 date: YYYY-MM-DD
 location: "Remote"
 compensation: "$X–$Y"     # or "Not disclosed"
+outcome: Pending          # Pending | No Response | Rejected | Phone Screen | Interview | Offer | Accepted | Withdrawn
+legitimacy: Verified      # Verified | Plausible | Suspect | Likely Ghost
 notes: "One-sentence recommendation."
+# Optional metadata fields — set when the information is available:
+source: "Indeed"                     # Indeed | Dice | LinkedIn | Company Careers | Referral | Recruiter Inbound | Other
+referral_contact: ""                 # Name of the referrer when source=Referral
+application_method: ""               # "Easy Apply" | "Direct" | "Recruiter" | etc.
+model: claude-sonnet-4-6             # Which model produced this evaluation
+sources: []                          # Data sources consulted: jd_url, apollo, web_search, etc.
 ---
 ```
 
@@ -58,6 +67,8 @@ related_eval: "[[eval-[slug]-[date]]]"   # wikilink syntax, not a path
 
 **Cover letter files** (`type: cover`): same shape as outreach.
 **Prep files** (`type: prep`): add `interview_date:`, `interviewers:` (list of names), and `related_stories:` (list of Obsidian heading wikilinks into `stories.md`, e.g. `"[[stories#Story Title]]"`). Story matching and back-reference discipline live in `references/story-tagging.md`.
+
+**Negotiation files** (`type: negotiation`): same base shape as outreach, plus `offer_components:` (free-form summary of base/bonus/equity/etc.) and `walk_away:` (the floor below which the user will decline). Save to `negotiation/negotiation-[slug]-[date].md`.
 
 ### Cross-linking rule (for Obsidian graph view)
 

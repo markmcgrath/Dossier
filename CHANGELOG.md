@@ -6,6 +6,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Skill schema canonicalization: removed unused `B-` grade (the conversion table in `mode1-offer-evaluator.md` never produced it); added `Superseded` and `Offer-Declined` to the `status` enum in `README.md` (both were already used as terminal statuses in narrative docs but missing from the schema), and added the missing `Offer-Declined` row to the status/outcome state-machine transition table; fixed `Offer Declined` → `Offer-Declined` typo in `PRIVACY.md`; aligned optional frontmatter fields (`notes`, `source`, `referral_contact`, `application_method`, `model`, `sources`) across `README.md`, `skill/SKILL.md`, and `skill/references/file-conventions.md`.
+- Mode 7 (Salary Negotiation) now saves to a dedicated `negotiation/` folder instead of the vault root; folder registered in `skill/references/file-conventions.md` with a `type: negotiation` schema.
+- Mode 12 (Batch Pipeline) dedup step no longer shells out to POSIX `find` (broke on Windows); now uses the skill's existing Glob tool. Notion sync section drops the undocumented `Batch-Evaluated` status in favor of the canonical `Evaluating` per the state machine.
+
 ## [1.2.0] — 2026-05-09
 
 ### Added

@@ -77,7 +77,7 @@ Then gather market data in parallel:
 - Keep everything in email if the user is nervous on calls. "Can I send a quick note tonight?" is a valid move.
 - The ask is ALWAYS more than the target. Room to meet in the middle is the whole point.
 
-Save to `negotiation-[company-slug]-[date].md` in the Dossier folder. Offer to draft the actual counter-offer email if the user is ready to send.
+Save to `negotiation/negotiation-[company-slug]-[date].md` with `type: negotiation` frontmatter (see `references/file-conventions.md`). Offer to draft the actual counter-offer email if the user is ready to send.
 
 ## Offer Comparison (multiple offers)
 
