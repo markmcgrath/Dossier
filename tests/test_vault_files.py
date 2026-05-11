@@ -58,16 +58,26 @@ def test_required_directories_exist(vault_path):
         )
 
 
-def test_examples_directory_has_three_files(vault_path):
-    """Verify examples/ directory has at least three reference files."""
+def test_examples_directory_has_required_files(vault_path):
+    """Verify examples/ directory has the four canonical reference artifacts.
+
+    One example per artifact type so the four major output modes (Mode 1 eval,
+    Mode 5 outreach, Mode 3 prep, Mode 6 cover letter) each have a visible
+    reference. Additional examples are fine but the four below are required.
+    """
     examples_dir = vault_path / "examples"
     assert examples_dir.exists(), "examples/ directory not found"
 
     files = list(examples_dir.glob("*.md"))
-    assert len(files) >= 3, f"examples/ has {len(files)} files, expected at least 3"
+    assert len(files) >= 4, f"examples/ has {len(files)} files, expected at least 4"
 
     file_names = {f.name for f in files}
-    expected = {"example-eval.md", "example-outreach.md", "example-prep.md"}
+    expected = {
+        "example-eval.md",
+        "example-outreach.md",
+        "example-prep.md",
+        "example-cover-letter.md",
+    }
     for fname in expected:
         assert fname in file_names, f"examples/{fname} not found"
 
@@ -97,6 +107,15 @@ def test_example_prep_frontmatter(example_prep_frontmatter):
     if missing:
         assert False, f"example-prep.md missing fields: {missing}"
     assert example_prep_frontmatter.get("type") == "prep", "example-prep.md must have type: prep"
+
+
+def test_example_cover_frontmatter(example_cover_frontmatter):
+    """Verify example-cover-letter.md has required frontmatter fields."""
+    required = {"type", "company", "role", "status", "related_eval"}
+    missing = required - set(example_cover_frontmatter.keys() or {})
+    if missing:
+        assert False, f"example-cover-letter.md missing fields: {missing}"
+    assert example_cover_frontmatter.get("type") == "cover", "example-cover-letter.md must have type: cover"
 
 
 def test_config_has_notion_block(config_text):
