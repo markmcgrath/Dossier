@@ -180,3 +180,18 @@ def example_prep_text(vault_path):
     example_file = vault_path / "examples" / "example-prep.md"
     assert example_file.exists(), f"example-prep.md not found"
     return example_file.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def example_cover_text(vault_path):
+    """Raw text of examples/example-cover-letter.md."""
+    example_file = vault_path / "examples" / "example-cover-letter.md"
+    assert example_file.exists(), f"example-cover-letter.md not found"
+    return example_file.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def example_cover_frontmatter(example_cover_text):
+    """Parsed frontmatter of example-cover-letter.md."""
+    fm, _ = parse_frontmatter(example_cover_text)
+    return fm
