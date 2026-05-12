@@ -132,6 +132,38 @@ Tags that do not match (e.g. `vlatest`, `v-snapshot-2026-q3`, `v1`, `v1.0`) will
 5. Commit: `git commit -am "chore(release): vX.Y.Z"`.
 6. Tag: `git tag -a vX.Y.Z -m "Release X.Y.Z"`.
 7. Push: `git push origin main vX.Y.Z`.
+8. After the release workflow finishes, run the post-release install smoke — see [§Post-release install smoke (manual)](#post-release-install-smoke-manual).
+
+---
+
+## Post-release install smoke (manual)
+
+The release workflow's structural smoke (`verify_skill_artifact.py`) confirms the bundle is a valid ZIP with the right entries. It does not exercise the user-facing install path — download the asset, verify the checksum, load it into a fresh Claude project, and run a mode. This manual checklist closes that gap. Roughly ten minutes; catches release workflow silent failures, bad checksums, version-string drift, and skill-body regressions that prevent the bundle from loading.
+
+Run after `release.yml` reports green on the tag:
+
+1. **Confirm the Release page** at `https://github.com/markmcgrath/Dossier/releases/tag/vX.Y.Z` exists with both assets attached:
+   - `dossier-vX.Y.Z.skill`
+   - `dossier-vX.Y.Z.skill.sha256`
+2. **Confirm the release notes** match the `## [vX.Y.Z] —` section of `CHANGELOG.md`. The workflow's awk extractor falls back to `[Unreleased]` or a placeholder when the per-tag section is missing — if you see "no CHANGELOG section found" or notes you don't recognize, fix the CHANGELOG and edit the Release body.
+3. **Download and verify checksum** in a scratch directory (the user-facing path from `README.md` §Upgrading):
+   ```bash
+   curl -LO https://github.com/markmcgrath/Dossier/releases/download/vX.Y.Z/dossier-vX.Y.Z.skill
+   curl -LO https://github.com/markmcgrath/Dossier/releases/download/vX.Y.Z/dossier-vX.Y.Z.skill.sha256
+   sha256sum -c dossier-vX.Y.Z.skill.sha256
+   ```
+   Expected: `dossier-vX.Y.Z.skill: OK`. A failure here means the uploaded asset is corrupted or the `.sha256` was generated from a different build — investigate before advertising the release.
+4. **Verify the bundle's manifest** (no Claude required):
+   ```bash
+   unzip -t dossier-vX.Y.Z.skill
+   unzip -p dossier-vX.Y.Z.skill skill/manifest.json | python -m json.tool
+   ```
+   The manifest's `version` field should equal the tag without the leading `v`. The `commit` field should match the SHA the tag points at (`git rev-parse vX.Y.Z`).
+5. **Install into a fresh Claude project** (Cowork → Customize → Skills → upload `dossier-vX.Y.Z.skill`) and confirm the skill description loads — Claude should list Dossier and its modes when asked "what skills do you have?".
+6. **Run one Mode 1 evaluation** against a known fixture, e.g. `tests/fixtures/jd_strong_fit.md`. Compare the output shape against `examples/golden/eval-strong-fit.md` — frontmatter shape, scoring dimensions, grade. Substantive drift from the golden is a "investigate or rollback" signal, not a release-go signal.
+7. **(Security-relevant, optional)** Run Mode 1 against `tests/fixtures/jd_injection_attempt.md` and confirm the response surfaces a Prompt Injection Notice without acting on the injected instructions. Compare against `examples/golden/eval-injection-response.md`. Drift here is a security regression and warrants a follow-up patch even if every other check passed.
+
+If any step fails, do not advertise the release publicly. The standard recovery is a follow-up patch tag (`vX.Y.Z+1`), not deletion — a deleted tag forces anyone who already pulled to re-fetch and produces an audit-log gap. Mark the release as a pre-release while investigating with `gh release edit vX.Y.Z --prerelease` if you want to discourage downloads in the meantime.
 
 ---
 

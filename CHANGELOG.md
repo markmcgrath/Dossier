@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Documentation
+
+- `CONTRIBUTING.md` adds a `## Post-release install smoke (manual)` section between "Tagging a Release" and "Routing eval (optional, pre-tag)". Seven-step checklist (Release page present → assets attached → release notes match CHANGELOG → checksum verifies → manifest matches tag → install loads → Mode 1 produces a well-shaped eval, optional security check on the injection fixture) the maintainer runs after `release.yml` reports green. Closes the gap between the workflow's structural `verify_skill_artifact.py` smoke (valid ZIP, required entries) and the user-facing install path (download from Release URL, verify sha256, load into Claude, run a mode). Resolves the P2 item the v1.3.0 reviewer flagged and Plan 20 explicitly deferred out of v1.3.1 to keep it docs-only.
+
 ### Added
 
 - `features/plan/21-target-radar-brief.md` — stub plan-doc cross-linking the canonical Target Radar brief design that now lives in The Commonplace Book vault (`2026-05-11-target-radar-brief-design`). Target Radar is designed as a Commonplace brief upstream of Dossier, not as a Dossier mode; the stub lets anyone walking the dossier plan folder find their way to the canonical design without inheriting the load-bearing decisions in two places. No implementation work scheduled — the canonical design carries `decay_class: slow` (180-day TTL); if Target Radar is still useful at the next vault audit, that's the signal to schedule implementation. Closes Phase 2 of `features/plan/20-v1-3-1-and-phase-2-foundations.md`.
