@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Documentation
+
+- `CONTRIBUTING.md` adds a `## Post-release install smoke (manual)` section between "Tagging a Release" and "Routing eval (optional, pre-tag)". Seven-step checklist (Release page present → assets attached → release notes match CHANGELOG → checksum verifies → manifest matches tag → install loads → Mode 1 produces a well-shaped eval, optional security check on the injection fixture) the maintainer runs after `release.yml` reports green. Closes the gap between the workflow's structural `verify_skill_artifact.py` smoke (valid ZIP, required entries) and the user-facing install path (download from Release URL, verify sha256, load into Claude, run a mode). Resolves the P2 item the v1.3.0 reviewer flagged and Plan 20 explicitly deferred out of v1.3.1 to keep it docs-only.
+
 ### Added
 
 - `examples/golden/` — three regression-anchor artifacts (`eval-strong-fit.md`, `eval-poor-fit-ghost-job.md`, `eval-injection-response.md`) paired one-to-one with the existing `tests/fixtures/jd_*.md` inputs, plus a folder `README.md` documenting the manual workflow. Each artifact carries a banner explaining that substantive drift on the paired fixture during a Mode 1 change is a release-blocking signal — escalate before merging, update the golden in the same PR with a CHANGELOG note, or revert the change. Goldens exercise three distinct paths: Grade-A / Verified legitimacy, gate-pass-rule firing (Dim 1 + Dim 2 ≤ 2 → D) with Likely-Ghost classification, and the Content Trust Boundary refusing prompt-injection attempts with a Prompt Injection Notice + Suspect-tier classification. Manual workflow, NOT a CI gate — Mode 1 output isn't byte-deterministic and a similarity-metric gate is a separate project. See `examples/golden/README.md` for the diff-and-escalate procedure and how these differ from the four `examples/example-*.md` showpieces.
