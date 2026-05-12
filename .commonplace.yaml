@@ -1,0 +1,19 @@
+# dossier-open-source allowlist for Commonplace Book auto-ingest
+# Schema: Claude Stack/CommonplaceBook/features/plan/00-schema-allowlist.md
+
+ingest_roots:
+  - CLAUDE.md
+  - README.md
+  - features/plan/*.md
+  - features/research/*.md
+
+exclude:
+  - features/plan/README.md
+
+defaults:
+  default_domain: dossier
+  default_tags:
+    - dossier
+    - dossier-open-source
+    - auto-ingest
+  default_decay_class: slow
