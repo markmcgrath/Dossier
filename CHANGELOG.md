@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `examples/golden/` — three regression-anchor artifacts (`eval-strong-fit.md`, `eval-poor-fit-ghost-job.md`, `eval-injection-response.md`) paired one-to-one with the existing `tests/fixtures/jd_*.md` inputs, plus a folder `README.md` documenting the manual workflow. Each artifact carries a banner explaining that substantive drift on the paired fixture during a Mode 1 change is a release-blocking signal — escalate before merging, update the golden in the same PR with a CHANGELOG note, or revert the change. Goldens exercise three distinct paths: Grade-A / Verified legitimacy, gate-pass-rule firing (Dim 1 + Dim 2 ≤ 2 → D) with Likely-Ghost classification, and the Content Trust Boundary refusing prompt-injection attempts with a Prompt Injection Notice + Suspect-tier classification. Manual workflow, NOT a CI gate — Mode 1 output isn't byte-deterministic and a similarity-metric gate is a separate project. See `examples/golden/README.md` for the diff-and-escalate procedure and how these differ from the four `examples/example-*.md` showpieces.
+
 ## [1.3.1] — 2026-05-11
 
 Documentation-only patch closing the punch list surfaced in the v1.3.0 review. No code, schema, or skill-bundle changes; `dossier.skill` is byte-identical to v1.3.0 modulo `manifest.json`.
