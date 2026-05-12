@@ -226,11 +226,12 @@ Two paths:
 
 ```bash
 # 1. Grab the artifact and its sha256 alongside.
-curl -LO https://github.com/markmcgrath/Dossier/releases/download/v1.2.0/dossier-v1.2.0.skill
-curl -LO https://github.com/markmcgrath/Dossier/releases/download/v1.2.0/dossier-v1.2.0.skill.sha256
+#    Substitute <tag> with the release you're upgrading to (e.g. v1.3.0).
+curl -LO https://github.com/markmcgrath/Dossier/releases/download/<tag>/dossier-<tag>.skill
+curl -LO https://github.com/markmcgrath/Dossier/releases/download/<tag>/dossier-<tag>.skill.sha256
 
 # 2. Verify the hash.
-sha256sum -c dossier-v1.2.0.skill.sha256
+sha256sum -c dossier-<tag>.skill.sha256
 
 # 3. Drop the new file into your Cowork project (Customize → Skills → replace).
 ```

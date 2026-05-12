@@ -47,23 +47,34 @@ DOSSIER_VAULT="$(pwd)" python -m pytest tests/test_antipatterns.py::test_no_mand
 
 ```
 tests/
-├── conftest.py                    # Shared fixtures (vault_path, skill_md, eval_files, etc.)
-├── test_package.py                # ZIP integrity
-├── test_skill_package_parity.py   # ZIP ↔ skill/ byte-parity
-├── test_skill_structure.py         # SKILL.md sections and modes
-├── test_antipatterns.py            # Notion optionality contract tests
-├── test_config_contract.py         # Config-state permutation tests
-├── test_docs_consistency.py        # Cross-doc Notion optionality consistency
-├── test_vault_schema.py            # Eval frontmatter validation
-├── test_vault_files.py             # Required vault files
-├── test_scoring_guide.py           # Scoring guide completeness
-├── run_tests.sh                    # Convenience wrapper
+├── conftest.py                       # Shared fixtures (vault_path, skill_md, eval_files, etc.)
+├── test_antipatterns.py              # Notion optionality contract tests
+├── test_cc_pattern_parity.py         # Conventional-Commits regex parity between hook and CI
+├── test_cliff_config.py              # git-cliff config validation
+├── test_commit_msg_hook.py           # Commit-msg hook accepts/rejects subjects correctly
+├── test_config_contract.py           # Config-state permutation tests
+├── test_dashboard.py                 # dashboard.md Dataview block syntactic checks
+├── test_docs_consistency.py          # Cross-doc Notion optionality consistency
+├── test_outcome_state_machine.py     # Outcome/status state-machine rules
+├── test_package.py                   # ZIP integrity (17-entry frozen list)
+├── test_release_workflow_glob.py     # Release workflow tag-glob matching
+├── test_routing_evals_parser.py      # Routing-eval test-set parsing
+├── test_routing_evals_scoring.py     # Routing-eval scoring logic
+├── test_routing_golden.py            # Routing golden-snapshot tests
+├── test_scoring_guide.py             # Scoring guide completeness
+├── test_skill_package_parity.py      # ZIP ↔ skill/ byte-parity
+├── test_skill_structure.py           # SKILL.md sections and modes
+├── test_story_tagging.py             # Story-tagging cross-references
+├── test_terminal_archival.py         # Terminal-archival rules + cold-detection regression
+├── test_vault_files.py               # Required vault files and examples
+├── test_vault_schema.py              # Eval frontmatter validation
+├── run_tests.sh                      # Convenience wrapper
 └── fixtures/
-    ├── jd_ghost_job.md             # Ghost job (red flags)
-    ├── jd_strong_fit.md            # Strong fit (verified)
-    ├── jd_injection_attempt.md     # Prompt injection detection
+    ├── jd_ghost_job.md               # Ghost job (red flags)
+    ├── jd_strong_fit.md              # Strong fit (verified)
+    ├── jd_injection_attempt.md       # Prompt injection detection
     └── config/
-        ├── config_notion_disabled.md           # Notion explicitly off
+        ├── config_notion_disabled.md            # Notion explicitly off
         ├── config_notion_enabled_missing_ids.md # Enabled but IDs empty
         └── config_notion_enabled_valid_sample.md # Fully configured
 ```
@@ -108,12 +119,15 @@ Fixtures are **reference inputs for manual testing** with Claude. They're not au
 
 ## CI/CD Integration
 
-Tests run on every push and pull request to `main` via `.github/workflows/ci.yml`. The workflow defines two jobs that produce three required status checks:
+Tests run on every push and pull request to `main` via `.github/workflows/ci.yml`. The workflow defines five jobs:
 
 - **`test`** (matrix on Python 3.11 and 3.12) — runs `python -m pytest tests/ -v` with `DOSSIER_VAULT` set to the workspace root. The matrix produces two checks: `test (3.11)` and `test (3.12)`.
 - **`pii-scan`** — runs `python .github/scripts/pii_scan.py` to block commits containing high-confidence PII or secret patterns.
+- **`changelog-check`** (PR only) — runs `.github/scripts/changelog_check.sh` to enforce that touching `skill/`, `tests/`, or `dossier.skill` is accompanied by an `[Unreleased]` CHANGELOG entry. Bypass token: `[skip-changelog]`.
+- **`conventional-commits`** (PR only) — runs `.github/scripts/check_conventional_commits.sh` to validate that every commit subject in the PR range follows Conventional Commits format. Bypass token: `[skip-cc]`.
+- **`skill-parity`** — runs `.github/scripts/build_skill.sh` and exits non-zero if the freshly-built bundle's content drifts from the committed `dossier.skill` (manifest.json excluded).
 
-All three checks (`test (3.11)`, `test (3.12)`, `pii-scan`) must pass before a PR can merge to `main`. See branch protection settings in the repo for enforcement.
+All five jobs must pass before a PR can merge to `main`. See branch protection settings in the repo for enforcement.
 
 > **Canonical source:** `.github/workflows/ci.yml` is authoritative. If this README and the workflow disagree, the workflow wins. Update this section in the same PR as any workflow change.
 
@@ -126,11 +140,13 @@ Invalid grade values:
 ```
 **Fix:** Edit eval-acme-2026-04-15.md, change `grade: B-` to `grade: B`.
 
-### Example: `test_skill_zip_contains_exactly_two_files FAILED`
+### Example: `test_zip_has_no_unexpected_top_level_entries FAILED`
 ```
-Expected 2 files, found 3: ['SKILL.md', 'scoring-guide.md', 'extra.md']
+ZIP entries do not match expected frozen list.
+  Extra:   ['skill/references/extra.md']
+  Missing: []
 ```
-**Fix:** Repack dossier.skill; ensure only SKILL.md and scoring-guide.md are at the root level of the ZIP.
+**Fix:** Either remove the extra file from `skill/references/` and repack via `bash .github/scripts/build_skill.sh`, or — if the addition is intentional — update `EXPECTED_BUNDLE_ENTRIES` in `tests/test_package.py` to include the new entry. The frozen-list design forces a deliberate, auditable update on every reference-file change.
 
 ### Example: `test_no_mandatory_notion_phrases FAILED`
 ```
@@ -141,19 +157,27 @@ Found phrases that imply Notion is mandatory (vault-first violation):
 
 ## Test Statistics
 
-Current test suite:
-- **Total tests:** 123
-- **Fast execution:** < 1 second (no external calls)
-- **Coverage areas:** 9
-  - Package integrity: 5 tests
-  - Package parity: 2 tests
-  - Skill structure: 13 tests
-  - Notion optionality contracts: 5 tests
-  - Config permutations: 17 tests
-  - Doc consistency: 10 tests
-  - Vault schema: 8 tests
-  - Vault files: 14 tests
-  - Scoring guide: 4 tests
+- **Total tests:** ~180 (run `python -m pytest tests/ --collect-only -q | tail -1` for the current count; this number is not updated on every PR).
+- **Fast execution:** under 2 seconds (no external calls).
+- **Coverage areas** (named, not counted, so the list survives PRs that add/remove tests within an area):
+  - Notion optionality contracts and config-state permutations
+  - Conventional Commits regex parity (hook vs CI script)
+  - git-cliff config validation
+  - Commit-msg hook accept/reject behavior
+  - Dashboard Dataview block syntactic checks
+  - Cross-doc consistency (README ↔ SKILL.md ↔ DATA_CONTRACT.md ↔ CLAUDE.md)
+  - Outcome/status state-machine rules
+  - ZIP package integrity (17-entry frozen list)
+  - Release-workflow tag-glob matching
+  - Routing-eval test-set parsing and scoring
+  - Routing golden-snapshot tests
+  - Scoring guide completeness
+  - ZIP ↔ skill/ byte-parity
+  - SKILL.md structural sections (modes, Content Trust Boundary, Integrity Rules)
+  - Story tagging cross-references
+  - Terminal archival rules + cold-detection regression
+  - Vault files (required directories, example artifacts)
+  - Vault frontmatter schema
 
 ## Maintenance
 
