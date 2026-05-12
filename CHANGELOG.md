@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- `CONTRIBUTING.md` §Post-release install smoke step 4: two errors caught while dogfooding the checklist against the v1.3.2 release. (1) The `version` field stores the tag *verbatim* (`v1.3.2`), not the tag *without* the leading `v` as the prior text claimed — corrected the example. (2) `git rev-parse vX.Y.Z` on an annotated tag returns the tag-object SHA, not the commit SHA the tag points at; the manifest stores the commit SHA. Corrected the verification command to `git rev-parse vX.Y.Z^{commit}` with a short note explaining the peeling. A maintainer following the prior text would have seen two false mismatches and falsely concluded the release was broken.
+
 ## [1.3.2] — 2026-05-11
 
 Documentation-only patch that closes the Plan 20 follow-on work (Target Radar brief design cross-link, post-release install smoke checklist, regression-anchor goldens). No code, schema, or skill-bundle changes; `dossier.skill` is content-identical to v1.3.1 modulo `manifest.json`.

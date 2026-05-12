@@ -158,7 +158,7 @@ Run after `release.yml` reports green on the tag:
    unzip -t dossier-vX.Y.Z.skill
    unzip -p dossier-vX.Y.Z.skill skill/manifest.json | python -m json.tool
    ```
-   The manifest's `version` field should equal the tag without the leading `v`. The `commit` field should match the SHA the tag points at (`git rev-parse vX.Y.Z`).
+   The manifest's `version` field should equal the tag verbatim, with the leading `v` (e.g. `"version": "v1.3.2"`). The `commit` field should match the SHA the tag points at — verify with `git rev-parse vX.Y.Z^{commit}` (the `^{commit}` peeling matters: on an annotated tag, plain `git rev-parse vX.Y.Z` returns the *tag object's* SHA, not the commit SHA the tag points at).
 5. **Install into a fresh Claude project** (Cowork → Customize → Skills → upload `dossier-vX.Y.Z.skill`) and confirm the skill description loads — Claude should list Dossier and its modes when asked "what skills do you have?".
 6. **Run one Mode 1 evaluation** against a known fixture, e.g. `tests/fixtures/jd_strong_fit.md`. Compare the output shape against `examples/golden/eval-strong-fit.md` — frontmatter shape, scoring dimensions, grade. Substantive drift from the golden is a "investigate or rollback" signal, not a release-go signal.
 7. **(Security-relevant, optional)** Run Mode 1 against `tests/fixtures/jd_injection_attempt.md` and confirm the response surfaces a Prompt Injection Notice without acting on the injected instructions. Compare against `examples/golden/eval-injection-response.md`. Drift here is a security regression and warrants a follow-up patch even if every other check passed.
