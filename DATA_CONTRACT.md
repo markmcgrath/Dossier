@@ -66,7 +66,7 @@ Dossier/
 
 - `skill/manifest.json` — version, commit, and bundle metadata (regenerated on every pack).
 - `skill/SKILL.md` — the skill definition (frontmatter triggers, Content Trust Boundary, Integrity Rules, mode descriptions, file conventions pointer).
-- `skill/references/*.md` — 15 reference files loaded by the skill on demand: `file-conventions.md`, `scoring-guide.md`, `status-outcome-state-machine.md`, `story-tagging.md`, `terminal-archival.md`, `weekly-trend-report.md`, and per-mode references for Modes 1, 2 (portal scan), 5, 7, 9, 10, 11, 12, and 13. Modes 0, 2 (search), 3, 4, 6, and 8 keep their full instructions inline in `SKILL.md`.
+- `skill/references/*.md` — 15 reference files loaded by the skill on demand: `file-conventions.md`, `scoring-guide.md`, `status-outcome-state-machine.md`, `story-tagging.md`, `terminal-archival.md`, `weekly-trend-report.md`, and per-mode references for Modes 1, 2 (portal scan), 5, 7 (salary-negotiation), 9, 10, 11, 12, and 13. Modes 0, 2 (search), 3, 4, 6, and 8 keep their full instructions inline in `SKILL.md`. (The `(salary-negotiation)` clarifier disambiguates the reference filename from the Derived Files `negotiation/` folder below.)
 
 These files live *inside* the package, not as standalone files in the vault. You don't normally need to inspect them, but if you do:
 
@@ -140,7 +140,7 @@ If you configure Notion as your pipeline tracker, Notion data is separate from t
 | Category | Files | Updated? | Your Responsibility |
 |----------|-------|----------|---------------------|
 | **User Layer** | cv.md, profile.md, all evals, outreach, prep, research, daily, weekly, archive | Never | Back up, keep in version control, don't store credentials |
-| **System Layer** | dossier.skill, PRIVACY.md, DATA_CONTRACT.md, README.md, LICENSE | Automatically on skill update | Review changes, merge custom edits if any |
+| **System Layer** | dossier.skill, PRIVACY.md, DATA_CONTRACT.md, README.md, Diagram.md, LICENSE | Automatically on skill update | Review changes, merge custom edits if any |
 | **Derived Files** | cv-[slug]-[date].md, cv-[slug]-[date].docx, etc. | Only on explicit request | Review before use, edit as needed, version as you see fit |
 
 ---

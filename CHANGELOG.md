@@ -6,6 +6,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.1] — 2026-05-11
+
+Documentation-only patch closing the punch list surfaced in the v1.3.0 review. No code, schema, or skill-bundle changes; `dossier.skill` is byte-identical to v1.3.0 modulo `manifest.json`.
+
+### Documentation
+
+- `tests/README.md`: CI section now lists all five jobs (`test`, `pii-scan`, `changelog-check`, `conventional-commits`, `skill-parity`) instead of the stale "two jobs / three checks" claim from before PRs #42 and #50 landed. Directory tree refreshed to include all 21 test files currently on disk (was missing 11 added since the README was last updated). Test Statistics block replaced its hard-pinned "Total tests: 123" (actually ~180 today) with a self-derived pointer (`pytest --collect-only -q | tail -1`) and named coverage areas — the count drift problem doesn't return on the next PR. Failure-example block replaced `test_skill_zip_contains_exactly_two_files` (no longer exists) with `test_zip_has_no_unexpected_top_level_entries` from the current frozen-17-entry design.
+- `DATA_CONTRACT.md`: Summary Table System Layer row now includes `Diagram.md`, matching the system-layer code block at line 59. Adds a parenthetical disambiguation between the `mode7-salary-negotiation.md` reference filename and the Derived Files `negotiation/` folder so readers don't confuse the two.
+- `README.md` §Upgrading: hard-coded `v1.2.0` URLs in the bash example replaced with `<tag>` placeholders plus a one-line "substitute with the release you're upgrading to (e.g. v1.3.0)" comment. The example was documentation about *how to upgrade in general*, not a current-release pointer, so a placeholder removes the maintenance treadmill of bumping the example with every release.
+
 ## [1.3.0] — 2026-05-11
 
 This release lands the audit-cleanup series (PRs #47–#54). No backwards-incompatible changes: `B-` and `Batch-Evaluated` were removed from schemas but neither was ever emitted by any mode; everything else is additive. Routing-evals run before tagging scored 0.967 (43.5/45 credit; three pre-existing ambiguous-mode partial-credits; no regressions from the cleanup).
