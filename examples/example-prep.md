@@ -3,7 +3,11 @@ type: prep
 company: "Cipher Analytics"
 role: "Senior Data Platform Engineer"
 date: 2026-04-15
+interview_date: 2026-04-22
 interview_type: "Technical + Behavioral"
+interviewers:
+  - "Jordan Reyes (VP Engineering)"
+  - "Priya Subramaniam (Staff Platform Engineer)"
 status: scheduled
 related_stories:
   - "[[stories#Multi-Tenant Governance at Scale]]"

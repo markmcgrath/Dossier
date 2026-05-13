@@ -22,6 +22,8 @@ Ruleset `Public` is active on the default branch (`main`). It applies to `~DEFAU
   - `test (3.12)`
   - `changelog-check (PR-only)`
     - Gated with `if: github.event_name == 'pull_request'` — the check only runs on PR events and is skipped on push-to-branch runs.
+  - `conventional-commits (PR-only)` — PR-only gate that lints commit subjects on the PR range (see §13).
+  - `skill-parity` — runs on every PR and push to `main`; rebuilds `dossier.skill` and exits non-zero if its content drifts from the committed bundle (see §9).
   - Strict mode forces the PR branch to be up to date with `main` so CI re-runs against the current base before merge
 - `required_linear_history` — reinforces squash-only; blocks merge commits from ever landing
 
@@ -145,15 +147,17 @@ Local gate: `.github/scripts/pii_scan.py`, wired into CI as a required status ch
 
 **Matrix.** Python 3.11 and 3.12 on `ubuntu-latest`. Triggers: push to `main`, pull_request targeting `main`.
 
-**Required status checks** (all four must pass for merge):
+**Required status checks** (all six must pass for merge):
 
 - `pii-scan` — runs the scanner described in §5.
 - `test (3.11)` — full pytest suite on Python 3.11.
 - `test (3.12)` — full pytest suite on Python 3.12.
-- `changelog-check` — gates PRs that touch `skill/`, `tests/`, or `dossier.skill` on a corresponding `## [Unreleased]` CHANGELOG entry. Bypassable via `[skip-changelog]` token in any commit message in the PR range.
+- `changelog-check` — PR-only. Gates PRs that touch `skill/`, `tests/`, or `dossier.skill` on a corresponding `## [Unreleased]` CHANGELOG entry. Bypassable via `[skip-changelog]` token in any commit message in the PR range.
+- `conventional-commits` — PR-only. Lints commit subjects on the PR range against the conventional-commits grammar (see §13).
+- `skill-parity` — runs on every PR and push to `main`. Rebuilds `dossier.skill` from `skill/` and fails if the freshly built bundle's content differs from the committed one (manifest.json excluded). Catches the case where a contributor edits `skill/*.md` without repacking.
 - `release.yml` re-runs the test suite as defense-in-depth before building the artifact. ~3 min cost per tag; catches the corner case where a maintainer tags a commit that didn't go through CI (e.g., a tag on a long-lived branch).
 
-**Test surface** (121 passing, 3 skipped as of the last run):
+**Test surface** (176 passing, 3 skipped as of the last run):
 
 - Routing golden (`tests/test_routing_golden.py`) — guards the SKILL description length (≤ 1024 chars), required trigger phrases, the negative-scope sentence, and cross-document consistency between `routing_test_set.md` and `baseline_results.md`.
 - Outcome state machine (`tests/test_outcome_state_machine.py`) — parses the transition table and asserts required `(status, outcome)` pairs, the four skill-side pointers, and example conformance.
