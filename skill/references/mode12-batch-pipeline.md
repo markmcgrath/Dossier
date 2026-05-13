@@ -29,7 +29,7 @@ Accept a list of job descriptions or URLs, process each through a lightweight Mo
 3. **Lightweight evaluation.** For each item not in dedup:
    - Extract: company name, role title, location (if present), compensation (if disclosed), key responsibilities (bulleted), required skills (bulleted).
    - Read the user's CV and profile once (silently, at the start of the batch).
-   - Score the item against Dimensions 1 (Role Match), 2 (Company Quality), 3 (Compensation), and 10 (Strategic Value) only. Skip detailed narrative and dimensional comments — just the final grade.
+   - Score the item against Dimensions 1 (Role Match), 6 (Company Quality), 4 (Compensation), and 10 (Strategic Value) only. Skip detailed narrative and dimensional comments — just the final grade.
    - Assess legitimacy tier (Verified, Plausible, Suspect, Likely Ghost) based on red flags: vague JD, generic description, multiple postings for the same role in different variations, weak contact details, etc.
    - Output format per item:
      ```

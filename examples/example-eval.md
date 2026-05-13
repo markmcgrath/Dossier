@@ -11,7 +11,7 @@ location: "Remote (San Francisco timezone)"
 compensation: "$185,000 – $240,000"
 notes: "Strong fit on platform engineering + open data stack. Growth trajectory moderate; culture signals uncertain. Remote-first company aligns with location preference."
 legitimacy: Plausible
-model: Claude 3.5 Sonnet
+model: claude-sonnet-4-6
 sources: ["LinkedIn job posting", "Company careers page", "Blind compensation data"]
 ---
 
@@ -126,3 +126,11 @@ This evaluation is based on JD analysis and market comparables. It does not acco
 - Personal values alignment with early-stage startup environment
 
 Recommend role-specific follow-up questions in first screen to validate growth assumptions and culture fit.
+
+---
+
+## Related
+
+- Outreach: [[example-outreach]]
+- Cover letter: [[example-cover-letter]]
+- Prep: [[example-prep]]

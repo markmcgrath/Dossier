@@ -219,13 +219,12 @@ Main vault only (not propagated):
 
 ## Validation Checklist
 
-- [ ] `python -m pytest tests/test_vault_schema.py -v` passes (all 9 schema tests green).
-- [ ] `scoring-guide.md`, `SKILL.md`, `file-conventions.md`, and `tests/test_vault_schema.py` all agree on the grade set.
-- [ ] If Option A on Stream C: state machine table includes a Superseded row; Mode 0 recognizes the pair; terminal-status list includes `Superseded`.
-- [ ] If Option B on Stream C: 5 evals moved to archive; `evals/` directory does not contain Superseded artifacts.
-- [ ] `test_example_prep_frontmatter` no longer errors at collection.
-- [ ] `dossier.skill` repacked in both main vault and open-source if any skill content changed.
-- [ ] `tests/test_skill_package_parity.py` still passes (open-source).
+- [x] `python -m pytest tests/test_vault_schema.py -v` passes (all 9 schema tests green).
+- [x] `scoring-guide.md`, `SKILL.md`, `file-conventions.md`, and `tests/test_vault_schema.py` all agree on the grade set.
+- [x] Option A on Stream C shipped: state machine table includes a Superseded row; Mode 0 recognizes the pair; terminal-status list includes `Superseded`.
+- [x] `test_example_prep_frontmatter` no longer errors at collection.
+- [x] `dossier.skill` repacked in this open-source repo (parity test green).
+- [x] `tests/test_skill_package_parity.py` passes.
 
 ---
 

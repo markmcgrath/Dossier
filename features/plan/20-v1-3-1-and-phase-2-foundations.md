@@ -1,6 +1,7 @@
 # Plan 20 — v1.3.1 cleanup and Phase 2 foundations
 
-**Status:** Proposed
+**Status:** Shipped
+**Closed:** 2026-05-11 (v1.3.1 doc patch shipped same day; v1.3.2 follow-up doc fixes shipped same day; `examples/golden/` landed in PR #57; Plan 21 stub landed in PR #58)
 **Author:** Mark McGrath (with Claude as drafting partner)
 **Created:** 2026-05-11
 **Scope:** Three coordinated work streams that close the v1.3.0 review punch list and lay the structural groundwork for Phase 2 without committing to feature code yet.

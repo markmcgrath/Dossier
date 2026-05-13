@@ -120,4 +120,4 @@ If the user accepts or asks for a comparison directly:
 [Clear recommendation with reasoning, or a named tiebreaker question if too close to call. Example: "Company B — the growth trajectory and brand fit are worth the comp difference. Ask: Is the team stable, or is there churn risk?"]
 ```
 
-3. **Save to** `Dossier/offer-comparison-[YYYY-MM-DD].md` with `type: offer-comparison` frontmatter.
+3. **Save to** `negotiation/offer-comparison-[YYYY-MM-DD].md` with `type: offer-comparison` frontmatter.

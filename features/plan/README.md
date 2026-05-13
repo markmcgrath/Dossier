@@ -1,6 +1,6 @@
 # Implementation Plan — Dossier v2
 
-**Status:** Ready for implementation
+**Status:** Streams A–E shipped (April–May 2026). See "Subsequent plans" at the bottom for plans 08+ that followed this v2 baseline.
 **Supersedes:** `../research/dossier-implementation-plan.md` (pre-vault-first draft)
 
 ---
@@ -76,3 +76,25 @@ These feature docs informed this plan. They remain useful as reference but shoul
 - `../research/dossier-gap-analysis.md` — Competitive analysis and feature gaps
 - `../research/dossier-implementation-plan.md` — Original phased implementation plan
 - `../research/email-automation-plan.md` — Companion skill design for email cadence
+
+## Subsequent plans
+
+After the v2 streams above shipped, follow-on work continued under individually numbered plan docs in this folder. Each plan's `Status:` header is the source of truth for whether it has shipped; the table below is a navigation index, not a status mirror.
+
+| # | Plan | Topic |
+|---|------|-------|
+| 08 | [[08-review-remediation]] | Post-v2 review remediation |
+| 09 | [[09-release-hardening-execution]] | Release hardening execution |
+| 10 | [[10-skill-refactor]] | Skill refactor |
+| 12 | [[12-readme-revision]] | README revision |
+| 13 | [[13-execution-prompt]] / [[13-quality-audit-remediation]] | Execution prompt + quality audit remediation |
+| 14 | [[14-lead-pulse-dedup-v2]] | Lead pulse dedup v2 |
+| 15 | [[15-recruiter-inbox-pulse-broadening]] | Recruiter inbox pulse broadening |
+| 16 | [[16-test-suite-hardening]] | Test suite hardening |
+| 17 | [[17-eval-schema-data-hygiene]] | Eval schema data hygiene |
+| 18 | [[18-version-tag-release-pipeline]] | Version-tag release pipeline |
+| 19 | [[19-routing-eval-harness]] | Routing eval harness — post-hoc stub for PR #43 |
+| 20 | [[20-v1-3-1-and-phase-2-foundations]] | v1.3.1 cleanup and Phase 2 foundations |
+| 21 | [[21-target-radar-brief]] | Target Radar brief stub (canonical design lives in Commonplace vault) |
+
+Plan number 11 does not have a plan doc in this folder. Plan 19's doc was backfilled post-hoc from PR #43.
