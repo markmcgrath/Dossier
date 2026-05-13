@@ -24,6 +24,10 @@ The point of "manual, not CI" is twofold:
 - **No live Claude calls in CI.** Mode 1 output isn't byte-deterministic, so a CI gate would have to wrap a similarity metric — that's its own project, deferred.
 - **Human judgment is the load-bearing reviewer.** "Substantive drift" is a judgment call about whether the skill still behaves as documented. A test runner can't make that call honestly.
 
+## Per-release test-run captures
+
+When the post-release install smoke (CONTRIBUTING.md §Post-release install smoke, steps 6–7) is run against these goldens, the actual Mode 1 outputs can optionally be committed under [`test-runs/vX.Y.Z/`](test-runs/) for the released tag. Those are the *outputs the installed skill produced* — not the goldens themselves, and not a target to drift against. They exist as a paper trail of "did this release diff cleanly against the goldens at release time?" See [`test-runs/README.md`](test-runs/README.md) for the convention.
+
 ## How these differ from `examples/example-*.md`
 
 The four artifacts at [`examples/example-*.md`](..) — `example-eval.md`, `example-outreach.md`, `example-prep.md`, `example-cover-letter.md` — are **showpieces**: polished demonstrations of what good output looks like for new readers. They live alongside the README on the repo's front page.
