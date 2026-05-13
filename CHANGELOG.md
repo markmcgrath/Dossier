@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.3] — 2026-05-12
+
+Alignment patch closing drift surfaced by parallel Sonnet audits (PR #63). Two skill-source fixes: Mode 12 batch-pipeline dimension numbers and Mode 7 offer-comparison save path; `dossier.skill` repacked accordingly, so this release's bundle is *not* content-identical to v1.3.2. Also closes drift in `CONTRIBUTING.md` (bogus repack command pointing at a non-existent module, PR-checklist line referencing a non-existent nested `open-source/` subdirectory), `HARDENING.md` (silent omission of `skill-parity` and `conventional-commits` from the required-checks lists, stale test-surface count), `examples/example-eval.md` and `examples/example-prep.md` (schema-required fields and sections that the showpieces alone were missing), and `features/plan/` housekeeping (Plan 19 stub backfilled, Plan 20 status updated, plan README rebuilt as a navigation index for plans 08–21, Plan 17 validation boxes ticked).
+
 ### Fixed
 
 - `CONTRIBUTING.md` §Post-release install smoke step 4: two errors caught while dogfooding the checklist against the v1.3.2 release. (1) The `version` field stores the tag *verbatim* (`v1.3.2`), not the tag *without* the leading `v` as the prior text claimed — corrected the example. (2) `git rev-parse vX.Y.Z` on an annotated tag returns the tag-object SHA, not the commit SHA the tag points at; the manifest stores the commit SHA. Corrected the verification command to `git rev-parse vX.Y.Z^{commit}` with a short note explaining the peeling. A maintainer following the prior text would have seen two false mismatches and falsely concluded the release was broken.
