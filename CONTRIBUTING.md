@@ -1,3 +1,17 @@
+## Before you start
+
+Read these documents in order before contributing:
+
+- `README.md` — product model and quick start
+- `CLAUDE.md` — operating contract for Claude agents working in the vault
+- `DATA_CONTRACT.md` — ownership boundaries between user files and system files
+- `tests/README.md` — what the test suite validates and how to run it
+- `HARDENING.md` — release and security posture, known trade-offs
+- `ROADMAP.md` — deferred work and exit criteria for currently-skipped tests
+- `tests/semantic-review-checklist.md` — per-release human review rubric for model behavior
+
+---
+
 # Contributing to Dossier
 
 Thanks for your interest in contributing. Dossier is a Claude skill for job search operations, and contributions that make it more useful for job seekers are welcome.
