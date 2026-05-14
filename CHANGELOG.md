@@ -11,6 +11,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Roadmap doc surfacing skipped-test exit criteria and deferred features.
 - Machine-readable JSON Schemas for `eval` and `outreach` frontmatter under `schemas/`, plus a validation test.
 - Release artifacts now ship SLSA build-provenance attestations via `actions/attest-build-provenance`. Attestations complement the existing `.sha256` checksum and are verifiable via `gh attestation verify`.
+- Semantic review checklist at `tests/semantic-review-checklist.md` for periodic human review of model output quality (not CI-gated).
 
 ### Changed
 
