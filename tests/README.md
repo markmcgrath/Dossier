@@ -68,6 +68,7 @@ tests/
 ├── test_terminal_archival.py         # Terminal-archival rules + cold-detection regression
 ├── test_vault_files.py               # Required vault files and examples
 ├── test_vault_schema.py              # Eval frontmatter validation
+├── test_schema_validation.py         # Validates example artifacts against schemas/eval.schema.json and schemas/outreach.schema.json (skips if jsonschema not installed)
 ├── run_tests.sh                      # Convenience wrapper
 └── fixtures/
     ├── jd_ghost_job.md               # Ghost job (red flags)
