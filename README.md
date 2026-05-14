@@ -99,6 +99,14 @@ For what happens during that walkthrough and how to recover if it gets stuck, se
 
 All external actions remain user-controlled.
 
+## Known limitations
+
+- **90-day cold detection is manual today.** Mode 9 auto-proposes archival for explicit terminal-state transitions (rejection emails, accepted/declined offers), but detecting applications that have simply gone cold requires date arithmetic that no mode implements yet. Mark stale rows yourself, or ask Claude to archive applications older than 90 days with no response.
+- **Model output is advisory, not authoritative.** Always review generated evals, outreach drafts, and other artifacts before acting on them. The skill drafts; you decide.
+- **Integrations are optional mirrors, not sources of truth.** Notion, Gmail, and Calendar connections are optional. The vault is always the source of truth; integrations only mirror data already in the vault.
+- **No auto-apply or autonomous sending.** All external actions (submitting applications, sending emails, posting messages) require explicit user approval. Nothing is sent automatically.
+- **Semantic correctness of generated evals and outreach is not deterministically tested in CI.** The test suite validates structure and schema; it does not run live Claude sessions or assert that grades are accurate. See `tests/semantic-review-checklist.md` for the human-review rubric used during releases.
+
 ## Core concepts
 
 - **File-first, not chat-first.** Every interaction produces a persistent markdown artifact, not a throwaway chat.
