@@ -42,7 +42,9 @@ on:
       - "v[0-9]*.[0-9]*.[0-9]*-*"    # v1.2.3-rc.1, v0.0.0-rc-test
 
 permissions:
-  contents: write    # create release + upload assets
+  contents: write      # create release + upload assets
+  id-token: write      # required for OIDC-backed artifact attestation
+  attestations: write  # required to write attestation records
 
 concurrency:
   group: release-${{ github.ref }}
@@ -90,6 +92,11 @@ jobs:
           art="${{ steps.build.outputs.artifact }}"
           python .github/scripts/verify_skill_artifact.py "$art"
           echo "Artifact passed structural smoke verification."
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: dist/dossier-*.skill
 
       - name: Extract CHANGELOG section for tag
         id: notes
