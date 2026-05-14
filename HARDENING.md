@@ -18,7 +18,6 @@ Ruleset `Public` is active on the default branch (`main`). It applies to `~DEFAU
   - `allowed_merge_methods: ["squash"]` — squash-only
 - `required_status_checks` with `strict_required_status_checks_policy: true`
   - `pii-scan`
-  - `test (3.11)`
   - `test (3.12)`
   - `changelog-check (PR-only)`
     - Gated with `if: github.event_name == 'pull_request'` — the check only runs on PR events and is skipped on push-to-branch runs.
@@ -72,7 +71,7 @@ Actions are enabled with a deliberately narrow policy:
 
 **CI workflow** (`.github/workflows/ci.yml`) declares `permissions: contents: read` at the workflow level — least privilege even below the repo default.
 
-**Release workflow** (`.github/workflows/release.yml`) declares `permissions: contents: write` at the workflow level — the minimum needed for `gh release create`. The elevated grant is scoped to this one workflow file; CI's `contents: read` is unchanged. The release workflow triggers only on tag push matching `v[0-9]*.[0-9]*.[0-9]*` or `v[0-9]*.[0-9]*.[0-9]*-*` (semver-shaped tags only — e.g. `v1.2.3`, `v0.0.0-rc-test`), never on PR or push-to-branch, so a malicious PR cannot exfiltrate via the elevated permission. Tags shaped for operational use (snapshots, archives, scratch markers) must not start with `vN…`. The conventions `snapshot-*`, `archive-*`, `wip-*` are reserved for non-release uses. The release workflow is *not* a required status check (it cannot be — required checks gate branch merges, and the release workflow runs after merge on the resulting tag); the merge-time gates (`pii-scan`, `test (3.11)`, `test (3.12)`, `changelog-check`) cover that role.
+**Release workflow** (`.github/workflows/release.yml`) declares `permissions: contents: write` at the workflow level — the minimum needed for `gh release create`. The elevated grant is scoped to this one workflow file; CI's `contents: read` is unchanged. The release workflow triggers only on tag push matching `v[0-9]*.[0-9]*.[0-9]*` or `v[0-9]*.[0-9]*.[0-9]*-*` (semver-shaped tags only — e.g. `v1.2.3`, `v0.0.0-rc-test`), never on PR or push-to-branch, so a malicious PR cannot exfiltrate via the elevated permission. Tags shaped for operational use (snapshots, archives, scratch markers) must not start with `vN…`. The conventions `snapshot-*`, `archive-*`, `wip-*` are reserved for non-release uses. The release workflow is *not* a required status check (it cannot be — required checks gate branch merges, and the release workflow runs after merge on the resulting tag); the merge-time gates (`pii-scan`, `test (3.12)`, `changelog-check`) cover that role.
 
 **Operational verification:** The allowlist was end-to-end tested on PR #18. A misconfigured allowlist (patterns saved as a single CRLF-joined string) produced a `startup_failure`; after splitting into two entries via `PUT /actions/permissions/selected-actions`, CI ran successfully.
 
@@ -145,12 +144,11 @@ Local gate: `.github/scripts/pii_scan.py`, wired into CI as a required status ch
 
 ## 7. CI and test coverage
 
-**Matrix.** Python 3.11 and 3.12 on `ubuntu-latest`. Triggers: push to `main`, pull_request targeting `main`.
+**Matrix.** Python 3.12 on `ubuntu-latest`. Triggers: push to `main`, pull_request targeting `main`. The matrix retains its shape (single entry) so the status-check name stays `test (3.12)` and 3.11 (or a later version) can be re-added without renaming.
 
-**Required status checks** (all six must pass for merge):
+**Required status checks** (all five must pass for merge):
 
 - `pii-scan` — runs the scanner described in §5.
-- `test (3.11)` — full pytest suite on Python 3.11.
 - `test (3.12)` — full pytest suite on Python 3.12.
 - `changelog-check` — PR-only. Gates PRs that touch `skill/`, `tests/`, or `dossier.skill` on a corresponding `## [Unreleased]` CHANGELOG entry. Bypassable via `[skip-changelog]` token in any commit message in the PR range.
 - `conventional-commits` — PR-only. Lints commit subjects on the PR range against the conventional-commits grammar (see §13).
