@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Roadmap doc surfacing skipped-test exit criteria and deferred features.
+- Machine-readable JSON Schemas for `eval` and `outreach` frontmatter under `schemas/`, plus a validation test.
 
 ### Changed
 

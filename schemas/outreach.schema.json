@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/markmcgrath/dossier-open-source/schemas/outreach.schema.json",
+  "title": "Dossier outreach frontmatter",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["type", "company", "date", "channel", "status"],
+  "properties": {
+    "type": {
+      "const": "outreach"
+    },
+    "company": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "channel": {
+      "enum": ["LinkedIn", "Email", "LinkedIn + Email"]
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "status": {
+      "enum": ["drafted", "sent", "replied", "no-response"]
+    },
+    "related_eval": {
+      "type": "string"
+    }
+  }
+}

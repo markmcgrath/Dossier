@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/markmcgrath/dossier-open-source/schemas/eval.schema.json",
+  "title": "Dossier eval frontmatter",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["type", "company", "role", "status", "date"],
+  "properties": {
+    "type": {
+      "const": "eval"
+    },
+    "company": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "grade": {
+      "enum": ["A", "B+", "B", "C", "D", "F"]
+    },
+    "score": {
+      "type": "number",
+      "minimum": 1.0,
+      "maximum": 5.0
+    },
+    "status": {
+      "enum": [
+        "Evaluating",
+        "Applied",
+        "Interviewing",
+        "Offer",
+        "Rejected",
+        "Passed",
+        "Offer-Declined",
+        "Superseded"
+      ]
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "outcome": {
+      "enum": [
+        "Pending",
+        "No Response",
+        "Rejected",
+        "Phone Screen",
+        "Interview",
+        "Offer",
+        "Accepted",
+        "Withdrawn"
+      ]
+    },
+    "legitimacy": {
+      "enum": ["Verified", "Plausible", "Suspect", "Likely Ghost"]
+    },
+    "location": {
+      "type": "string"
+    },
+    "compensation": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "referral_contact": {
+      "type": "string"
+    },
+    "application_method": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
