@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.4] — 2026-05-14
+
+Closes the six gaps surfaced by the 2026-05-13 project review (A- / 89). Four PRs landed in parallel: roadmap doc + onboarding nav (#67), JSON Schemas for eval/outreach frontmatter (#69), SLSA build-provenance attestations on release artifacts (#66), and a semantic review checklist for periodic human review (#68). No `skill/` body changes, so `dossier.skill` is content-identical to v1.3.3 modulo `manifest.json`. Release artifacts from this tag onward ship a verifiable provenance attestation alongside the existing `.sha256` checksum.
+
 ### Added
 
 - Roadmap doc surfacing skipped-test exit criteria and deferred features.
