@@ -219,6 +219,7 @@ Decisions taken deliberately against a stricter alternative, with the reasoning 
 | `allow_forking: true` | Disallow forks | Community contribution is part of the goal. Forks don't receive secrets. |
 | `.skill` binary excluded from PII scan | Scan inside the ZIP | The ZIP is rebuilt from `skill/`, which *is* scanned. Scanning both is redundant. |
 | `features/` shipped publicly | Strip before publish | The planning archive is evidence of the work behind the skill; it's a feature, not a leak. See `features/README.md` for the drive-by orientation. |
+| Artifact attestations | Enabled via `actions/attest-build-provenance` | Complements the existing `.sha256` checksum with machine-verifiable SLSA build provenance. Attestations are verifiable via `gh attestation verify`. SBOM generation and signed tags remain out of scope (see §12). |
 
 ---
 
@@ -256,7 +257,7 @@ This posture is one working configuration, not a universal standard. Adopt selec
 
 - **Multi-maintainer teams** — `required_approving_review_count: 0` stops being appropriate. Raise to ≥ 1, add `CODEOWNERS`, and reconsider `dismiss_stale_reviews_on_push`.
 - **Compliance-bound projects** (SOC 2, HIPAA, etc.) — need formal audit logging, documented access reviews, and security review processes beyond this doc.
-- **Projects publishing to a registry** (npm, PyPI, crates.io, Docker Hub) — need provenance (SLSA), signed releases, SBOMs, and publish-time checks not covered here.
+- **Projects publishing to a registry** (npm, PyPI, crates.io, Docker Hub) — need SBOMs and publish-time checks not covered here. (SLSA build-provenance attestations ship with this repo's release workflow; signed tags remain out of scope.)
 - **Projects with real CI secrets** — the workflow-token defaults here are safe because the workflow needs no secrets. If your CI uses API keys or deployment credentials, layer on environment protection rules, OIDC-based auth, and least-privilege scoping per job.
 
 ### What's universally reusable
