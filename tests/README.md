@@ -122,7 +122,7 @@ Fixtures are **reference inputs for manual testing** with Claude. They're not au
 
 Tests run on every push and pull request to `main` via `.github/workflows/ci.yml`. The workflow defines five jobs:
 
-- **`test`** (matrix on Python 3.11 and 3.12) — runs `python -m pytest tests/ -v` with `DOSSIER_VAULT` set to the workspace root. The matrix produces two checks: `test (3.11)` and `test (3.12)`.
+- **`test`** (matrix on Python 3.12) — runs `python -m pytest tests/ -v` with `DOSSIER_VAULT` set to the workspace root. The matrix produces one check: `test (3.12)`. The matrix shape is preserved so additional Python versions can be re-added without renaming the check.
 - **`pii-scan`** — runs `python .github/scripts/pii_scan.py` to block commits containing high-confidence PII or secret patterns.
 - **`changelog-check`** (PR only) — runs `.github/scripts/changelog_check.sh` to enforce that touching `skill/`, `tests/`, or `dossier.skill` is accompanied by an `[Unreleased]` CHANGELOG entry. Bypass token: `[skip-changelog]`.
 - **`conventional-commits`** (PR only) — runs `.github/scripts/check_conventional_commits.sh` to validate that every commit subject in the PR range follows Conventional Commits format. Bypass token: `[skip-cc]`.

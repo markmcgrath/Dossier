@@ -1,6 +1,7 @@
 # Dossier
 
 [![CI](https://github.com/markmcgrath/Dossier/actions/workflows/ci.yml/badge.svg)](https://github.com/markmcgrath/Dossier/actions/workflows/ci.yml)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > Dossier turns your job search into a structured, repeatable system — grounded in your actual work history, not generic AI output. Give it a job posting, a URL, or just a target role and location; it grades fit against **your** profile, drafts outreach in **your** voice, and stores everything as markdown in a local vault you own.

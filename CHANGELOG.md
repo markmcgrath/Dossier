@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- CI matrix dropped Python 3.11; tests now run on 3.12 only. The matrix shape is preserved (single entry) so the status-check name stays `test (3.12)` and a future version can be re-added without renaming. `HARDENING.md` and `tests/README.md` updated to match. **Branch protection ruleset must drop `test (3.11)` from the required-checks list separately — this is a GitHub-side change, not in this PR.**
+
+### Added
+
+- README now displays a Python 3.12 badge alongside the existing CI and License badges.
+
 ## [1.3.4] — 2026-05-14
 
 Closes the six gaps surfaced by the 2026-05-13 project review (A- / 89). Four PRs landed in parallel: roadmap doc + onboarding nav (#67), JSON Schemas for eval/outreach frontmatter (#69), SLSA build-provenance attestations on release artifacts (#66), and a semantic review checklist for periodic human review (#68). No `skill/` body changes, so `dossier.skill` is content-identical to v1.3.3 modulo `manifest.json`. Release artifacts from this tag onward ship a verifiable provenance attestation alongside the existing `.sha256` checksum.
