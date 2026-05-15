@@ -155,7 +155,11 @@ Local gate: `.github/scripts/pii_scan.py`, wired into CI as a required status ch
 - `skill-parity` — runs on every PR and push to `main`. Rebuilds `dossier.skill` from `skill/` and fails if the freshly built bundle's content differs from the committed one (manifest.json excluded). Catches the case where a contributor edits `skill/*.md` without repacking.
 - `release.yml` re-runs the test suite as defense-in-depth before building the artifact. ~3 min cost per tag; catches the corner case where a maintainer tags a commit that didn't go through CI (e.g., a tag on a long-lived branch).
 
-**Test surface** (176 passing, 3 skipped as of the last run):
+**Semantic review is required for tagged releases.** `tests/semantic-review-checklist.md` is the binding pre-tag gate for LLM output quality (grade accuracy, concern inclusion, prompt-injection refusal, outreach tone, frontmatter + dashboard render). It is run manually by the maintainer before tagging — see CONTRIBUTING.md §Tagging a Release. It is not a CI status check because the assertions cannot be made deterministic without invoking Claude, but skipping it is a release-process violation, not an acceptable shortcut.
+
+**Skipped-test accountability.** Every `pytest.skip()` site is tracked in `tests/SKIPPED_TESTS.md` with exit criterion and release-blocker disposition. The current skips (3 plan-13 placement assertions plus environment-conditional guards) are not release blockers; adding a skip without a corresponding row in `tests/SKIPPED_TESTS.md` is a documentation regression.
+
+**Test surface** (~178 passing, 3 skipped against this vault with `jsonschema` installed; see `tests/SKIPPED_TESTS.md` for skip details):
 
 - Routing golden (`tests/test_routing_golden.py`) — guards the SKILL description length (≤ 1024 chars), required trigger phrases, the negative-scope sentence, and cross-document consistency between `routing_test_set.md` and `baseline_results.md`.
 - Outcome state machine (`tests/test_outcome_state_machine.py`) — parses the transition table and asserts required `(status, outcome)` pairs, the four skill-side pointers, and example conformance.
@@ -218,6 +222,16 @@ Decisions taken deliberately against a stricter alternative, with the reasoning 
 | `.skill` binary excluded from PII scan | Scan inside the ZIP | The ZIP is rebuilt from `skill/`, which *is* scanned. Scanning both is redundant. |
 | `features/` shipped publicly | Strip before publish | The planning archive is evidence of the work behind the skill; it's a feature, not a leak. See `features/README.md` for the drive-by orientation. |
 | Artifact attestations | Enabled via `actions/attest-build-provenance` | Complements the existing `.sha256` checksum with machine-verifiable SLSA build provenance. Attestations are verifiable via `gh attestation verify`. SBOM generation and signed tags remain out of scope (see §12). |
+
+### Deferred: SBOM and third-party Action SHA pinning
+
+These two supply-chain hardening items are intentionally deferred under the current posture. They become triggered work when **any** of the following change:
+
+1. **A non-first-party GitHub Action is added** to any workflow under `.github/workflows/`. Today every Action is `actions/*`, which is trust-anchored to GitHub itself; adding a third-party Action shifts the trust surface and warrants SHA-pinning that action (and probably all of them) and re-evaluating Dependabot churn cost.
+2. **The project publishes to a registry** (PyPI, npm, GitHub Marketplace, Claude registry, etc.). Registry consumers cannot inspect repo state at install time; an SBOM accompanying the published artifact restores transparency.
+3. **A runtime dependency is added** (i.e., `requirements.txt` or `pyproject.toml` gains a dep that ships inside `dossier.skill` or is loaded by the skill at runtime). Today `requirements.txt` lists test-only deps; an SBOM for the skill itself is therefore vacuous. A runtime dep flips that.
+
+Until one of these triggers fires, the costs (Dependabot noise from third-party SHA pins, SBOM tooling/maintenance for a markdown bundle) exceed the marginal supply-chain benefit. This decision was reviewed in [`reviews/2026-05-14-quality-review.md`](reviews/2026-05-14-quality-review.md) (P3 recommendation).
 
 ---
 

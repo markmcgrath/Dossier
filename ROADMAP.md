@@ -1,5 +1,7 @@
 This file tracks deferred work and exit criteria for currently-skipped tests. Items here are not abandoned — they have specific, named conditions that must be true before they are considered done. Skipped tests become green when the exit criterion is met; deferred features are promoted when the listed promotion criterion is satisfied.
 
+> **See also:** [`tests/SKIPPED_TESTS.md`](tests/SKIPPED_TESTS.md) is the full per-skip table including the three plan-13 skips below plus environment-conditional and vault-layout-conditional skips that this file does not enumerate.
+
 ## Skipped tests
 
 ### `test_gate_pass_rule_is_prominent`
@@ -39,6 +41,14 @@ This file tracks deferred work and exit criteria for currently-skipped tests. It
 ---
 
 ## Deferred features
+
+### SBOM / third-party Action SHA pinning
+
+**Status:** Intentionally deferred. See [`HARDENING.md` §10 "Deferred: SBOM and third-party Action SHA pinning"](HARDENING.md#deferred-sbom-and-third-party-action-sha-pinning) for the three explicit re-trigger criteria (non-first-party Action added, registry publication, runtime dependency added). Reviewed in [`reviews/2026-05-14-quality-review.md`](reviews/2026-05-14-quality-review.md) (P3, "no immediate action").
+
+**Promotion criterion:** Any of the three HARDENING.md triggers fires.
+
+---
 
 ### 90-day cold-application detection
 

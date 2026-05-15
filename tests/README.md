@@ -180,6 +180,10 @@ Found phrases that imply Notion is mandatory (vault-first violation):
   - Vault files (required directories, example artifacts)
   - Vault frontmatter schema
 
+## Skipped tests
+
+Every `pytest.skip()` site in this suite is tracked in [`SKIPPED_TESTS.md`](SKIPPED_TESTS.md) with file:line, reason, exit criterion, and release-blocker disposition. PRs adding a new skip must add a corresponding row in the same commit. PRs resolving a skip should delete the row. Reconcile by running `DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -rs` and matching the "short test summary info" against the table.
+
 ## Maintenance
 
 Tests should be reviewed when:

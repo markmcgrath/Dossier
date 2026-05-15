@@ -9,10 +9,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - CI matrix dropped Python 3.11; tests now run on 3.12 only. The matrix shape is preserved (single entry) so the status-check name stays `test (3.12)` and a future version can be re-added without renaming. `HARDENING.md` and `tests/README.md` updated to match. **Branch protection ruleset must drop `test (3.11)` from the required-checks list separately — this is a GitHub-side change, not in this PR.**
+- Semantic-review-checklist run is now a required pre-tag step (CONTRIBUTING.md §Tagging a Release, HARDENING.md §7). Previously documented but not flagged as binding; gap surfaced by the 2026-05-14 quality review.
+- CONTRIBUTING.md PR checklist now includes a "which checks for which changes" subsection mapping change type to required additional checks (skill source, schemas/examples, docs, release workflow, tests, build/lock files).
 
 ### Added
 
 - README now displays a Python 3.12 badge alongside the existing CI and License badges.
+- `pyproject.toml` declaring project metadata, `requires-python = ">=3.12"`, and a `dev` optional-dependencies group mirroring `requirements.txt`. Source-of-truth pointer added to `requirements.txt`.
+- `.python-version` pinned to `3.12` so version-manager users (pyenv, asdf, uv) get the supported interpreter automatically.
+- `tests/SKIPPED_TESTS.md` — single accountability table for every `pytest.skip()` site with reason, exit criterion, and release-blocker disposition. Linked from `tests/README.md` and `ROADMAP.md`.
+- `reviews/2026-05-14-quality-review.md` — archived ISO/IEC 25010-style review (A-/91) that drove this batch of improvements. First entry under the new top-level `reviews/` folder.
+- `features/plan/22-quality-review-remediation.md` — remediation plan for the 2026-05-14 review.
+- HARDENING.md §10 gains an explicit "Deferred: SBOM and third-party Action SHA pinning" subsection with the three re-trigger criteria (non-first-party Action, registry publication, runtime dependency). ROADMAP.md cross-links to it.
+
+### Documentation
+
+- CONTRIBUTING.md and README.md "running tests" sections rewritten with venv setup, the complete dependency list (`pytest`, `pyyaml`, `jsonschema`, conditional `tomli`), and Python 3.12 requirement. Previously listed only 2 of 4 dependencies.
 
 ## [1.3.4] — 2026-05-14
 

@@ -1,0 +1,44 @@
+[project]
+name = "dossier"
+version = "1.3.4"
+description = "Claude skill and Obsidian-compatible vault for job-search operations: evaluation, outreach, prep, research, pipeline tracking."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.12"
+authors = [
+    { name = "Mark McGrath" },
+]
+keywords = ["claude", "skill", "job-search", "obsidian", "vault"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Office/Business",
+    "Private :: Do Not Upload",
+]
+
+# Dossier is not currently distributed as a PyPI package. This file declares
+# project metadata, the supported Python version, and developer/test
+# dependencies so contributors can reproduce the CI environment. `requirements.txt`
+# remains the install target used by CI workflows; the `dev` optional-deps
+# group below mirrors it for `pip install -e ".[dev]"` workflows.
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.3",
+    "pyyaml>=6.0.3",
+    "tomli>=2.0.0; python_version < '3.11'",
+    "jsonschema>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/markmcgrath/Dossier"
+Repository = "https://github.com/markmcgrath/Dossier"
+Issues = "https://github.com/markmcgrath/Dossier/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v"

@@ -91,3 +91,11 @@ If any item above surfaces a systemic issue (a mode consistently omitting concer
 If the finding is a personal-workflow correction (a prompt pattern that works better for your context), add a `feedback_` memory entry via the standard memory workflow.
 
 Deferred semantic-quality work — including improvements to the injection-refusal golden and any future CI-gatable similarity metrics — is tracked in `ROADMAP.md`.
+
+---
+
+## Release sign-off
+
+This checklist is a **required pre-tag step** — see CONTRIBUTING.md §Tagging a Release. Record the most recent completion below.
+
+_Last run: vX.Y.Z by &lt;maintainer&gt; on YYYY-MM-DD — all five sections passed._
