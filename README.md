@@ -266,11 +266,14 @@ System-layer files (`PRIVACY.md`, `DATA_CONTRACT.md`, `README.md`, `Diagram.md`,
 
 ## Running tests
 
-The test suite validates structural integrity and schema correctness. It does not run live Claude sessions.
+The test suite validates structural integrity and schema correctness. It does not run live Claude sessions. Python 3.12 is required (declared in `pyproject.toml` and pinned in `.python-version`).
 
 ```bash
-# Install dependencies
-pip install pytest pyyaml
+# Set up a virtualenv and install dependencies
+python -m venv .venv
+# Activate: source .venv/bin/activate (POSIX) or .venv\Scripts\activate (Windows)
+pip install -r requirements.txt
+# Equivalent: pip install -e ".[dev]" (uses pyproject.toml's dev extras)
 
 # Run all tests
 DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v
@@ -278,6 +281,8 @@ DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v
 # Run a specific test file
 DOSSIER_VAULT="$(pwd)" python -m pytest tests/test_skill_structure.py -v
 ```
+
+Dependencies: `pytest`, `pyyaml`, `jsonschema`, plus `tomli` on Python <3.11 (stdlib `tomllib` from 3.11). All tests should pass; ~3–4 skips are expected — see `tests/SKIPPED_TESTS.md` for the skipped-test exit criteria.
 
 ## License
 

@@ -24,12 +24,23 @@ Thanks for your interest in contributing. Dossier is a Claude skill for job sear
 
 3. **Make your changes.** If you're editing `SKILL.md`, test it by loading it into a Claude Project and running at least one Mode 1 evaluation against a real job description.
 
-4. **Run the test suite** to verify nothing broke:
+4. **Set up your dev environment.** Dossier requires Python 3.12 (declared in `pyproject.toml` and pinned in `.python-version`). From the repo root:
+   ```bash
+   python -m venv .venv
+   # Activate: source .venv/bin/activate (POSIX) or .venv\Scripts\activate (Windows)
+   pip install -r requirements.txt
+   # Or, equivalently, install the dev extras from pyproject.toml:
+   # pip install -e ".[dev]"
+   ```
+   Dependencies (full list): `pytest`, `pyyaml`, `jsonschema`, and `tomli` (Python <3.11 only — stdlib `tomllib` covers it from 3.11 onwards).
+
+5. **Run the test suite** to verify nothing broke:
    ```bash
    DOSSIER_VAULT="$(pwd)" python -m pytest tests/ -v
    ```
+   All tests should pass; a small number of skips (~3–4 depending on environment) is expected — see `tests/SKIPPED_TESTS.md`.
 
-5. **Open a pull request** against `main`. Include:
+6. **Open a pull request** against `main`. Include:
    - What changed and why
    - How you tested it
    - Any breaking changes or migration steps
@@ -78,6 +89,21 @@ The Dossier skill lives in `skill/` and is packaged as a `.skill` ZIP bundle (`d
 - [ ] `CHANGELOG.md` updated
 - [ ] `dossier.skill` repacked from `skill/` if either changed (`pytest tests/test_skill_package_parity.py` passes)
 - [ ] PII scan clean: `python .github/scripts/pii_scan.py`
+
+### Which checks for which changes
+
+The full test suite is fast (~3 s) and the right default for any PR. The table below names the additional checks that matter for each change type so you can sanity-check before opening the PR.
+
+| Change type | Required checks |
+|---|---|
+| `skill/` source (SKILL.md, references/, manifest) | full test suite + `bash .github/scripts/build_skill.sh` (parity) + semantic-review checklist before the next release |
+| `schemas/` or `examples/` | full test suite — `test_schema_validation.py` runs when `jsonschema` is installed; `test_vault_schema.py` runs always |
+| Docs only (`README.md`, `CONTRIBUTING.md`, `HARDENING.md`, etc.) | full test suite (covers `test_docs_consistency.py`) + `CHANGELOG.md` entry under `## [Unreleased]` |
+| `.github/workflows/` or release scripts | full test suite + manual review of `verify_skill_artifact.py` output on a draft / `-rc` release before tagging the stable version |
+| `tests/` only | full test suite + update [`tests/SKIPPED_TESTS.md`](tests/SKIPPED_TESTS.md) if the skip surface changes |
+| `pyproject.toml`, `requirements.txt`, `.python-version` | full test suite + fresh-venv install (`python -m venv .venv && pip install -r requirements.txt && pytest`) to confirm no transitive breakage |
+
+CI enforces five required status checks regardless of change type (`pii-scan`, `test (3.12)`, `changelog-check`, `conventional-commits`, `skill-parity`). See [HARDENING.md §7](HARDENING.md#7-ci-and-test-coverage) for the canonical list.
 
 ## Conventional Commits
 
@@ -139,13 +165,14 @@ Tags that do not match (e.g. `vlatest`, `v-snapshot-2026-q3`, `v1`, `v1.0`) will
 **Pre-tag steps (maintainer):**
 
 1. Ensure all PRs are merged and CI is green on `main`.
-2. *(Optional)* Run the routing evals harness — see [§Routing eval (optional, pre-tag)](#routing-eval-optional-pre-tag) below. Catches holistic routing regressions before they ship in a release.
-3. Run `git cliff --unreleased --tag vX.Y.Z` to preview a suggested CHANGELOG section. git-cliff is a maintainer-only tool — install via `cargo install git-cliff` or `brew install git-cliff`. This step can be skipped if git-cliff is not installed; write the CHANGELOG entry manually.
-4. Manually paste/edit the suggestion into `CHANGELOG.md` as a new `## [vX.Y.Z] — YYYY-MM-DD` block above `## [Unreleased]`. Re-add an empty `## [Unreleased]` above. Preserve any `### Planned` content verbatim — git-cliff does not emit it.
-5. Commit: `git commit -am "chore(release): vX.Y.Z"`.
-6. Tag: `git tag -a vX.Y.Z -m "Release X.Y.Z"`.
-7. Push: `git push origin main vX.Y.Z`.
-8. After the release workflow finishes, run the post-release install smoke — see [§Post-release install smoke (manual)](#post-release-install-smoke-manual).
+2. **Run semantic review (required).** Walk [`tests/semantic-review-checklist.md`](tests/semantic-review-checklist.md) end-to-end against the three golden artifacts in `examples/golden/`. All five sections (grade accuracy, concern inclusion, prompt-injection refusal, outreach tone, frontmatter + dashboard) must pass. This is the human-review gate for LLM output quality that CI cannot enforce — record completion (date + checklist version) in the release PR description or the release notes draft. If any section fails, fix the underlying skill behaviour before tagging.
+3. *(Optional)* Run the routing evals harness — see [§Routing eval (optional, pre-tag)](#routing-eval-optional-pre-tag) below. Catches holistic routing regressions before they ship in a release.
+4. Run `git cliff --unreleased --tag vX.Y.Z` to preview a suggested CHANGELOG section. git-cliff is a maintainer-only tool — install via `cargo install git-cliff` or `brew install git-cliff`. This step can be skipped if git-cliff is not installed; write the CHANGELOG entry manually.
+5. Manually paste/edit the suggestion into `CHANGELOG.md` as a new `## [vX.Y.Z] — YYYY-MM-DD` block above `## [Unreleased]`. Re-add an empty `## [Unreleased]` above. Preserve any `### Planned` content verbatim — git-cliff does not emit it.
+6. Commit: `git commit -am "chore(release): vX.Y.Z"`.
+7. Tag: `git tag -a vX.Y.Z -m "Release X.Y.Z"`.
+8. Push: `git push origin main vX.Y.Z`.
+9. After the release workflow finishes, run the post-release install smoke — see [§Post-release install smoke (manual)](#post-release-install-smoke-manual).
 
 ---
 
