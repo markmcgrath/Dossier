@@ -8,7 +8,12 @@ ingest_roots:
   - features/research/*.md
 
 exclude:
-  - features/plan/README.md
+  # Bare-filename ingest_roots (README.md) right-anchor on basename at any
+  # depth via the scanner's Path.match fallback, so a single top-level
+  # README.md pattern otherwise pulls READMEs from .pytest_cache/, examples/,
+  # tests/, schemas/, features/. This excludes every *nested* README while
+  # keeping the intended top-level one.
+  - "*/README.md"
 
 defaults:
   default_domain: dossier
