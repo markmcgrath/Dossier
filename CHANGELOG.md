@@ -6,6 +6,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.5] — 2026-05-30
+
 ### Changed
 
 - CI matrix dropped Python 3.11; tests now run on 3.12 only. The matrix shape is preserved (single entry) so the status-check name stays `test (3.12)` and a future version can be re-added without renaming. `HARDENING.md` and `tests/README.md` updated to match. **Branch protection ruleset must drop `test (3.11)` from the required-checks list separately — this is a GitHub-side change, not in this PR.**
@@ -21,6 +23,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `reviews/2026-05-14-quality-review.md` — archived ISO/IEC 25010-style review (A-/91) that drove this batch of improvements. First entry under the new top-level `reviews/` folder.
 - `features/plan/22-quality-review-remediation.md` — remediation plan for the 2026-05-14 review.
 - HARDENING.md §10 gains an explicit "Deferred: SBOM and third-party Action SHA pinning" subsection with the three re-trigger criteria (non-first-party Action, registry publication, runtime dependency). ROADMAP.md cross-links to it.
+
+### Dependencies
+
+- `jsonschema` requirement raised from `>=4.0.0` to `>=4.26.0` (#74).
+- `actions/attest-build-provenance` bumped from 3 to 4 in the release workflow (#73).
 
 ### Documentation
 
