@@ -100,7 +100,7 @@ After the v2 streams above shipped, follow-on work continued under individually 
 | 23 | [[23-packets-and-folder-structure]] | Packets + folder-structure v2 (request item 1) |
 | 24 | [[24-send-ready-contract-and-validator]] | Send-ready document contract + executable validator (request item 3) |
 | 25 | [[25-target-radar-component]] | Target Radar as a standalone Dossier component, Mode 15 (request item 4) |
-| 26 | [[26-live-vault-cleanup-plan]] | Live working-folder cleanup map (request item 2, plan-only, CLI executes) |
+| 26 | 26-live-vault-cleanup-plan *(completed; spec doc not tracked in this repo — it contained live-vault paths)* | Live working-folder cleanup map (request item 2). Done. |
 | 27 | [[27-outstanding-backlog]] | Outstanding-feature backlog triage (request item 5) |
 
 Plan number 11 does not have a plan doc in this folder. Plan 19's doc was backfilled post-hoc from PR #43.
@@ -117,7 +117,7 @@ Plans 23 through 27 came out of a single planning session covering five requests
 
 **Shared files edited by more than one plan.** `skill/SKILL.md`, `skill/references/file-conventions.md`, `DATA_CONTRACT.md`, and `README.md` are each touched by Plans 23, 24, and 25. Apply every plan's edits; in `SKILL.md` the new mode sections go in order (Mode 14 then Mode 15) after the Mode 13 block; in `file-conventions.md` the folder diagram must end up showing `packets/`, `target-radar/` (and the live cleanup adds `reference/`). Edits target the `skill/` source directory; rebuild the bundle with `.github/scripts/build_skill.sh`, never a hand-run `zip`.
 
-**Recommended execution order.** 23 (folder structure and packets) first, then 24 (the validator gates packet finalization via `send_ready: true`), then 25 (Target Radar), then 26 (live cleanup, which relies on the packet convention from 23). 27 is independent and can land any time. Plan 26 operates on the live `Dossier` working folder, not this repo; it moves user data and is plan-only until the user has the CLI run it.
+**Recommended execution order.** 23 (folder structure and packets) first, then 24 (the validator gates packet finalization via `send_ready: true`), then 25 (Target Radar), then 26 (live cleanup, which relies on the packet convention from 23). 27 is independent and can land any time. Plan 26 operated on the live `Dossier` working folder, not this repo; it moved user data and has since been completed. Its spec doc is not tracked here because it contained live-vault paths.
 
 **Vault supersede.** Plan 25 changes a prior canonical decision: Target Radar was designed as an upstream Commonplace brief (vault entries `2026-05-11-target-radar-brief-design` and `2026-05-27-dossier-plan21-target-radar-brief`). Building it into Dossier supersedes those. The user runs the `commonplace supersede` operation separately; Plan 25 only records the intent, and Plan 21's stub is annotated.
 
