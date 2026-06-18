@@ -1,0 +1,133 @@
+{
+  "$comment": "Send-ready document contract config. Read by .github/scripts/sendready_scan.py.",
+  "version": "1",
+  "allowed_cv_sections": [
+    "Professional Summary",
+    "Summary",
+    "Skills",
+    "Experience",
+    "Professional Experience",
+    "Work Experience",
+    "Employment History",
+    "Education",
+    "Selected Projects",
+    "Selected Architecture Projects",
+    "Architecture Projects",
+    "Projects",
+    "Certifications",
+    "Selected Projects / Certifications",
+    "Earlier Career"
+  ],
+  "failure_patterns": [
+    {
+      "id": "html-comment",
+      "pattern": "<!--",
+      "ignore_case": false,
+      "description": "HTML comment"
+    },
+    {
+      "id": "note-prefix",
+      "pattern": "^\\s*(NOTE:|Note:|NOTE\\s)",
+      "ignore_case": false,
+      "description": "Inline note prefix"
+    },
+    {
+      "id": "question-prefix",
+      "pattern": "^\\s*Q[:.] ",
+      "ignore_case": false,
+      "description": "Inline question prefix"
+    },
+    {
+      "id": "todo-marker",
+      "pattern": "^\\s*(TODO|FIXME|XXX)\\b",
+      "ignore_case": false,
+      "description": "Developer task marker"
+    },
+    {
+      "id": "draft-marker",
+      "pattern": "\\bDRAFT\\b",
+      "ignore_case": false,
+      "description": "DRAFT stamp"
+    },
+    {
+      "id": "blockquote",
+      "pattern": "^\\s*>",
+      "ignore_case": false,
+      "description": "Blockquote (used as reviewer aside)"
+    },
+    {
+      "id": "banned-section",
+      "pattern": "^##\\s+What Changed",
+      "ignore_case": true,
+      "description": "What Changed section (Mode 11 scaffolding)"
+    },
+    {
+      "id": "internal-note",
+      "pattern": "for reference only",
+      "ignore_case": true,
+      "description": "Internal reference note boilerplate"
+    },
+    {
+      "id": "placeholder",
+      "pattern": "\\[[A-Z][A-Z ]{2,}\\]",
+      "ignore_case": false,
+      "description": "Unfilled ALL-CAPS placeholder bracket"
+    },
+    {
+      "id": "placeholder",
+      "pattern": "\\[(add|insert|your)\\s",
+      "ignore_case": true,
+      "description": "Instruction placeholder bracket"
+    },
+    {
+      "id": "placeholder",
+      "pattern": "\\[(TBD|TK|placeholder)\\]",
+      "ignore_case": true,
+      "description": "Explicit placeholder word in bracket"
+    }
+  ],
+  "warning_patterns": [
+    {
+      "id": "memo-prefix",
+      "pattern": "^\\s*(Memo:|MEMO:)",
+      "ignore_case": false,
+      "description": "Memo prefix"
+    },
+    {
+      "id": "placeholder-word",
+      "pattern": "\\bplaceholder\\b",
+      "ignore_case": true,
+      "description": "The word placeholder in body text"
+    },
+    {
+      "id": "reviewer-prefix",
+      "pattern": "^\\s*Reviewer:",
+      "ignore_case": true,
+      "description": "Reviewer prefix"
+    },
+    {
+      "id": "see-note",
+      "pattern": "\\bsee note\\b",
+      "ignore_case": true,
+      "description": "See note phrase"
+    },
+    {
+      "id": "per-your-comment",
+      "pattern": "\\bper your comment\\b",
+      "ignore_case": true,
+      "description": "Per your comment phrase"
+    },
+    {
+      "id": "action-item-prefix",
+      "pattern": "^\\s*Action [Ii]tem:",
+      "ignore_case": false,
+      "description": "Action item prefix"
+    },
+    {
+      "id": "trailing-question",
+      "pattern": "^.{1,119}\\?$",
+      "ignore_case": false,
+      "description": "Short trailing question line (likely internal)"
+    }
+  ]
+}

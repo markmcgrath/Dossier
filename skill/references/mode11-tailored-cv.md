@@ -52,6 +52,8 @@ After the CV content, append the following section to the same file. This sectio
 **Step 5: Save the file.**
 Write to `Dossier/cv-[company-slug]-[YYYY-MM-DD].md` with the `## What Changed` section already appended. Tell the user the filename, remind them the master `cv.md` is unchanged, and note that the What Changed section should be removed before submitting.
 
+*Send-ready requirements — what must be stripped (the `## What Changed` section, placeholders, internal notes) before a tuned CV is sent: see [SEND_READY_CONTRACT.md](SEND_READY_CONTRACT.md). When the tuned CV lives in a packet, run `python .github/scripts/sendready_scan.py packets/[company-slug]/[role-slug]/cv.md` and confirm it exits clean before setting `send_ready: true`.*
+
 Offer: "Want me to draft a cover letter for this role too? Mode 6 can use this tailored version as its base."
 
 **Step 6: Offer ATS-safe docx export (optional).**

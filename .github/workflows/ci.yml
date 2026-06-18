@@ -49,6 +49,20 @@ jobs:
       - name: Run PII scan
         run: python .github/scripts/pii_scan.py
 
+  send-ready-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Run send-ready scan
+        run: python .github/scripts/sendready_scan.py
+
   changelog-check:
     name: changelog-check
     runs-on: ubuntu-latest

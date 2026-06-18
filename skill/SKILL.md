@@ -141,6 +141,7 @@ Runs once per session before any other mode. Validates vault integrity and catch
 5. **Eval frontmatter spot-check** — read the 3 most recent files in `evals/`. Check for required fields: `type`, `company`, `role`, `grade`, `score`, `status`, `date`, `outcome`. If any are missing → warn with specific file and field name. Exception: when `status: Superseded`, only `type`, `company`, `role`, `status`, `date` are required — `grade`, `score`, and `outcome` are exempt because the canonical assessment lives in the eval being pointed to via `supersedes:`.
 6. **Status/outcome consistency** — for the same 3 most recent evals, verify each `(status, outcome)` pair matches a row in the transition table in `references/status-outcome-state-machine.md`. If a pair is inconsistent (e.g. `status: Rejected` with `outcome: Pending`) → warn with file name, current pair, and a suggested resolution. Non-blocking. Superseded evals are checked separately: warn only if `supersedes:` is missing or points to a non-existent file.
 7. **Gmail domain filtering** — if neither `gmail_allow_domains` nor `gmail_deny_domains` is configured → note "Gmail domain filtering not configured. Mode 9 will process all matching emails." (non-blocking).
+8. **Send-ready scan (packets)** — if any `packets/**/cv.md` or `packets/**/cover-letter.md` exist, run `python .github/scripts/sendready_scan.py` and report any failures so they can be fixed before sending (non-blocking — the CI `send-ready-scan` job is the hard gate). If no packets exist → skip silently. See `references/SEND_READY_CONTRACT.md`.
 
 **Output behavior:**
 - If all checks pass → proceed silently. No output.
@@ -310,6 +311,7 @@ Require three inputs before drafting: the JD (or a recent Mode 1 evaluation to r
 **Drafting principles:**
 
 - **Under 400 words. This is a hard limit, not a guideline.** Hiring managers skim. A tight letter outperforms a comprehensive one every time.
+- **Send-ready before it goes out.** A cover letter must carry no scaffolding, internal notes, placeholders, blockquotes, or draft markers. The contract is in `references/SEND_READY_CONTRACT.md`. When the letter lives in a packet, run `python .github/scripts/sendready_scan.py packets/[company-slug]/[role-slug]/cover-letter.md` and confirm it exits clean before marking `send_ready: true`.
 - **Lead with specificity, not salutation fluff.** Open with something concrete about the role, team, or company that signals you actually read the posting.
   - ❌ Bad openers: "I am writing to apply for…" / "I was excited to see your posting for…" / "Please accept this letter as my application…" / "As a seasoned professional…" / "I am a highly motivated…"
   - ✅ Good openers: Start with a claim, a question, or a specific observation. "Building a semantic layer that 14 finance stakeholders trust took three years and two data warehouses — that kind of data trust problem is what drew me to this role." Start in the middle of a thought.
