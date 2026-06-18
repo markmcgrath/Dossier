@@ -6,6 +6,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-06-18
+
 ### Added
 
 - **Packets and Mode 14 (Packet Assembly).** A `packets/[company-slug]/[role-slug]/` convention for per-application send-ready bundles (tuned `cv.md`/`.docx`, `cover-letter.md`/`.docx`, optional `jd`/`prep`/`outreach`, and a `type: packet` README manifest). New `references/mode14-packet-assembly.md` documents the 8-step assembly workflow and fabrication rules. (Plan 23)

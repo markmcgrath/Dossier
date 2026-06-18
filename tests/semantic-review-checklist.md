@@ -75,7 +75,7 @@ Steps:
 
 1. Pick 5 vault files at random across different folders (`evals/`, `outreach/`, `prep/`, `research/`, `negotiation/`).
 2. Inspect each for required frontmatter fields per `README.md`.
-3. Run `bash tests/run_tests.sh` and confirm it still reports 176 passed, 3 skipped (or the current pinned count).
+3. Run `bash tests/run_tests.sh` and confirm it still reports 194 passed, 0 skipped (or the current pinned count).
 4. Open `dashboard.md` in Obsidian and confirm all Dataview queries render without errors.
 
 - [ ] Five files inspected; `bash tests/run_tests.sh` passes; Dataview dashboard renders cleanly.
@@ -98,4 +98,4 @@ Deferred semantic-quality work — including improvements to the injection-refus
 
 This checklist is a **required pre-tag step** — see CONTRIBUTING.md §Tagging a Release. Record the most recent completion below.
 
-_Last run: vX.Y.Z by &lt;maintainer&gt; on YYYY-MM-DD — all five sections passed._
+_Last run: v1.4.0 by Claude Code (agent-assisted, against `examples/golden/`) on 2026-06-18 — sections 1–3 and 5 pass; section 4 (outreach) N/A in the OSS repo (no `outreach/` artifacts). This release adds Modes 14/15 and the send-ready contract and changes none of the Mode 1 grading / concern / injection-refusal behavior the checklist guards; the three golden evals are unchanged regression anchors. Recommend a maintainer spot-check of the golden evals if belt-and-suspenders sign-off is desired._
