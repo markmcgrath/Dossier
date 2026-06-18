@@ -91,7 +91,7 @@ def test_manifest_shape(manifest):
 
 
 def test_zip_has_no_unexpected_top_level_entries(skill_zip):
-    """Verify the ZIP contains exactly the expected 17 entries.
+    """Verify the ZIP contains exactly the expected 21 entries.
 
     Adding a new reference file requires a deliberate update to this list.
     Removing or renaming an entry also requires an update — the test is
@@ -100,17 +100,21 @@ def test_zip_has_no_unexpected_top_level_entries(skill_zip):
     EXPECTED_BUNDLE_ENTRIES = [
         "skill/SKILL.md",
         "skill/manifest.json",
+        "skill/references/SEND_READY_CONTRACT.md",
         "skill/references/file-conventions.md",
         "skill/references/mode1-offer-evaluator.md",
         "skill/references/mode10-calendar-ops.md",
         "skill/references/mode11-tailored-cv.md",
         "skill/references/mode12-batch-pipeline.md",
         "skill/references/mode13-calibration.md",
+        "skill/references/mode14-packet-assembly.md",
+        "skill/references/mode15-target-radar.md",
         "skill/references/mode2-portal-scan.md",
         "skill/references/mode5-outreach.md",
         "skill/references/mode7-salary-negotiation.md",
         "skill/references/mode9-inbox-followup.md",
         "skill/references/scoring-guide.md",
+        "skill/references/send_ready_config.json",
         "skill/references/status-outcome-state-machine.md",
         "skill/references/story-tagging.md",
         "skill/references/terminal-archival.md",

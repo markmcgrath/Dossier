@@ -6,6 +6,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Packets and Mode 14 (Packet Assembly).** A `packets/[company-slug]/[role-slug]/` convention for per-application send-ready bundles (tuned `cv.md`/`.docx`, `cover-letter.md`/`.docx`, optional `jd`/`prep`/`outreach`, and a `type: packet` README manifest). New `references/mode14-packet-assembly.md` documents the 8-step assembly workflow and fabrication rules. (Plan 23)
+- **Send-ready document contract + CI validator.** `references/SEND_READY_CONTRACT.md` (human-readable) and `references/send_ready_config.json` (machine-readable rules) define what "ready to send" means for tuned CVs and cover letters. `.github/scripts/sendready_scan.py` enforces it (stdlib-only, `--staged`/`--strict`/`--format json`), wired into CI as the `send-ready-scan` job. (Plan 24)
+- **Mode 15 (Target Radar).** Company-level discovery that scores `fit_score` and writes `target-radar/target-[slug]-[date].md` artifacts for Mode 1 to consume. New `references/mode15-target-radar.md`, `target_segments`/`radar_seed_cap`/`radar_decay_days` config keys, and a weekly refresh scheduled-task template. (Plan 25)
+- Gate-Pass Rule now stated as a clear callout in SKILL.md Mode 1; `redact_comp` and `scoring_weights` documented in SKILL.md's config-keys note. (Plan 27, A-1/A-3)
+
+### Changed
+
+- `dossier.skill` bundle grows from 17 to 21 entries (`mode14-packet-assembly.md`, `mode15-target-radar.md`, `SEND_READY_CONTRACT.md`, `send_ready_config.json`); `EXPECTED_BUNDLE_ENTRIES` and `DATA_CONTRACT.md` updated to match.
+- `test_bias_caveat_in_mode_1` now asserts against `references/mode1-offer-evaluator.md` (its prior SKILL.md target was wrong); the three plan-13 hard skips are resolved and removed from `SKIPPED_TESTS.md`. The open-source vault now runs with 0 skips when `jsonschema` is installed. (Plan 27, A-2)
+
+### Fixed
+
+- Validated the Mode 2.1 portal-scan Greenhouse JSON path against the live `boards-api.greenhouse.io` endpoint (returns a valid `jobs` array); closed the "do not implement until tested" gate in `features/plan/06-deferred.md`. (Plan 27, B-3)
+
 ## [1.3.5] — 2026-05-30
 
 ### Changed
