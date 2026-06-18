@@ -95,6 +95,46 @@ After the v2 streams above shipped, follow-on work continued under individually 
 | 18 | [[18-version-tag-release-pipeline]] | Version-tag release pipeline |
 | 19 | [[19-routing-eval-harness]] | Routing eval harness — post-hoc stub for PR #43 |
 | 20 | [[20-v1-3-1-and-phase-2-foundations]] | v1.3.1 cleanup and Phase 2 foundations |
-| 21 | [[21-target-radar-brief]] | Target Radar brief stub (canonical design lives in Commonplace vault) |
+| 21 | [[21-target-radar-brief]] | Target Radar brief stub (SUPERSEDED by Plan 25, see below) |
+| 22 | [[22-quality-review-remediation]] | Quality review remediation |
+| 23 | [[23-packets-and-folder-structure]] | Packets + folder-structure v2 (request item 1) |
+| 24 | [[24-send-ready-contract-and-validator]] | Send-ready document contract + executable validator (request item 3) |
+| 25 | [[25-target-radar-component]] | Target Radar as a standalone Dossier component, Mode 15 (request item 4) |
+| 26 | [[26-live-vault-cleanup-plan]] | Live working-folder cleanup map (request item 2, plan-only, CLI executes) |
+| 27 | [[27-outstanding-backlog]] | Outstanding-feature backlog triage (request item 5) |
 
 Plan number 11 does not have a plan doc in this folder. Plan 19's doc was backfilled post-hoc from PR #43.
+
+## Plans 23 to 27 cohort (June 2026) — Cross-plan reconciliation
+
+Plans 23 through 27 came out of a single planning session covering five requests: standardize packets, clean the live working folder, enforce send-ready document hygiene, build Target Radar into Dossier, and triage remaining outstanding work. They are written to be executed by Claude Code CLI. The items below are authoritative where an individual plan's local text disagrees.
+
+**Mode numbering.** Existing modes are 0 through 13. The two new modes are: Mode 14 = Packet Assembly (Plan 23), Mode 15 = Target Radar (Plan 25). Both source agents independently proposed "Mode 14"; Target Radar was reassigned to 15. Plan 25 text reads Mode 15 throughout.
+
+**Bundle frozen file list grows from 17 to 21.** Four files are added under `skill/references/` and therefore enter the `dossier.skill` bundle: `mode14-packet-assembly.md` (Plan 23), `mode15-target-radar.md` (Plan 25), `SEND_READY_CONTRACT.md` and `send_ready_config.json` (Plan 24). When implementing, update all of these in lockstep to 21 entries: `tests/test_package.py` `EXPECTED_BUNDLE_ENTRIES` and its "expected 17 entries" docstring, the `DATA_CONTRACT.md` "17 files under a top-level `skill/` directory" sentence, and `.github/scripts/verify_skill_artifact.py` and `.github/scripts/build_skill.sh` if either enumerates bundle contents. Per-plan lines that say the count "becomes 18" are superseded by this paragraph.
+
+**New top-level vault folders (folder-structure v2).** `packets/[company-slug]/[role-slug]/` (Plan 23), `target-radar/` (Plan 25), and `reference/` with subfolders (Plan 26, live working folder only). OSS scaffolding adds `packets/.gitkeep` and `target-radar/.gitkeep`; `reference/` is a live-vault construct created during cleanup, not shipped scaffolding. All slugs are lowercase-hyphen, consistent with existing eval slugs.
+
+**Shared files edited by more than one plan.** `skill/SKILL.md`, `skill/references/file-conventions.md`, `DATA_CONTRACT.md`, and `README.md` are each touched by Plans 23, 24, and 25. Apply every plan's edits; in `SKILL.md` the new mode sections go in order (Mode 14 then Mode 15) after the Mode 13 block; in `file-conventions.md` the folder diagram must end up showing `packets/`, `target-radar/` (and the live cleanup adds `reference/`). Edits target the `skill/` source directory; rebuild the bundle with `.github/scripts/build_skill.sh`, never a hand-run `zip`.
+
+**Recommended execution order.** 23 (folder structure and packets) first, then 24 (the validator gates packet finalization via `send_ready: true`), then 25 (Target Radar), then 26 (live cleanup, which relies on the packet convention from 23). 27 is independent and can land any time. Plan 26 operates on the live `Dossier` working folder, not this repo; it moves user data and is plan-only until the user has the CLI run it.
+
+**Vault supersede.** Plan 25 changes a prior canonical decision: Target Radar was designed as an upstream Commonplace brief (vault entries `2026-05-11-target-radar-brief-design` and `2026-05-27-dossier-plan21-target-radar-brief`). Building it into Dossier supersedes those. The user runs the `commonplace supersede` operation separately; Plan 25 only records the intent, and Plan 21's stub is annotated.
+
+## Implementation guardrails (read before executing Plans 23 to 25)
+
+A pre-execution review found defects that only bite when these plans run in sequence (Edit old-string targets and the bundle count shift after an earlier plan has already changed the file). Apply these corrections; they override any conflicting local instruction in the individual plans.
+
+**Verify-before-edit.** Several plans give an old-string Edit target without quoting the live file (for example `tests/test_skill_structure.py` `test_all_modes_exist`'s mode list, and `SKILL.md`'s `description:` field tail). Before each Edit, read the actual file and match the exact current string including whitespace and trailing commas. Do not trust a paraphrased target.
+
+**Bundle file count: increment per plan, never preemptively.** The frozen `EXPECTED_BUNDLE_ENTRIES` in `tests/test_package.py` and its "expected 17 entries" docstring must equal the bundle's real contents after each plan lands, so CI stays green between plans. Update the running total inside the same plan that adds each file: after Plan 23 = 18 (`mode14-packet-assembly.md`), after Plan 24 = 20 (`SEND_READY_CONTRACT.md` and `send_ready_config.json`), after Plan 25 = 21 (`mode15-target-radar.md`). Do not jump straight to 21 in Plan 23.
+
+**Non-`.md` bundle members.** `send_ready_config.json` is a JSON file under `skill/references/`. Confirm `.github/scripts/build_skill.sh` packs all of `skill/references/*` (not only `*.md`); if it filters by extension, add `.json`. Add the literal `skill/references/send_ready_config.json` to `EXPECTED_BUNDLE_ENTRIES` and verify with `unzip -l dossier.skill`. Without this the validator hits config-not-found when run from an installed bundle.
+
+**SKILL.md insertion order.** Mode sections are appended after the Mode 13 block in numeric order: Plan 23 inserts Mode 14, then Plan 25 inserts Mode 15 after the Mode 14 section (not after Mode 13). The `Key folders` line ends, in final state, with `... archive/ packets/ target-radar/` (Plan 23 appends `packets/`, Plan 25 appends `target-radar/` to the post-23 line, not to a line ending in `archive/`).
+
+**Plan 26 command block is authoritative over its prose table.** Where Section 3's prose table and Section 5's command block disagree, run the command block. Specifically: (a) resolve the per-packet docx collision as `cv.docx` (the freshly exported tuned CV from the markdown source) versus `cv-legacy.docx` (the existing PascalCase `Mark-McGrath-CV.docx` submission copy), one consistent rule for every packet, not `cv-submission.docx` in one place and `cv.docx` in another. (b) `cover-letters/cover-openai-2026-05-07.md` stays REVIEW REQUIRED (three same-date OpenAI evals, role ambiguous), not an unflagged move. (c) The `daily-scan` root-versus-`daily/` `-vN` suffixes in the command block are placeholders: run `ls daily/daily-scan-YYYY-MM-DD*.md` first and pick the next free `-vN`; do not trust the hardcoded number.
+
+**Plan 24 validator sketch.** `parse_frontmatter` returns the body string only: annotate it `-> str` (not `-> tuple[str]`), and drop the `conftest.py` snippet that implies a two-value return. Use one document-class detection approach (the `path.parents` form in the sketch); delete the divergent pseudocode above it.
+
+**Plan 27 note.** Item B-7 (weekly-trend-report prerequisite docs) is a documentation item grouped under B for convenience; the "Group B = 7" count includes it.

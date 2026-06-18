@@ -123,7 +123,7 @@ This is the vault-native alternative to Notion queries. Modes 9 and 10 use this 
 
 All artifacts must be saved to the correct subfolder with YAML frontmatter. Read `references/file-conventions.md` for the full specification: folder structure, frontmatter schemas, cross-linking rules (wikilink syntax for Obsidian), file-first discipline, archive discipline, and naming conventions.
 
-Key folders: `evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `negotiation/`, `daily/`, `weekly/`, `archive/`.
+Key folders: `evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `negotiation/`, `daily/`, `weekly/`, `archive/`, `packets/` (per-application send-ready bundles).
 
 ## Mode 0: Health Check
 
@@ -436,6 +436,16 @@ Analyze grade-to-outcome correlation, identify which scoring dimensions best pre
 Read `references/mode13-calibration.md` for data collection steps, minimum threshold (15 outcomes), analysis methodology, and output template.
 
 **Save to:** `weekly/calibration-report-[date].md`
+
+### Mode 14: Packet Assembly
+
+**Trigger:** User asks to "assemble a packet", "build the packet", "create my submission bundle for [company]", or follows up after a Mode 1 evaluation with B or higher grade and "let's assemble the packet."
+
+A packet is the per-application, send-ready bundle containing a tuned CV and cover letter (plus optional JD capture, prep doc, and outreach draft), assembled into `packets/[company-slug]/[role-slug]/`. The master `cv.md` is never touched.
+
+Read `references/mode14-packet-assembly.md` for the 8-step assembly workflow, packet README frontmatter schema, story-selection rules, cross-linking steps, and docx export discipline.
+
+**Writes to:** `packets/[company-slug]/[role-slug]/` (README.md, cv.md, cv.docx, cover-letter.md, cover-letter.docx, and optionally jd.md, prep.md, outreach.md).
 
 ---
 

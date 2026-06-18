@@ -21,7 +21,11 @@ Dossier/
 ├── negotiation/            ← negotiation-[slug]-[date].md (Mode 7 output)
 ├── daily/                  ← daily-scan-*, leads-*-am/pm, recruiter-triage-*
 ├── weekly/                 ← pipeline-digest-*, week-ahead-*
-└── archive/                ← archived per-company bundles once terminal
+├── archive/                ← archived per-company bundles once terminal
+│
+└── packets/                ← per-application send-ready bundles (Mode 14)
+    └── [company-slug]/
+        └── [role-slug]/    ← README.md, cv.md/.docx, cover-letter.md/.docx, jd.md
 ```
 
 ### Frontmatter requirements
@@ -102,6 +106,44 @@ The Gmail draft is the delivery mechanism. The markdown file is the record.
 When a pipeline row reaches a terminal state (Rejected, Passed, Offer-Declined, or >90 days cold), move that company's entire bundle — eval, outreach, cover, prep — into `archive/[company-slug]/`. Update the eval's `status:` frontmatter first. Nothing is deleted; everything stays searchable but out of the active pipeline.
 
 Mode 9 auto-proposes this move in its Application Status Sync batch when it detects a terminal-status transition on an `Applied` or `Interviewing` eval. Repeat archivals of the same company are versioned (`archive/[slug]-v2/`, `-v3/`, …) rather than merged. The `>90 days cold` case is currently manual — it needs date arithmetic not yet implemented. Full procedure, including slug extraction and cross-reference rewriting, lives in `references/terminal-archival.md`.
+
+### Packets
+
+A packet (`packets/[company-slug]/[role-slug]/`) is the send-ready bundle for one application. It is created by Mode 14 (Packet Assembly) and contains tuned submission artifacts derived from the master CV and the role's eval, research, and stories.
+
+**Packet README frontmatter** (`type: packet`):
+```yaml
+---
+type: packet
+company: "Company Name"
+role: "Role Title"
+company_slug: company-slug
+role_slug: role-slug
+status: Assembling | Ready | Submitted | Archived
+send_ready: false
+related_eval: "[[eval-company-slug-YYYY-MM-DD]]"
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+contents:
+  cv_md: false
+  cv_docx: false
+  cover_letter_md: false
+  cover_letter_docx: false
+  jd_md: false
+  prep_md: false
+  outreach_md: false
+---
+```
+
+**Required files in every packet:** `README.md`, `cv.md`, `cv.docx`, `cover-letter.md`, `cover-letter.docx`. A packet is not `send_ready: true` until all five are present, confirmed, and pass the send-ready scan (see `SEND_READY_CONTRACT.md`).
+
+**Cross-linking:** the packet README's `## Related` section links back to the eval, research brief, and outreach draft using Obsidian wikilink syntax. The eval's own `## Related` section gets a `- Packet: [[packets/company-slug/role-slug/README]]` entry added by Mode 14.
+
+**Naming:** company and role slugs follow the same lowercase-hyphen convention as eval slugs. Two roles at the same company each get their own `[role-slug]/` subfolder under the shared `[company-slug]/` directory.
+
+**Legacy artifacts:** `cv-[slug]-[date].md` files at the vault root and `cover-letters/cover-[slug]-[date].md` files predate the packet convention. Their migration target is `packets/[company-slug]/[role-slug]/cv.md` and `cover-letter.md` respectively; migration is a separate manual cleanup, not performed by Mode 14.
+
+**Archive behavior:** when a company reaches a terminal pipeline state, the entire `packets/[company-slug]/` directory is moved to `archive/[company-slug]/packets/` alongside the other company artifacts. Packet `status` is set to `Archived` before the move.
 
 ### Time-decay archival for `daily/` and `weekly/`
 
