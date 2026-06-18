@@ -1,5 +1,11 @@
 # Plan 21 — Target Radar (brief, not mode)
 
+> **Superseded by Plan 25.** Target Radar is now implemented as Mode 15 inside Dossier.
+> See `features/plan/25-target-radar-component.md`. The Commonplace-brief ownership model
+> described here is no longer the design. Vault supersede of entries
+> `2026-05-11-target-radar-brief-design` and `2026-05-27-dossier-plan21-target-radar-brief`
+> is a separate user-run operation.
+
 **Status:** Design only — see canonical entry
 **Created:** 2026-05-11
 **Canonical design doc:** [[2026-05-11-target-radar-brief-design]] (in The Commonplace Book vault)

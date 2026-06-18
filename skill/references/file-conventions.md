@@ -23,9 +23,11 @@ Dossier/
 ├── weekly/                 ← pipeline-digest-*, week-ahead-*
 ├── archive/                ← archived per-company bundles once terminal
 │
-└── packets/                ← per-application send-ready bundles (Mode 14)
-    └── [company-slug]/
-        └── [role-slug]/    ← README.md, cv.md/.docx, cover-letter.md/.docx, jd.md
+├── packets/                ← per-application send-ready bundles (Mode 14)
+│   └── [company-slug]/
+│       └── [role-slug]/    ← README.md, cv.md/.docx, cover-letter.md/.docx, jd.md
+│
+└── target-radar/           ← target-[slug]-[date].md  (Mode 15 output)
 ```
 
 ### Frontmatter requirements
@@ -73,6 +75,32 @@ related_eval: "[[eval-[slug]-[date]]]"   # wikilink syntax, not a path
 **Prep files** (`type: prep`): add `interview_date:`, `interviewers:` (list of names), and `related_stories:` (list of Obsidian heading wikilinks into `stories.md`, e.g. `"[[stories#Story Title]]"`). Story matching and back-reference discipline live in `references/story-tagging.md`.
 
 **Negotiation files** (`type: negotiation`): same base shape as outreach, plus `offer_components:` (free-form summary of base/bonus/equity/etc.) and `walk_away:` (the floor below which the user will decline). Save to `negotiation/negotiation-[slug]-[date].md`.
+
+**Target-company files** (`type: target-company`): Mode 15 (Target Radar) company-discovery artifacts. Save to `target-radar/target-[company-slug]-[date].md`.
+```yaml
+---
+type: target-company
+company: "Company Name"
+company_slug: company-slug
+segment: "segment-name"
+role_hint: ""
+career_site_url: ""
+url_resolved: true
+fit_score: 0.00
+signals:
+  recent_funding: false
+  hiring_velocity: low
+  open_roles_count: 0
+  role_title_match: false
+  legitimacy: Plausible
+sources: []
+status: active
+decay_ttl_days: 30
+created_at: YYYY-MM-DD
+refreshed_at: YYYY-MM-DD
+related_eval: ""
+---
+```
 
 ### Cross-linking rule (for Obsidian graph view)
 
@@ -153,6 +181,10 @@ Daily scans, lead pulses, recruiter triage, pipeline digests, and week-aheads ar
 - When `weekly/` exceeds ~26 files, move older files into `weekly/YYYY-Q#/`.
 - Dataview queries in `dashboard.md` descend into subfolders automatically, so "recent activity" views keep working.
 
+### Decay and archival for `target-radar/`
+
+Target-company artifacts have a 30-day TTL (`decay_ttl_days: 30` in frontmatter). Do not delete stale artifacts — set `status: stale` in frontmatter and leave in place. Mode 15 overwrites the file when a refresh is run. If a company moves to `archive/`, set `status: archived` and leave the target-radar artifact as a historical record.
+
 ### Naming
 
 - Company slug: lowercase, hyphen-separated, no punctuation. `acme-corp`, `wayne-enterprises`, `globex-industries`.
@@ -187,4 +219,15 @@ target_companies: []           # List of companies to scan for new job postings
 #     url: "https://startup.co/careers"
 # ATS types: greenhouse (API via Greenhouse), lever (browser fallback),
 # ashby (browser fallback), manual (user-provided URL).
+
+# Target Radar (Mode 15)
+target_segments: []           # Segments / verticals to discover by default in Mode 15.
+# target_segments:
+#   - "healthcare analytics"
+#   - "BI modernization consulting"
+#   - "AI-enabled analytics platforms"
+
+radar_seed_cap: 15            # Max candidate companies per segment/role input. Default: 15.
+
+radar_decay_days: 30          # Days before a target-company artifact is stale. Default: 30.
 ```

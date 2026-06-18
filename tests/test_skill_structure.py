@@ -57,9 +57,9 @@ def test_mode_0_health_check_exists(skill_md):
 
 
 def test_all_modes_exist(skill_md):
-    """Verify Mode 1 through Mode 14 all present; Mode 2.1 present."""
+    """Verify Mode 1 through Mode 15 all present; Mode 2.1 present."""
     missing = []
-    for mode in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]:
+    for mode in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]:
         if f"Mode {mode}" not in skill_md:
             missing.append(f"Mode {mode}")
     if "Mode 2.1" not in skill_md:
@@ -159,6 +159,12 @@ def test_mode_14_packet_assembly_exists(skill_md):
     """Verify Mode 14 (Packet Assembly) section exists."""
     has_section = "Mode 14" in skill_md or "packet assembly" in skill_md.lower()
     assert has_section, "Mode 14 (Packet Assembly) missing from SKILL.md"
+
+
+def test_mode_15_target_radar_exists(skill_md):
+    """Verify Mode 15 (Target Radar) section exists."""
+    has_section = "Mode 15" in skill_md or "target radar" in skill_md.lower()
+    assert has_section, "Mode 15 (Target Radar) missing from SKILL.md"
 
 
 def test_portal_scan_submode_exists(skill_md):

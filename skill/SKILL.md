@@ -10,9 +10,11 @@ description: >
   message a recruiter or hiring manager. Also trigger for offer comparisons, phone screen
   prep, cover letters, salary negotiation, triaging recruiter emails, drafting follow-ups or
   thank-yous, syncing application statuses from inbox to tracker, scheduling prep blocks or
-  reminders, and acting on LinkedIn directly (search jobs/people, send InMail, scan recruiter
-  inbox, check a profile). Only trigger when there is a clear job application, offer,
-  interview, or outreach context. Do not attempt these tasks without this skill.
+  reminders, and acting on LinkedIn directly (search jobs/people, send InMail, scan
+  recruiter inbox). Also trigger for "target radar" and company-discovery requests.
+  Only trigger when there is a clear
+  job application, offer, interview, or outreach context. Do not attempt these tasks
+  without this skill.
 ---
 
 ## Content Trust Boundary
@@ -123,7 +125,7 @@ This is the vault-native alternative to Notion queries. Modes 9 and 10 use this 
 
 All artifacts must be saved to the correct subfolder with YAML frontmatter. Read `references/file-conventions.md` for the full specification: folder structure, frontmatter schemas, cross-linking rules (wikilink syntax for Obsidian), file-first discipline, archive discipline, and naming conventions.
 
-Key folders: `evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `negotiation/`, `daily/`, `weekly/`, `archive/`, `packets/` (per-application send-ready bundles).
+Key folders: `evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `negotiation/`, `daily/`, `weekly/`, `archive/`, `packets/` (per-application send-ready bundles), `target-radar/` (Mode 15 target-company artifacts).
 
 ## Mode 0: Health Check
 
@@ -449,6 +451,17 @@ Read `references/mode14-packet-assembly.md` for the 8-step assembly workflow, pa
 
 **Writes to:** `packets/[company-slug]/[role-slug]/` (README.md, cv.md, cv.docx, cover-letter.md, cover-letter.docx, and optionally jd.md, prep.md, outreach.md).
 
+### Mode 15: Target Radar
+
+**Trigger:** User says "target radar", "add [company] to my radar", "who should I be targeting", "find companies in [segment]", "build my target list", "company discovery", "which companies are hiring [role]", "segment scan", "update my radar", or "run the radar". Also triggers when Mode 2 is invoked with no specific role or company and the user's intent is company discovery rather than job-listing search.
+
+Discover companies worth targeting, score them for fit at the company level, and write target-company artifacts that Mode 1 can consume to warm up its eval context.
+
+Read `references/mode15-target-radar.md` for the full algorithm: input-mode handling (named companies, segments, roles), intelligent search via WebSearch and job-board MCPs, targeted ATS resolution, archive deny-list, fit_score computation, dedup, and artifact schema.
+
+**Artifact folder:** `target-radar/`
+**Save to:** `target-radar/target-[company-slug]-[date].md`
+
 ---
 
 ## Enhancement: Weekly Trend Report
@@ -496,3 +509,4 @@ The dossier skill is invoked by several scheduled tasks. Their outputs should wr
 - `midweek-recruiter-triage` → `daily/recruiter-triage-[date].md`
 - `weekly-pipeline-digest` → `weekly/pipeline-digest-[date].md`
 - `sunday-week-ahead-prep` → `weekly/week-ahead-[date].md`
+- `weekly-target-radar` → `target-radar/target-[slug]-[date].md` (one file per company)
