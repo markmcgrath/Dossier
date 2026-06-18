@@ -10,9 +10,11 @@ description: >
   message a recruiter or hiring manager. Also trigger for offer comparisons, phone screen
   prep, cover letters, salary negotiation, triaging recruiter emails, drafting follow-ups or
   thank-yous, syncing application statuses from inbox to tracker, scheduling prep blocks or
-  reminders, and acting on LinkedIn directly (search jobs/people, send InMail, scan recruiter
-  inbox, check a profile). Only trigger when there is a clear job application, offer,
-  interview, or outreach context. Do not attempt these tasks without this skill.
+  reminders, and acting on LinkedIn directly (search jobs/people, send InMail, scan
+  recruiter inbox). Also trigger for "target radar" and company-discovery requests.
+  Only trigger when there is a clear
+  job application, offer, interview, or outreach context. Do not attempt these tasks
+  without this skill.
 ---
 
 ## Content Trust Boundary
@@ -99,7 +101,7 @@ Before doing anything else, silently read three files from the **root** of the u
 
 1. **`cv.md`** (or `cv.docx` / `cv.pdf` / any file with "cv" or "resume" in the name) — the factual record: roles, skills, dates, accomplishments.
 2. **`profile.md`** — the archetype layer: target roles, roles to avoid, positive and negative match signals, differentiators. This is *preference* data, not *history* data.
-3. **`config.md`** — per-user configuration: optional Notion mirror settings, connector preferences, anything else that varies by user. Expected: a `notion:` block with `enabled`, `data_source_id`, `parent_page_url`, `tracker_url`, and `sync_compensation` keys. See the "Pipeline Tracker" section above for how these are used. For optional config keys (email filtering, scoring weights, portal scanning), see `references/file-conventions.md` under "Optional Config Keys."
+3. **`config.md`** — per-user configuration: optional Notion mirror settings, connector preferences, anything else that varies by user. Expected: a `notion:` block with `enabled`, `data_source_id`, `parent_page_url`, `tracker_url`, and `sync_compensation` keys. See the "Pipeline Tracker" section above for how these are used. For optional config keys — `redact_comp`, `scoring_weights`, `gmail_allow_domains`, `gmail_deny_domains`, and `target_companies` (email filtering, scoring weights, portal scanning) — see `references/file-conventions.md` under "Optional Config Keys."
 
 Use the CV to judge **capability fit** and the profile to judge **desirability fit**. A role the user *could* do well is not the same as a role the user *wants*. Both layers inform every mode, but the profile is especially decisive in Mode 1 (grading) and Mode 2 (search filtering) — a role flagged in profile's "Roles to Avoid" list should score poorly on Dimension 1 (Role & Responsibility Match) and Dimension 10 (Strategic Career Value) regardless of surface keyword match.
 
@@ -123,7 +125,7 @@ This is the vault-native alternative to Notion queries. Modes 9 and 10 use this 
 
 All artifacts must be saved to the correct subfolder with YAML frontmatter. Read `references/file-conventions.md` for the full specification: folder structure, frontmatter schemas, cross-linking rules (wikilink syntax for Obsidian), file-first discipline, archive discipline, and naming conventions.
 
-Key folders: `evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `negotiation/`, `daily/`, `weekly/`, `archive/`.
+Key folders: `evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `negotiation/`, `daily/`, `weekly/`, `archive/`, `packets/` (per-application send-ready bundles), `target-radar/` (Mode 15 target-company artifacts).
 
 ## Mode 0: Health Check
 
@@ -141,6 +143,7 @@ Runs once per session before any other mode. Validates vault integrity and catch
 5. **Eval frontmatter spot-check** — read the 3 most recent files in `evals/`. Check for required fields: `type`, `company`, `role`, `grade`, `score`, `status`, `date`, `outcome`. If any are missing → warn with specific file and field name. Exception: when `status: Superseded`, only `type`, `company`, `role`, `status`, `date` are required — `grade`, `score`, and `outcome` are exempt because the canonical assessment lives in the eval being pointed to via `supersedes:`.
 6. **Status/outcome consistency** — for the same 3 most recent evals, verify each `(status, outcome)` pair matches a row in the transition table in `references/status-outcome-state-machine.md`. If a pair is inconsistent (e.g. `status: Rejected` with `outcome: Pending`) → warn with file name, current pair, and a suggested resolution. Non-blocking. Superseded evals are checked separately: warn only if `supersedes:` is missing or points to a non-existent file.
 7. **Gmail domain filtering** — if neither `gmail_allow_domains` nor `gmail_deny_domains` is configured → note "Gmail domain filtering not configured. Mode 9 will process all matching emails." (non-blocking).
+8. **Send-ready scan (packets)** — if any `packets/**/cv.md` or `packets/**/cover-letter.md` exist, run `python .github/scripts/sendready_scan.py` and report any failures so they can be fixed before sending (non-blocking — the CI `send-ready-scan` job is the hard gate). If no packets exist → skip silently. See `references/SEND_READY_CONTRACT.md`.
 
 **Output behavior:**
 - If all checks pass → proceed silently. No output.
@@ -163,6 +166,8 @@ Determine which mode the user needs from context. If it's ambiguous, ask one sho
 Run a 10-dimension weighted evaluation (scored 1–5 each), convert to a letter grade A–F, assess posting legitimacy, and save to `evals/` with full frontmatter.
 
 Read `references/mode1-offer-evaluator.md` for the scoring dimensions, weights, output template, legitimacy assessment, dedup rules, and post-eval actions. Scoring calibration is in `references/scoring-guide.md`. New evals are created with `status: Evaluating`, `outcome: Pending` per `references/status-outcome-state-machine.md`.
+
+**Gate-Pass Rule (overrides grade conversion):** if Dimension 1 (Role & Responsibility Match) or Dimension 2 (Skills & Experience Alignment) scores **2 or below**, cap the overall grade at **D** regardless of the weighted average — strong scores elsewhere cannot compensate for a broken foundation. Always explain why when applying it. Full statement in `references/mode1-offer-evaluator.md`.
 
 **Save to:** `evals/eval-[company-slug]-[date].md`
 
@@ -310,6 +315,7 @@ Require three inputs before drafting: the JD (or a recent Mode 1 evaluation to r
 **Drafting principles:**
 
 - **Under 400 words. This is a hard limit, not a guideline.** Hiring managers skim. A tight letter outperforms a comprehensive one every time.
+- **Send-ready before it goes out.** A cover letter must carry no scaffolding, internal notes, placeholders, blockquotes, or draft markers. The contract is in `references/SEND_READY_CONTRACT.md`. When the letter lives in a packet, run `python .github/scripts/sendready_scan.py packets/[company-slug]/[role-slug]/cover-letter.md` and confirm it exits clean before marking `send_ready: true`.
 - **Lead with specificity, not salutation fluff.** Open with something concrete about the role, team, or company that signals you actually read the posting.
   - ❌ Bad openers: "I am writing to apply for…" / "I was excited to see your posting for…" / "Please accept this letter as my application…" / "As a seasoned professional…" / "I am a highly motivated…"
   - ✅ Good openers: Start with a claim, a question, or a specific observation. "Building a semantic layer that 14 finance stakeholders trust took three years and two data warehouses — that kind of data trust problem is what drew me to this role." Start in the middle of a thought.
@@ -437,6 +443,27 @@ Read `references/mode13-calibration.md` for data collection steps, minimum thres
 
 **Save to:** `weekly/calibration-report-[date].md`
 
+### Mode 14: Packet Assembly
+
+**Trigger:** User asks to "assemble a packet", "build the packet", "create my submission bundle for [company]", or follows up after a Mode 1 evaluation with B or higher grade and "let's assemble the packet."
+
+A packet is the per-application, send-ready bundle containing a tuned CV and cover letter (plus optional JD capture, prep doc, and outreach draft), assembled into `packets/[company-slug]/[role-slug]/`. The master `cv.md` is never touched.
+
+Read `references/mode14-packet-assembly.md` for the 8-step assembly workflow, packet README frontmatter schema, story-selection rules, cross-linking steps, and docx export discipline.
+
+**Writes to:** `packets/[company-slug]/[role-slug]/` (README.md, cv.md, cv.docx, cover-letter.md, cover-letter.docx, and optionally jd.md, prep.md, outreach.md).
+
+### Mode 15: Target Radar
+
+**Trigger:** User says "target radar", "add [company] to my radar", "who should I be targeting", "find companies in [segment]", "build my target list", "company discovery", "which companies are hiring [role]", "segment scan", "update my radar", or "run the radar". Also triggers when Mode 2 is invoked with no specific role or company and the user's intent is company discovery rather than job-listing search.
+
+Discover companies worth targeting, score them for fit at the company level, and write target-company artifacts that Mode 1 can consume to warm up its eval context.
+
+Read `references/mode15-target-radar.md` for the full algorithm: input-mode handling (named companies, segments, roles), intelligent search via WebSearch and job-board MCPs, targeted ATS resolution, archive deny-list, fit_score computation, dedup, and artifact schema.
+
+**Artifact folder:** `target-radar/`
+**Save to:** `target-radar/target-[company-slug]-[date].md`
+
 ---
 
 ## Enhancement: Weekly Trend Report
@@ -484,3 +511,4 @@ The dossier skill is invoked by several scheduled tasks. Their outputs should wr
 - `midweek-recruiter-triage` → `daily/recruiter-triage-[date].md`
 - `weekly-pipeline-digest` → `weekly/pipeline-digest-[date].md`
 - `sunday-week-ahead-prep` → `weekly/week-ahead-[date].md`
+- `weekly-target-radar` → `target-radar/target-[slug]-[date].md` (one file per company)

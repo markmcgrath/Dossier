@@ -21,7 +21,13 @@ Dossier/
 ├── negotiation/            ← negotiation-[slug]-[date].md (Mode 7 output)
 ├── daily/                  ← daily-scan-*, leads-*-am/pm, recruiter-triage-*
 ├── weekly/                 ← pipeline-digest-*, week-ahead-*
-└── archive/                ← archived per-company bundles once terminal
+├── archive/                ← archived per-company bundles once terminal
+│
+├── packets/                ← per-application send-ready bundles (Mode 14)
+│   └── [company-slug]/
+│       └── [role-slug]/    ← README.md, cv.md/.docx, cover-letter.md/.docx, jd.md
+│
+└── target-radar/           ← target-[slug]-[date].md  (Mode 15 output)
 ```
 
 ### Frontmatter requirements
@@ -70,6 +76,32 @@ related_eval: "[[eval-[slug]-[date]]]"   # wikilink syntax, not a path
 
 **Negotiation files** (`type: negotiation`): same base shape as outreach, plus `offer_components:` (free-form summary of base/bonus/equity/etc.) and `walk_away:` (the floor below which the user will decline). Save to `negotiation/negotiation-[slug]-[date].md`.
 
+**Target-company files** (`type: target-company`): Mode 15 (Target Radar) company-discovery artifacts. Save to `target-radar/target-[company-slug]-[date].md`.
+```yaml
+---
+type: target-company
+company: "Company Name"
+company_slug: company-slug
+segment: "segment-name"
+role_hint: ""
+career_site_url: ""
+url_resolved: true
+fit_score: 0.00
+signals:
+  recent_funding: false
+  hiring_velocity: low
+  open_roles_count: 0
+  role_title_match: false
+  legitimacy: Plausible
+sources: []
+status: active
+decay_ttl_days: 30
+created_at: YYYY-MM-DD
+refreshed_at: YYYY-MM-DD
+related_eval: ""
+---
+```
+
 ### Cross-linking rule (for Obsidian graph view)
 
 Obsidian's graph view only follows `[[wikilink]]` syntax — plain file paths in frontmatter are not treated as links. Two rules keep the graph populated:
@@ -103,6 +135,44 @@ When a pipeline row reaches a terminal state (Rejected, Passed, Offer-Declined, 
 
 Mode 9 auto-proposes this move in its Application Status Sync batch when it detects a terminal-status transition on an `Applied` or `Interviewing` eval. Repeat archivals of the same company are versioned (`archive/[slug]-v2/`, `-v3/`, …) rather than merged. The `>90 days cold` case is currently manual — it needs date arithmetic not yet implemented. Full procedure, including slug extraction and cross-reference rewriting, lives in `references/terminal-archival.md`.
 
+### Packets
+
+A packet (`packets/[company-slug]/[role-slug]/`) is the send-ready bundle for one application. It is created by Mode 14 (Packet Assembly) and contains tuned submission artifacts derived from the master CV and the role's eval, research, and stories.
+
+**Packet README frontmatter** (`type: packet`):
+```yaml
+---
+type: packet
+company: "Company Name"
+role: "Role Title"
+company_slug: company-slug
+role_slug: role-slug
+status: Assembling | Ready | Submitted | Archived
+send_ready: false
+related_eval: "[[eval-company-slug-YYYY-MM-DD]]"
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+contents:
+  cv_md: false
+  cv_docx: false
+  cover_letter_md: false
+  cover_letter_docx: false
+  jd_md: false
+  prep_md: false
+  outreach_md: false
+---
+```
+
+**Required files in every packet:** `README.md`, `cv.md`, `cv.docx`, `cover-letter.md`, `cover-letter.docx`. A packet is not `send_ready: true` until all five are present, confirmed, and pass the send-ready scan (see `SEND_READY_CONTRACT.md`).
+
+**Cross-linking:** the packet README's `## Related` section links back to the eval, research brief, and outreach draft using Obsidian wikilink syntax. The eval's own `## Related` section gets a `- Packet: [[packets/company-slug/role-slug/README]]` entry added by Mode 14.
+
+**Naming:** company and role slugs follow the same lowercase-hyphen convention as eval slugs. Two roles at the same company each get their own `[role-slug]/` subfolder under the shared `[company-slug]/` directory.
+
+**Legacy artifacts:** `cv-[slug]-[date].md` files at the vault root and `cover-letters/cover-[slug]-[date].md` files predate the packet convention. Their migration target is `packets/[company-slug]/[role-slug]/cv.md` and `cover-letter.md` respectively; migration is a separate manual cleanup, not performed by Mode 14.
+
+**Archive behavior:** when a company reaches a terminal pipeline state, the entire `packets/[company-slug]/` directory is moved to `archive/[company-slug]/packets/` alongside the other company artifacts. Packet `status` is set to `Archived` before the move.
+
 ### Time-decay archival for `daily/` and `weekly/`
 
 Daily scans, lead pulses, recruiter triage, pipeline digests, and week-aheads are date-bound artifacts. Apply this trigger to keep those folders scannable:
@@ -110,6 +180,10 @@ Daily scans, lead pulses, recruiter triage, pipeline digests, and week-aheads ar
 - When `daily/` exceeds ~60 files, move older-than-current-month into `daily/YYYY-MM/`.
 - When `weekly/` exceeds ~26 files, move older files into `weekly/YYYY-Q#/`.
 - Dataview queries in `dashboard.md` descend into subfolders automatically, so "recent activity" views keep working.
+
+### Decay and archival for `target-radar/`
+
+Target-company artifacts have a 30-day TTL (`decay_ttl_days: 30` in frontmatter). Do not delete stale artifacts — set `status: stale` in frontmatter and leave in place. Mode 15 overwrites the file when a refresh is run. If a company moves to `archive/`, set `status: archived` and leave the target-radar artifact as a historical record.
 
 ### Naming
 
@@ -145,4 +219,15 @@ target_companies: []           # List of companies to scan for new job postings
 #     url: "https://startup.co/careers"
 # ATS types: greenhouse (API via Greenhouse), lever (browser fallback),
 # ashby (browser fallback), manual (user-provided URL).
+
+# Target Radar (Mode 15)
+target_segments: []           # Segments / verticals to discover by default in Mode 15.
+# target_segments:
+#   - "healthcare analytics"
+#   - "BI modernization consulting"
+#   - "AI-enabled analytics platforms"
+
+radar_seed_cap: 15            # Max candidate companies per segment/role input. Default: 15.
+
+radar_decay_days: 30          # Days before a target-company artifact is stale. Default: 30.
 ```

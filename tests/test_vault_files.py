@@ -58,6 +58,15 @@ def test_required_directories_exist(vault_path):
         )
 
 
+def test_packets_directory_exists(vault_path):
+    """Verify packets/ directory (or its .gitkeep) is present in the vault root."""
+    packets_dir = vault_path / "packets"
+    assert packets_dir.is_dir(), (
+        "packets/ directory missing from vault root. "
+        "Create it with a .gitkeep (per the packets convention, Mode 14)."
+    )
+
+
 def test_examples_directory_has_required_files(vault_path):
     """Verify examples/ directory has the four canonical reference artifacts.
 

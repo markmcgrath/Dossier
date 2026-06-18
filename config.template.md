@@ -58,6 +58,20 @@ Uncomment and set any of the following to override skill defaults.
 # Word-count ceiling for cover letters (Mode 6). Hard limit — drafts
 # exceeding this are compressed before saving. Default: 400.
 # cover_letter_word_cap: 400
+
+# Target Radar (Mode 15): segments to discover by default when Mode 15 is
+# invoked with no explicit input. Used alongside any companies in
+# target_companies whose artifacts are stale.
+# target_segments:
+#   - "healthcare analytics"
+#   - "BI modernization consulting"
+#   - "AI-enabled analytics platforms"
+
+# Max candidate companies per segment/role input in Mode 15. Default: 15.
+# radar_seed_cap: 15
+
+# Days before a target-company artifact is considered stale. Default: 30.
+# radar_decay_days: 30
 ```
 
 ---

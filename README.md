@@ -136,7 +136,9 @@ Dossier/
 ├── daily/                  # Daily journals
 ├── weekly/                 # Weekly pipeline reviews
 ├── examples/               # Reference artifacts (fictional companies)
-└── archive/                # Terminal (rejected, declined, 90+ days cold) applications
+├── archive/                # Terminal (rejected, declined, 90+ days cold) applications
+├── packets/                # Per-application submission bundles (cv, cover letter, manifest)
+└── target-radar/           # Target-company discovery artifacts (Mode 15: Target Radar)
 ```
 
 ## Frontmatter conventions
@@ -197,7 +199,7 @@ Obsidian isn't required — the vault works fine as plain markdown in any editor
 
 Dossier separates user-owned files from system-owned files so that skill updates never overwrite your work.
 
-**User layer (never overwritten by updates):** `cv.md`, `profile.md`, `stories.md`, `config.md`, `dashboard.md`, and all working folders (`evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `daily/`, `weekly/`, `archive/`).
+**User layer (never overwritten by updates):** `cv.md`, `profile.md`, `stories.md`, `config.md`, `dashboard.md`, and all working folders (`evals/`, `outreach/`, `cover-letters/`, `interview-prep/`, `research/`, `daily/`, `weekly/`, `archive/`, `packets/`, `target-radar/`).
 
 **System layer (may be updated with new skill versions):** `dossier.skill`, `PRIVACY.md`, `DATA_CONTRACT.md`, `README.md`, `Diagram.md`, `LICENSE`.
 

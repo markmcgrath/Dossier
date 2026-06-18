@@ -46,6 +46,12 @@ def skill_md(skill_zip):
 
 
 @pytest.fixture(scope="session")
+def mode1_md(skill_zip):
+    """Full text of references/mode1-offer-evaluator.md from the bundle."""
+    return skill_zip.read("skill/references/mode1-offer-evaluator.md").decode("utf-8")
+
+
+@pytest.fixture(scope="session")
 def skill_lines(skill_md):
     """SKILL.md as a list of lines."""
     return skill_md.split("\n")
