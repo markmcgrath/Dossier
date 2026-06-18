@@ -101,7 +101,7 @@ Before doing anything else, silently read three files from the **root** of the u
 
 1. **`cv.md`** (or `cv.docx` / `cv.pdf` / any file with "cv" or "resume" in the name) — the factual record: roles, skills, dates, accomplishments.
 2. **`profile.md`** — the archetype layer: target roles, roles to avoid, positive and negative match signals, differentiators. This is *preference* data, not *history* data.
-3. **`config.md`** — per-user configuration: optional Notion mirror settings, connector preferences, anything else that varies by user. Expected: a `notion:` block with `enabled`, `data_source_id`, `parent_page_url`, `tracker_url`, and `sync_compensation` keys. See the "Pipeline Tracker" section above for how these are used. For optional config keys (email filtering, scoring weights, portal scanning), see `references/file-conventions.md` under "Optional Config Keys."
+3. **`config.md`** — per-user configuration: optional Notion mirror settings, connector preferences, anything else that varies by user. Expected: a `notion:` block with `enabled`, `data_source_id`, `parent_page_url`, `tracker_url`, and `sync_compensation` keys. See the "Pipeline Tracker" section above for how these are used. For optional config keys — `redact_comp`, `scoring_weights`, `gmail_allow_domains`, `gmail_deny_domains`, and `target_companies` (email filtering, scoring weights, portal scanning) — see `references/file-conventions.md` under "Optional Config Keys."
 
 Use the CV to judge **capability fit** and the profile to judge **desirability fit**. A role the user *could* do well is not the same as a role the user *wants*. Both layers inform every mode, but the profile is especially decisive in Mode 1 (grading) and Mode 2 (search filtering) — a role flagged in profile's "Roles to Avoid" list should score poorly on Dimension 1 (Role & Responsibility Match) and Dimension 10 (Strategic Career Value) regardless of surface keyword match.
 
@@ -166,6 +166,8 @@ Determine which mode the user needs from context. If it's ambiguous, ask one sho
 Run a 10-dimension weighted evaluation (scored 1–5 each), convert to a letter grade A–F, assess posting legitimacy, and save to `evals/` with full frontmatter.
 
 Read `references/mode1-offer-evaluator.md` for the scoring dimensions, weights, output template, legitimacy assessment, dedup rules, and post-eval actions. Scoring calibration is in `references/scoring-guide.md`. New evals are created with `status: Evaluating`, `outcome: Pending` per `references/status-outcome-state-machine.md`.
+
+**Gate-Pass Rule (overrides grade conversion):** if Dimension 1 (Role & Responsibility Match) or Dimension 2 (Skills & Experience Alignment) scores **2 or below**, cap the overall grade at **D** regardless of the weighted average — strong scores elsewhere cannot compensate for a broken foundation. Always explain why when applying it. Full statement in `references/mode1-offer-evaluator.md`.
 
 **Save to:** `evals/eval-[company-slug]-[date].md`
 

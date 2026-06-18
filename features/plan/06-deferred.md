@@ -57,9 +57,22 @@ The original plan assumes `web_fetch` can reach these ATS API endpoints. This ha
 2. If blocked by content restrictions → this feature needs an alternative approach (browser automation via Claude in Chrome, or manual URL entry)
 3. If the APIs are reachable → proceed with the spec
 
-**Do not design or implement until the feasibility test passes.**
+### Feasibility Result (2026-06-17): PASS
 
-**Estimated effort:** 0.5 hours (feasibility test) + 2 hours (implementation if viable)
+A live `WebFetch` against `https://boards-api.greenhouse.io/v1/boards/anthropic/jobs`
+returned valid JSON with a top-level `jobs` array (200+ postings). Each job object
+carries `id`, `title`, `location.name`, `absolute_url`, and `updated_at` — exactly the
+fields the portal-scan spec needs. The Greenhouse JSON path is reachable from this
+environment; the primary Mode 2.1 path is viable and no browser-automation fallback is
+required for Greenhouse boards. (Lever and Ashby endpoints were not re-checked here, but
+Mode 2.1 already ships a documented browser fallback for them.)
+
+This closes the "do not implement until the feasibility test passes" gate. Portal Scan
+shipped as Mode 2.1 (`skill/references/mode2-portal-scan.md`); this validation confirms
+its primary Greenhouse path in production.
+
+**Estimated effort:** feasibility test complete (Plan 27, B-3); implementation already
+shipped as Mode 2.1.
 
 ---
 

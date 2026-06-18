@@ -79,28 +79,28 @@ def test_pipeline_state_reading_section_exists(skill_md):
 
 
 def test_gate_pass_rule_is_prominent(skill_md):
-    """Verify Gate-Pass Rule appears as a clear section (not buried)."""
-    if "Gate-Pass Rule" not in skill_md:
-        pytest.skip(
-            "Gate-Pass Rule section not present in `skill/SKILL.md`. "
-            "Tracked in plan 13 (quality audit remediation) Stream A."
-        )
-    assert "gate-pass" in skill_md.lower(), "Gate-pass rule not documented"
+    """Verify the Gate-Pass Rule is documented as a clear callout in SKILL.md.
+
+    Resolved (Plan 27, A-1): the rule is now stated in the Mode 1 section of
+    SKILL.md, not only in references/mode1-offer-evaluator.md.
+    """
+    assert "Gate-Pass Rule" in skill_md, (
+        "Gate-Pass Rule not documented in SKILL.md (Dim 1 or Dim 2 <= 2 caps the grade at D)."
+    )
 
 
-def test_bias_caveat_in_mode_1(skill_md):
-    """Verify bias caveat appears somewhere in SKILL.md mentioning AI and pattern-matching."""
-    if "Bias Caveat" not in skill_md and "bias caveat" not in skill_md.lower():
-        pytest.skip(
-            "Bias Caveat is being added to `references/mode1-offer-evaluator.md` "
-            "per plan 13 Stream A.2, not to SKILL.md. This test will be retired "
-            "or rescoped when plan 13 ships — see plan 16 follow-up note."
-        )
-    has_ai = "AI" in skill_md
-    has_pattern_or_bias = "pattern" in skill_md.lower() or "bias" in skill_md.lower()
-    assert (
-        has_ai and has_pattern_or_bias
-    ), "SKILL.md missing caveat about AI limitations and pattern-matching risks"
+def test_bias_caveat_in_mode_1(mode1_md):
+    """Verify the Mode 1 reference carries the AI / pattern-matching bias caveat.
+
+    Resolved (Plan 27, A-2): the caveat lives in
+    references/mode1-offer-evaluator.md, so this test now asserts against that
+    file rather than SKILL.md (its previous, wrong target).
+    """
+    lower = mode1_md.lower()
+    assert "ai model" in lower and "pattern-matching" in lower, (
+        "mode1-offer-evaluator.md missing the AI bias caveat (the eval is "
+        "AI-generated pattern-matching and should be one input, not the decision)."
+    )
 
 
 def test_vault_first_general_principles(skill_md):
@@ -120,13 +120,10 @@ def test_all_config_keys_documented(skill_md):
         "target_companies",
     ]
     missing_keys = [k for k in config_keys if k not in skill_md]
-    if missing_keys:
-        pytest.skip(
-            f"Config keys not yet documented in `skill/SKILL.md`: "
-            f"{', '.join(missing_keys)}. Tracked in plan 13 Stream C "
-            "(config schema work). `gmail_allow_domains`, "
-            "`gmail_deny_domains`, `target_companies` are already present."
-        )
+    assert not missing_keys, (
+        f"Config keys not documented in SKILL.md: {', '.join(missing_keys)}. "
+        "Resolved (Plan 27, A-3): all five should appear in the Setup config note."
+    )
 
 
 def test_frontmatter_template_has_outcome(skill_md):
