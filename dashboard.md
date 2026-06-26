@@ -233,6 +233,24 @@ SORT file.name DESC
 
 ---
 
+## Target Radar — Company Discovery
+
+Companies surfaced by Mode 15 (Target Radar), ranked by company-level fit. Entries past their 30-day TTL show `status: stale`; re-run the radar (or the Weekly Target Radar Refresh) to refresh them.
+
+```dataview
+TABLE WITHOUT ID
+  file.link AS "Company",
+  segment AS "Segment",
+  fit_score AS "Fit",
+  status AS "Status",
+  refreshed_at AS "Refreshed"
+FROM "target-radar"
+WHERE type = "target-company"
+SORT fit_score DESC
+```
+
+---
+
 ## Archive (Terminal Rows)
 
 Rows that have reached a terminal state and been moved to `archive/[company-slug]/`. Searchable but out of the active pipeline.

@@ -58,26 +58,30 @@ Explain the vault structure:
 - daily/
 - weekly/
 - archive/
+- packets/
+- target-radar/
 - dashboard.md
 
 Then:
 - Ask the user where they want to store their vault (local folder or Obsidian).
-- The repo root already mirrors the vault structure — the eight folders above and `dashboard.md` are present. Tell the user they can either (a) use the cloned repo in place as their vault, or (b) copy those folders and `dashboard.md` to a separate vault location along with `cv.template.md`, `profile.template.md`, `stories.template.md`, and `config.template.md` (renamed to drop `.template`).
+- The repo root already mirrors the vault structure: the ten folders above and `dashboard.md` are present. Tell the user they can either (a) use the cloned repo in place as their vault, or (b) copy those folders and `dashboard.md` to a separate vault location along with `cv.template.md`, `profile.template.md`, `stories.template.md`, and `config.template.md` (renamed to drop `.template`).
+- If the user plans to use company discovery (Target Radar), tell them to uncomment and populate `target_segments` in their `config.md` (and optionally `radar_seed_cap` and `radar_decay_days`) so the radar has a default scope to scan.
 
 ---
 
 ### 4. Explain workflow modes
 
-Briefly explain the six user-facing entry points the user will reach for most often:
+Briefly explain the seven user-facing entry points the user will reach for most often:
 
 - evaluate: assess job fit
 - search: find relevant roles
+- discover: find target companies worth pursuing (Target Radar)
 - research: analyze companies and roles
 - outreach: generate tailored messages
 - prep: create interview materials
 - negotiate: analyze offers
 
-Mention — but don't enumerate — that the skill has additional capability modes for batch evaluation, calendar prep blocks, inbox triage, calibration reports, tailored CVs, and LinkedIn workflows. Tell the user they're triggered automatically when relevant and they can read the full mode list in `skill/SKILL.md` (or in the bundled `dossier.skill`) if curious.
+Mention (but don't enumerate) that the skill has additional capability modes for batch evaluation, calendar prep blocks, inbox triage, calibration reports, tailored CVs, packet assembly, and LinkedIn workflows. Tell the user they're triggered automatically when relevant and they can read the full mode list in `skill/SKILL.md` (or in the bundled `dossier.skill`) if curious.
 
 Do not over-explain. Keep it practical.
 
@@ -160,6 +164,7 @@ Cowork supports scheduled tasks that run automatically on an interval. Useful Do
 - **Daily job scan** — search for new postings matching your profile and surface them as candidates for evaluation.
 - **Follow-up reminders** — flag applications where outreach was sent but no response has come in after a set number of days.
 - **Weekly pipeline review** — generate a weekly summary of active applications, status changes, and next actions.
+- **Weekly Target Radar refresh** — re-scan your target segments and stale tracked companies, refreshing `target-radar/` artifacts. Ready-made prompt in `schedule-prompts.md` (Weekly Target Radar Refresh).
 
 To set one up, tell Claude:
 

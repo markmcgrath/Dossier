@@ -102,6 +102,7 @@ After the v2 streams above shipped, follow-on work continued under individually 
 | 25 | [[25-target-radar-component]] | Target Radar as a standalone Dossier component, Mode 15 (request item 4) |
 | 26 | 26-live-vault-cleanup-plan *(completed; spec doc not tracked in this repo — it contained live-vault paths)* | Live working-folder cleanup map (request item 2). Done. |
 | 27 | [[27-outstanding-backlog]] | Outstanding-feature backlog triage (request item 5) |
+| 28 | [[28-onboarding-and-docs-sync]] | Onboarding & docs sync for Modes 14 and 15 |
 
 Plan number 11 does not have a plan doc in this folder. Plan 19's doc was backfilled post-hoc from PR #43.
 

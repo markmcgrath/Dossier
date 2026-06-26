@@ -32,7 +32,7 @@ Both paths produce the same bundle: `.github/scripts/build_skill.sh` is determin
 flowchart LR
     P[Your Profile<br/>cv.md · profile.md] --> S[Claude + Dossier Skill]
     J[Job Input<br/>JD · URL · search criteria] --> S
-    S --> A[Artifacts<br/>eval · outreach · prep · research]
+    S --> A[Artifacts<br/>eval · outreach · prep · research · packet · target-company]
     A --> V[Vault<br/>Markdown + Frontmatter]
     V --> D[Dashboard<br/>Dataview Queries]
     D --> U[Your Decisions<br/>apply · send · prep · archive]
@@ -112,7 +112,9 @@ All external actions remain user-controlled.
 
 - **File-first, not chat-first.** Every interaction produces a persistent markdown artifact, not a throwaway chat.
 - **Structured outputs.** YAML frontmatter lets Dataview (and any other tool) query the vault like a database.
-- **Explicit workflow modes.** 14 named modes (Evaluate, Search, Outreach, Prep, …) instead of implicit chat behavior.
+- **Explicit workflow modes.** 16 named modes (Evaluate, Search, Outreach, Prep, …) instead of implicit chat behavior.
+- **Company discovery (Target Radar).** Scores company-level fit across your target segments and writes ranked candidates to `target-radar/`, so you can run a discovery-led search (one target title across many companies).
+- **Send-ready packets.** Per-application bundles that assemble the eval, outreach, and supporting artifacts into one send-ready packet in `packets/`.
 - **Human-in-the-loop.** The skill drafts; you decide to send.
 - **Your data, your vault.** No cloud sync required. Notion, Gmail, and Calendar integrations are optional mirrors.
 - **Schedulable.** Set up recurring daily scans, follow-up reminders, and pipeline reviews via Cowork scheduled tasks. See [START_HERE.md](START_HERE.md) for details.

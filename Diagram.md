@@ -10,7 +10,7 @@ This diagram shows how Dossier operates as a file-first, Claude-assisted job sea
 flowchart LR
     A[User Input\n(cv.md, profile.md, job description)] --> B[Claude + Dossier Skill]
 
-    B --> C[Artifact Generation\n(eval, outreach, prep)]
+    B --> C[Artifact Generation\n(eval, outreach, prep, packet, target-company)]
     C --> D[Markdown Files with Frontmatter]
 
     D --> E[Vault (Obsidian or Filesystem)]

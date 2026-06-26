@@ -19,7 +19,7 @@ The table below maps each type of data to the services it may flow to.
 | **Contact Lookups** | Queries for candidate emails, phone numbers, social profiles | Apollo | Per Apollo ToS | Each lookup is a query to Apollo's database. They log the query and the result. |
 | **LinkedIn Activity** | Profile views, messaging, connections | LinkedIn, Anthropic (optional) | LinkedIn: their retention. Anthropic: not retained if you paste. | LinkedIn owns all your activity. You control whether to share it with Anthropic (e.g., by pasting profile screenshots). |
 | **Job Search Queries** | Indeed/Dice searches, filters, keyword history | Indeed/Dice, Anthropic | Indeed/Dice: their retention. Anthropic: not retained. | Search behavior is logged by Indeed/Dice. Anthropic sees job descriptions only if you copy them into a conversation. |
-| **Vault Contents** | Everything in the Dossier folder (evals, outreach, prep, notes) | Anthropic, Notion (optional) | Anthropic: not retained. Notion: until you delete. | Local by default. Anthropic sees files only when you explicitly share them (e.g., paste content). Notion is only involved if you configure the integration. |
+| **Vault Contents** | Everything in the Dossier folder (evals, outreach, prep, packets, target-radar, notes) | Anthropic, Notion (optional) | Anthropic: not retained. Notion: until you delete. | Local by default. Anthropic sees files only when you explicitly share them (e.g., paste content). Notion is only involved if you configure the integration. |
 | **OAuth Tokens** | Gmail, Google Calendar, Apollo, LinkedIn, Notion (if configured) | Stored in your `.env` file | Until you revoke or delete the token | Tokens grant access to these services. Never commit `.env` to version control or share it. |
 
 ---
@@ -187,7 +187,7 @@ The table below maps each type of data to the services it may flow to.
    - If exfiltrated, could allow attacker to access your email, calendar, and platforms
 
 4. **Vault Contents**
-   - All evals, outreach, prep docs, notes
+   - All evals, outreach, prep docs, packets, target-radar artifacts, notes
    - Stored locally (fully under your control) or synced to Notion (if configured)
    - If exfiltrated, could reveal full job-search pipeline, negotiation strategies, company research
 
@@ -362,7 +362,7 @@ Full-disk encryption is the single most effective protection against data exfilt
 
 ## Data Retention
 
-This vault maintains all job-search artifacts indefinitely (evals, outreach, prep, notes). When a company reaches a terminal state (Rejected, Passed, Offer-Declined, or inactive for 90+ days), files are moved to `archive/[company-slug]/` but not deleted.
+This vault maintains all job-search artifacts indefinitely (evals, outreach, prep, packets, target-radar, notes). When a company reaches a terminal state (Rejected, Passed, Offer-Declined, or inactive for 90+ days), files are moved to `archive/[company-slug]/` but not deleted.
 
 For the full retention policy, including active data rules, terminal data archival, optional compensation redaction, and the quarterly cleanup checklist, see [README.md § Vault discipline](README.md#vault-discipline).
 
