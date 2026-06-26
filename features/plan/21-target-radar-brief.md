@@ -10,7 +10,7 @@
 **Created:** 2026-05-11
 **Canonical design doc:** [[2026-05-11-target-radar-brief-design]] (in The Commonplace Book vault)
 
-Target Radar is designed as a Commonplace brief upstream of Dossier, not as a Dossier mode. All load-bearing design decisions — scoring logic, URL resolution, entry schema, decay policy — live in the canonical entry linked above. This stub exists in `dossier-open-source/features/plan/` so the plan-numbering convention stays intact and so anyone walking the dossier plan folder can find their way to the design.
+Target Radar was originally designed as a Commonplace brief upstream of Dossier, not as a Dossier mode (this design was superseded by Plan 25; see the banner above). The original load-bearing design decisions — scoring logic, URL resolution, entry schema, decay policy — live in the canonical entry linked above. This stub exists in `dossier-open-source/features/plan/` so the plan-numbering convention stays intact and so anyone walking the dossier plan folder can find their way to the design.
 
 ## What Dossier owns
 
@@ -29,4 +29,4 @@ Target Radar is designed as a Commonplace brief upstream of Dossier, not as a Do
 
 ## Next step
 
-No implementation work is scheduled. The canonical design doc carries `decay_class: slow` (180-day TTL); if Target Radar is still useful at the next vault audit, that's the signal to schedule implementation.
+No implementation work was scheduled under this brief. Target Radar was subsequently implemented as Mode 15 under Plan 25 (`features/plan/25-target-radar-component.md`), which superseded this brief-ownership model.
