@@ -2,7 +2,7 @@
 # This file is the install target used by `.github/workflows/ci.yml` and the
 # README setup section. Keep entries in sync with pyproject.toml when adding
 # or upgrading a dependency.
-pytest>=9.1.0
+pytest>=9.1.1
 pyyaml>=6.0.3
 # tomli only needed on Python <3.11; stdlib tomllib covers it from 3.11 onwards.
 # Test suite (test_cliff_config.py) imports tomli as a fallback.
