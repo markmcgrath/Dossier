@@ -8,6 +8,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Documentation
 
+- Surface the `negotiation/` folder (Mode 7, Salary Negotiation) in the onboarding and dashboard layers, a pre-existing gap separate from the Modes 14/15 sync. `START_HERE.md` now lists `negotiation/` and counts eleven folders (was ten); `dashboard.md` includes `negotiation/` in the "Today's Activity" and "This Week" date views (negotiation artifacts carry a `date` field, unlike packets/target-radar) and gains a dedicated Negotiation Briefs view. Documentation-only.
+
 - Onboarding and prose docs resynced to surface Mode 14 (Packet Assembly) and Mode 15 (Target Radar), which shipped in v1.4.0 but were missing from the human-onboarding layer. `START_HERE.md` now lists `packets/` and `target-radar/` in the vault folder set (ten folders), adds a `discover` primary entry point for Target Radar, names packet assembly among the capability modes, documents the Weekly Target Radar Refresh schedule, and tells discovery users to populate the `target_segments` radar config keys. `README.md` Core concepts now names Target Radar and send-ready packets as capabilities and corrects the mode count (14 to 16). Documentation-only; no bundle, schema, or test change. (Plan 28)
 - Documentation sweep fixes from the same pass: `dashboard.md` gains a Target Radar company-discovery view; the `README.md` and `Diagram.md` flow diagrams and the `PRIVACY.md` vault-contents enumerations now include packet and target-company artifacts; `features/plan/21-target-radar-brief.md` body reconciled to past tense so it no longer contradicts its "Superseded by Plan 25" banner. (Plan 28)
 

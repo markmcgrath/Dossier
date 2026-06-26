@@ -55,6 +55,7 @@ Explain the vault structure:
 - cover-letters/
 - interview-prep/
 - research/
+- negotiation/
 - daily/
 - weekly/
 - archive/
@@ -64,7 +65,7 @@ Explain the vault structure:
 
 Then:
 - Ask the user where they want to store their vault (local folder or Obsidian).
-- The repo root already mirrors the vault structure: the ten folders above and `dashboard.md` are present. Tell the user they can either (a) use the cloned repo in place as their vault, or (b) copy those folders and `dashboard.md` to a separate vault location along with `cv.template.md`, `profile.template.md`, `stories.template.md`, and `config.template.md` (renamed to drop `.template`).
+- The repo root already mirrors the vault structure: the eleven folders above and `dashboard.md` are present. Tell the user they can either (a) use the cloned repo in place as their vault, or (b) copy those folders and `dashboard.md` to a separate vault location along with `cv.template.md`, `profile.template.md`, `stories.template.md`, and `config.template.md` (renamed to drop `.template`).
 - If the user plans to use company discovery (Target Radar), tell them to uncomment and populate `target_segments` in their `config.md` (and optionally `radar_seed_cap` and `radar_decay_days`) so the radar has a default scope to scan.
 
 ---
