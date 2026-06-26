@@ -20,7 +20,7 @@ TABLE WITHOUT ID
   file.link AS "File",
   type AS "Type",
   company AS "Company"
-FROM "evals" OR "outreach" OR "cover-letters" OR "interview-prep" OR "daily" OR "weekly" OR "research"
+FROM "evals" OR "outreach" OR "cover-letters" OR "interview-prep" OR "research" OR "negotiation" OR "daily" OR "weekly"
 WHERE date = date(today)
 SORT type ASC, file.name ASC
 ```
@@ -35,7 +35,7 @@ TABLE WITHOUT ID
   type AS "Type",
   company AS "Company",
   date AS "Date"
-FROM "evals" OR "outreach" OR "cover-letters" OR "interview-prep" OR "daily" OR "weekly" OR "research"
+FROM "evals" OR "outreach" OR "cover-letters" OR "interview-prep" OR "research" OR "negotiation" OR "daily" OR "weekly"
 WHERE date >= date(today) - dur(7 days)
 SORT date DESC, type ASC
 ```
@@ -167,6 +167,23 @@ TABLE WITHOUT ID
   date AS "Date"
 FROM "evals"
 WHERE type = "eval" AND status = "Offer"
+SORT date DESC
+```
+
+---
+
+## Negotiation Briefs
+
+Salary-negotiation briefs (Mode 7). The `walk_away` value is the floor below which you decline.
+
+```dataview
+TABLE WITHOUT ID
+  file.link AS "Brief",
+  company AS "Company",
+  walk_away AS "Walk-away",
+  date AS "Date"
+FROM "negotiation"
+WHERE type = "negotiation"
 SORT date DESC
 ```
 

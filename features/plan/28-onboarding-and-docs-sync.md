@@ -48,6 +48,8 @@ Found by the fresh-eyes sweep and fixed in the same pass. Each verified against 
 
 **Rejected sweep findings (verified inert, not fixed):** the sweep proposed adding `packets`/`target-radar` to the date-keyed `FROM` clauses of `dashboard.md`'s "Today's Activity" (`:23`) and "This Week" (`:38`) views. Rejected: `type: packet` files carry `created`/`updated` and `type: target-company` files carry `created_at`/`refreshed_at`, neither has a `date` field, so the existing `WHERE date = date(today)` / `WHERE date >= ...` filters would never match them. A correct fix would require schema-aware multi-field WHERE logic, which is a query-behavior change out of scope for this docs-only plan. The dedicated D10 section is the correct surface for Mode 15 output.
 
+**Post-merge correction (recorded for honesty):** D1/D2's "ten folders" target was itself incomplete. It inherited a pre-existing `START_HERE.md` omission of `negotiation/` (Mode 7 output, scaffolded with `.gitkeep` and present in `README.md`, `skill/SKILL.md`, `file-conventions.md`, and `DATA_CONTRACT.md`). The true scaffolded artifact-folder count is eleven. This plan was scoped to Modes 14/15, so the negotiation gap was out of its hunt; it was found and fixed in a follow-up docs-sync (`START_HERE.md` ten to eleven plus `negotiation/`; `dashboard.md` date views and a dedicated negotiation section), not under Plan 28.
+
 ---
 
 ## 3. What is already current — DO NOT "fix"
