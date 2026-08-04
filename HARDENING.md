@@ -17,12 +17,11 @@ Ruleset `Public` is active on the default branch (`main`). It applies to `~DEFAU
   - `required_review_thread_resolution: true` — unresolved review conversations block merge
   - `allowed_merge_methods: ["squash"]` — squash-only
 - `required_status_checks` with `strict_required_status_checks_policy: true`
-  - `pii-scan`
-  - `test (3.12)`
-  - `changelog-check (PR-only)`
-    - Gated with `if: github.event_name == 'pull_request'` — the check only runs on PR events and is skipped on push-to-branch runs.
-  - `conventional-commits (PR-only)` — PR-only gate that lints commit subjects on the PR range (see §13).
-  - `skill-parity` — runs on every PR and push to `main`; rebuilds `dossier.skill` and exits non-zero if its content drifts from the committed bundle (see §9).
+  - Ruleset-required (merge-blocking): `pii-scan`, `test (3.12)`, `changelog-check`
+    - `changelog-check` is gated with `if: github.event_name == 'pull_request'` — the check only runs on PR events and is skipped on push-to-branch runs.
+  - Run in CI but not merge-blocking (not in the ruleset's required list):
+    - `conventional-commits` — PR-only gate that lints commit subjects on the PR range (see §13).
+    - `skill-parity` — runs on every PR; rebuilds `dossier.skill` and exits non-zero if its content drifts from the committed bundle (see §9).
   - Strict mode forces the PR branch to be up to date with `main` so CI re-runs against the current base before merge
 - `required_linear_history` — reinforces squash-only; blocks merge commits from ever landing
 
@@ -144,22 +143,25 @@ Local gate: `.github/scripts/pii_scan.py`, wired into CI as a required status ch
 
 ## 7. CI and test coverage
 
-**Matrix.** Python 3.12 on `ubuntu-latest`. Triggers: push to `main`, pull_request targeting `main`. The matrix retains its shape (single entry) so the status-check name stays `test (3.12)` and 3.11 (or a later version) can be re-added without renaming.
+**Matrix.** Python 3.12 on `ubuntu-latest`. Triggers: `pull_request` targeting `main`. The matrix retains its shape (single entry) so the status-check name stays `test (3.12)` and 3.11 (or a later version) can be re-added without renaming.
 
-**Required status checks** (all five must pass for merge):
+**Ruleset-required status checks** (merge-blocking — all three must pass for merge):
 
 - `pii-scan` — runs the scanner described in §5.
 - `test (3.12)` — full pytest suite on Python 3.12.
 - `changelog-check` — PR-only. Gates PRs that touch `skill/`, `tests/`, or `dossier.skill` on a corresponding `## [Unreleased]` CHANGELOG entry. Bypassable via `[skip-changelog]` token in any commit message in the PR range.
+
+**Run in CI but not merge-blocking** (not in the ruleset's required list):
+
 - `conventional-commits` — PR-only. Lints commit subjects on the PR range against the conventional-commits grammar (see §13).
-- `skill-parity` — runs on every PR and push to `main`. Rebuilds `dossier.skill` from `skill/` and fails if the freshly built bundle's content differs from the committed one (manifest.json excluded). Catches the case where a contributor edits `skill/*.md` without repacking.
+- `skill-parity` — runs on every PR. Rebuilds `dossier.skill` from `skill/` and fails if the freshly built bundle's content differs from the committed one (manifest.json excluded). Catches the case where a contributor edits `skill/*.md` without repacking.
 - `release.yml` re-runs the test suite as defense-in-depth before building the artifact. ~3 min cost per tag; catches the corner case where a maintainer tags a commit that didn't go through CI (e.g., a tag on a long-lived branch).
 
 **Semantic review is required for tagged releases.** `tests/semantic-review-checklist.md` is the binding pre-tag gate for LLM output quality (grade accuracy, concern inclusion, prompt-injection refusal, outreach tone, frontmatter + dashboard render). It is run manually by the maintainer before tagging — see CONTRIBUTING.md §Tagging a Release. It is not a CI status check because the assertions cannot be made deterministic without invoking Claude, but skipping it is a release-process violation, not an acceptable shortcut.
 
-**Skipped-test accountability.** Every `pytest.skip()` site is tracked in `tests/SKIPPED_TESTS.md` with exit criterion and release-blocker disposition. The current skips (3 plan-13 placement assertions plus environment-conditional guards) are not release blockers; adding a skip without a corresponding row in `tests/SKIPPED_TESTS.md` is a documentation regression.
+**Skipped-test accountability.** Every `pytest.skip()` site is tracked in `tests/SKIPPED_TESTS.md` with exit criterion and release-blocker disposition. The remaining skip sites (environment- and vault-layout-conditional guards that do not fire against this vault; the three plan-13 hard skips were resolved in Plan 27) are not release blockers; adding a skip without a corresponding row in `tests/SKIPPED_TESTS.md` is a documentation regression.
 
-**Test surface** (~178 passing, 3 skipped against this vault with `jsonschema` installed; see `tests/SKIPPED_TESTS.md` for skip details):
+**Test surface** (~194 passing, 0 skipped against this vault with `jsonschema` installed; see `tests/SKIPPED_TESTS.md` for the conditional skip sites):
 
 - Routing golden (`tests/test_routing_golden.py`) — guards the SKILL description length (≤ 1024 chars), required trigger phrases, the negative-scope sentence, and cross-document consistency between `routing_test_set.md` and `baseline_results.md`.
 - Outcome state machine (`tests/test_outcome_state_machine.py`) — parses the transition table and asserts required `(status, outcome)` pairs, the four skill-side pointers, and example conformance.
